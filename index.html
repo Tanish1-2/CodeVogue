@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <!-- Required for Admin Login on Netlify -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -33,7 +35,7 @@
             <div class="about-grid">
                 <div><p class="section-label text-target">THE VISION</p></div>
                 <div>
-                    <h2 class="about-text text-target">Delivering pure, powerful, and aesthetically flawless software for brands that refuse to blend in.</h2>
+                    <h5 class="about-text text-target">Delivering pure, powerful, and aesthetically flawless software for brands that refuse to blend in.</h5>
                     <div class="founder-tag">
                         <div>
                             <p class="text-target" style="color: white; font-weight: 600; font-size: 1.1rem;">Tanish Nandanwar</p>
@@ -48,7 +50,7 @@
 
     <footer>
         <p class="section-label reveal text-target" style="margin-bottom: 30px;">READY TO BUILD?</p>
-        <a href="mailto:hello@codevogue.studio" class="footer-cta reveal hover-target magnetic" style="text-decoration: none;">LET'S TALK</a>
+        <a href="mailto:tanishnandanwar15@gmail.com" class="footer-cta reveal hover-target magnetic" style="text-decoration: none;">LET'S TALK</a>
         <div class="footer-bottom reveal">
             <p class="text-target">&copy; 2026 CodeVogue. All Rights Reserved.</p>
             <p class="text-target">Sagar, Madhya Pradesh, IN</p>
@@ -56,5 +58,14 @@
     </footer>
 
     <script src="js/script.js"></script>
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
+          }
+        });
+      }
+    </script>
 </body>
 </html>

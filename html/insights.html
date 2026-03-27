@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <!-- Required for Admin Login on Netlify -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -27,7 +29,6 @@
         <h1 class="reveal text-target" style="font-size: clamp(3.5rem, 8vw, 8rem); margin-bottom: 2rem; line-height: 0.9;">INSIGHTS</h1>
         <p class="hero-desc reveal text-target" style="margin-top: 0;">Thoughts on design, engineering, and the future of digital experiences.</p>
 
-        <!-- Javascript will fetch the JSON data and put it exactly here -->
         <div id="blog-container" class="insights-grid"></div>
     </main>
 
@@ -37,5 +38,14 @@
     </footer>
 
     <script src="../js/script.js"></script>
+    <script>
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
+          }
+        });
+      }
+    </script>
 </body>
 </html>

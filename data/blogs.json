@@ -1,18 +1,11 @@
 {
   "posts": [
     {
-      "category": "CULTURE",
-      "date": "MAR 27, 2026",
-      "title": "Welcome to CodeVogue",
-      "description": "Our brand new digital lab is live. Here is how we built it.",
-      "link": "#"
-    },
-    {
-      "link": "#",
-      "category": "POOP",
-      "date": "27rd March 2026",
-      "title": "POOP",
-      "description": "ABCD"
+      "link": "https://vocationaleducationkv4.netlify.app/",
+      "description": "First official launched project",
+      "title": "Vocational Education site for KV No.4 DHSGVV Sagar",
+      "date": "27th March 2026",
+      "category": "Website"
     }
   ]
 }

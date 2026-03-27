@@ -1,0 +1,24 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "content"
+    label: "Content Management"
+    files:
+      - label: "Blog Posts"
+        name: "blogs"
+        file: "data/blogs.json"
+        fields:
+          - name: "posts"
+            label: "Articles"
+            widget: "list"
+            fields:
+              - {label: "Category (e.g. DESIGN)", name: "category", widget: "string"}
+              - {label: "Date", name: "date", widget: "string"}
+              - {label: "Title", name: "title", widget: "string"}
+              - {label: "Description", name: "description", widget: "text"}
+              - {label: "URL Link", name: "link", widget: "string", default: "#"}

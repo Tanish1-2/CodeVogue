@@ -1,36 +1,59 @@
 document.addEventListener('DOMContentLoaded', () => {
-    if (window.innerWidth > 768) {
-        initCursor();
-    }
-    
+    if (window.innerWidth > 768) { initCursor(); }
     initMagneticElements();
-    initScrollReveal();
+    
+    // We load blogs first, then initialize the scroll reveal animations
+    loadBlogs().then(() => {
+        initScrollReveal();
+    });
 });
+
+async function loadBlogs() {
+    const container = document.getElementById('blog-container');
+    if (!container) return; // Stop if we aren't on the insights page
+
+    try {
+        // Fetching with absolute path from root so it always finds the data folder
+        const response = await fetch('/data/blogs.json');
+        const data = await response.json();
+        const posts = data.posts || [];
+
+        container.innerHTML = posts.map((post, index) => `
+            <a href="${post.link}" class="article-card reveal" style="transition-delay: ${index * 0.1}s">
+                <div class="article-meta">
+                    <span>${post.category}</span>
+                    <span>${post.date}</span>
+                </div>
+                <h2 class="article-title text-target">${post.title}</h2>
+                <p class="article-desc text-target">${post.description}</p>
+            </a>
+        `).join('');
+
+        // Re-attach "READ" Cursor logic to new blog cards
+        if (window.innerWidth > 768) {
+            const cursor = document.querySelector(".cursor");
+            const cursorText = document.querySelector(".cursor-text");
+            document.querySelectorAll(".article-card").forEach(card => {
+                card.addEventListener("mouseenter", () => { cursor.classList.add("view-mode"); cursorText.textContent = "READ"; });
+                card.addEventListener("mouseleave", () => { cursor.classList.remove("view-mode"); cursorText.textContent = ""; });
+            });
+        }
+    } catch (error) {
+        console.error('Failed to load insights:', error);
+    }
+}
 
 function initCursor() {
     const cursor = document.querySelector(".cursor");
     const cursorText = document.querySelector(".cursor-text");
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2, cursorX = mouseX, cursorY = mouseY;
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let cursorX = window.innerWidth / 2;
-    let cursorY = window.innerHeight / 2;
-
-    window.addEventListener("mousemove", (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
+    window.addEventListener("mousemove", (e) => { mouseX = e.clientX; mouseY = e.clientY; });
 
     const animateCursor = () => {
-        let distX = mouseX - cursorX;
-        let distY = mouseY - cursorY;
-        
-        cursorX = cursorX + (distX * 0.2); 
-        cursorY = cursorY + (distY * 0.2);
-        
-        cursor.style.left = `${cursorX}px`;
-        cursor.style.top = `${cursorY}px`;
-        
+        cursorX += (mouseX - cursorX) * 0.2; 
+        cursorY += (mouseY - cursorY) * 0.2;
+        cursor.style.left = `${cursorX}px`; cursor.style.top = `${cursorY}px`;
         requestAnimationFrame(animateCursor);
     };
     animateCursor();
@@ -38,58 +61,30 @@ function initCursor() {
     window.addEventListener("mousedown", () => cursor.classList.add("click-mode"));
     window.addEventListener("mouseup", () => cursor.classList.remove("click-mode"));
 
-    const hoverTargets = document.querySelectorAll(".hover-target");
-    hoverTargets.forEach(target => {
+    document.querySelectorAll(".hover-target").forEach(target => {
         target.addEventListener("mouseenter", () => cursor.classList.add("pointer-mode"));
         target.addEventListener("mouseleave", () => cursor.classList.remove("pointer-mode"));
     });
 
-    // Portfolio "VIEW" trigger
-    const projectRows = document.querySelectorAll(".project-row");
-    projectRows.forEach(row => {
-        row.addEventListener("mouseenter", () => {
-            cursor.classList.add("view-mode");
-            cursorText.textContent = "VIEW";
-        });
-        row.addEventListener("mouseleave", () => {
-            cursor.classList.remove("view-mode");
-            cursorText.textContent = "";
-        });
+    document.querySelectorAll(".project-row").forEach(row => {
+        row.addEventListener("mouseenter", () => { cursor.classList.add("view-mode"); cursorText.textContent = "VIEW"; });
+        row.addEventListener("mouseleave", () => { cursor.classList.remove("view-mode"); cursorText.textContent = ""; });
     });
 
-    // NEW: Blog/Insights "READ" trigger
-    const articleCards = document.querySelectorAll(".article-card");
-    articleCards.forEach(card => {
-        card.addEventListener("mouseenter", () => {
-            cursor.classList.add("view-mode");
-            cursorText.textContent = "READ"; // Changes text for blog posts
-        });
-        card.addEventListener("mouseleave", () => {
-            cursor.classList.remove("view-mode");
-            cursorText.textContent = "";
-        });
-    });
-
-    const textTargets = document.querySelectorAll(".text-target, h1, h2");
-    textTargets.forEach(target => {
+    document.querySelectorAll(".text-target, h1, h2").forEach(target => {
         target.addEventListener("mouseenter", () => cursor.classList.add("text-mode"));
         target.addEventListener("mouseleave", () => cursor.classList.remove("text-mode"));
     });
 }
 
 function initMagneticElements() {
-    const magneticElements = document.querySelectorAll('.magnetic');
-    
-    magneticElements.forEach(elem => {
+    document.querySelectorAll('.magnetic').forEach(elem => {
         elem.addEventListener('mousemove', (e) => {
             const rect = elem.getBoundingClientRect();
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-            
+            const x = e.clientX - rect.left - rect.width / 2, y = e.clientY - rect.top - rect.height / 2;
             elem.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
             elem.style.transition = 'transform 0.1s ease-out';
         });
-
         elem.addEventListener('mouseleave', () => {
             elem.style.transform = `translate(0px, 0px)`;
             elem.style.transition = 'transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
@@ -100,15 +95,9 @@ function initMagneticElements() {
 function initScrollReveal() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => { 
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active'); 
-                observer.unobserve(entry.target); 
-            }
+            if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); }
         });
-    }, { 
-        threshold: 0.1,
-        rootMargin: "0px 0px -80px 0px" 
-    });
+    }, { threshold: 0.1, rootMargin: "0px 0px -80px 0px" });
 
     document.querySelectorAll('.reveal').forEach((el, index) => {
         el.style.transitionDelay = `${index * 0.05}s`;

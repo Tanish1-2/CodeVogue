@@ -1,0 +1,11 @@
+{
+  "posts": [
+    {
+      "category": "CULTURE",
+      "date": "MAR 27, 2026",
+      "title": "Welcome to CodeVogue",
+      "description": "Our brand new digital lab is live. Here is how we built it.",
+      "link": "#"
+    }
+  ]
+}

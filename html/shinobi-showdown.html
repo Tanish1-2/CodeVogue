@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shinobi Showdown | CodeVogue Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #0a0000; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+        .back-btn { position: absolute; top: 30px; left: 40px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; transition: color 0.3s; }
+        .back-btn:hover { color: #ef4444; }
+        .title { font-family: 'Syne', sans-serif; font-size: 3rem; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(239, 68, 68, 0.4); margin-bottom: 5px; text-align: center; }
+        .score-board { font-size: 1.2rem; letter-spacing: 2px; color: #8a8a93; text-align: center; margin-bottom: 20px;}
+        #scoreValue { color: #ef4444; font-weight: 700; font-size: 1.5rem; }
+        canvas { background: radial-gradient(circle at center, #2e0505, #000); border: 2px solid rgba(239, 68, 68, 0.3); border-radius: 12px; box-shadow: 0 0 40px rgba(239, 68, 68, 0.15); }
+        .controls { margin-top: 20px; color: #8a8a93; font-size: 0.9rem; letter-spacing: 1px; }
+        .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; }
+        #gameOverScreen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 5, 5, 0.95); border: 1px solid #ef4444; padding: 40px 60px; border-radius: 16px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.5); display: none; flex-direction: column; gap: 20px; }
+        #gameOverScreen h2 { color: #ef4444; font-family: 'Syne', sans-serif; font-size: 3rem; }
+        .restart-btn { background: transparent; color: #fff; border: 1px solid #ef4444; padding: 15px 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.3s; }
+        .restart-btn:hover { background: #ef4444; color: #000; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+    </style>
+</head>
+<body>
+    <a href="lab.html" class="back-btn">← BACK TO LAB</a>
+    <div>
+        <h1 class="title">SHINOBI SHOWDOWN</h1>
+        <div class="score-board">SURVIVED: <span id="scoreValue">0</span>s</div>
+    </div>
+    <canvas id="gameCanvas" width="500" height="600"></canvas>
+    <div class="controls">Press <span class="key">A</span> / <span class="key">D</span> or <span class="key">LEFT</span> / <span class="key">RIGHT</span> to dodge</div>
+    
+    <div id="gameOverScreen">
+        <h2>CRITICAL HIT</h2>
+        <p>Your defenses were broken.</p>
+        <button class="restart-btn" onclick="resetGame()">REVIVE</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const scoreEl = document.getElementById("scoreValue");
+        
+        let player, kunais, score, gameSpeed, isGameOver, animationId, frames;
+        let keys = { left: false, right: false };
+
+        function initGame() {
+            player = { x: 225, y: 530, width: 40, height: 40, speed: 7 };
+            kunais = [];
+            score = 0;
+            frames = 0;
+            gameSpeed = 4;
+            isGameOver = false;
+            document.getElementById("gameOverScreen").style.display = "none";
+            update();
+        }
+
+        function update() {
+            if (isGameOver) return;
+            frames++;
+            
+            // Move Player
+            if (keys.left && player.x > 0) player.x -= player.speed;
+            if (keys.right && player.x + player.width < canvas.width) player.x += player.speed;
+
+            // Spawn Kunai (falling red spikes)
+            if (frames % 20 === 0) { // Spawns frequently
+                let size = 15 + Math.random() * 20;
+                kunais.push({ x: Math.random() * (canvas.width - size), y: -50, width: 8, height: size * 2, speed: gameSpeed + Math.random() * 3 });
+            }
+
+            // Move & Remove Kunai
+            for (let i = kunais.length - 1; i >= 0; i--) {
+                kunais[i].y += kunais[i].speed;
+                
+                // Collision Detection
+                if (player.x < kunais[i].x + kunais[i].width &&
+                    player.x + player.width > kunais[i].x &&
+                    player.y < kunais[i].y + kunais[i].height &&
+                    player.y + player.height > kunais[i].y) {
+                    isGameOver = true;
+                }
+
+                if (kunais[i].y > canvas.height) {
+                    kunais.splice(i, 1);
+                }
+            }
+
+            // Time Score
+            if (frames % 60 === 0) {
+                score++;
+                scoreEl.innerText = score;
+                if(score % 10 === 0) gameSpeed += 1; // Increase difficulty
+            }
+            
+            draw();
+            if (!isGameOver) {
+                animationId = requestAnimationFrame(update);
+            } else {
+                document.getElementById("gameOverScreen").style.display = "flex";
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Player (Shinobi Box)
+            ctx.fillStyle = "#ef4444";
+            ctx.shadowBlur = 20; ctx.shadowColor = "#ef4444";
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            
+            // Draw Eyes on Player
+            ctx.fillStyle = "#fff";
+            ctx.shadowBlur = 0;
+            ctx.fillRect(player.x + 8, player.y + 10, 8, 8);
+            ctx.fillRect(player.x + 24, player.y + 10, 8, 8);
+
+            // Draw Kunai
+            ctx.fillStyle = "#f4f4f5";
+            ctx.shadowBlur = 10; ctx.shadowColor = "#fff";
+            kunais.forEach(k => {
+                ctx.fillRect(k.x, k.y, k.width, k.height);
+            });
+            ctx.shadowBlur = 0;
+        }
+
+        function resetGame() {
+            cancelAnimationFrame(animationId);
+            initGame();
+        }
+
+        document.addEventListener("keydown", (e) => {
+            if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true;
+            if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = true;
+        });
+
+        document.addEventListener("keyup", (e) => {
+            if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
+            if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
+        });
+
+        initGame();
+    </script>
+</body>
+</html>

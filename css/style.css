@@ -86,3 +86,59 @@ footer { padding: 150px 4rem 4rem; text-align: center; overflow: hidden; }
 .reveal.active { opacity: 1; transform: translateY(0); }
 
 @media (max-width: 900px) { nav { padding: 1.5rem 2rem; } .container { padding: 0 2rem; } .about-grid { grid-template-columns: 1fr; gap: 30px; } .project-row { flex-direction: column; align-items: flex-start; gap: 20px; padding: 2.5rem 0; } .project-meta { text-align: left; align-items: flex-start; } .project-row:hover { padding-left: 1rem; padding-right: 1rem; } .footer-cta { -webkit-text-stroke: 0px; color: var(--text-main); } }
+
+/* --- NEW: Page Transitions --- */
+body {
+    opacity: 0;
+    animation: fadeInPage 0.8s ease forwards;
+}
+body.fade-out {
+    opacity: 0 !important;
+    transition: opacity 0.5s ease;
+}
+@keyframes fadeInPage {
+    to { opacity: 1; }
+}
+
+/* --- NEW: Form Styles --- */
+.contact-form {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.input-group input, .input-group textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.2rem;
+    padding: 15px 0;
+    outline: none;
+    transition: var(--transition-smooth);
+}
+.input-group input:focus, .input-group textarea:focus {
+    border-bottom: 1px solid var(--accent-glow);
+}
+.submit-btn {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 20px 40px;
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: none;
+    transition: var(--transition-smooth);
+    align-self: flex-start;
+    text-decoration: none;
+    display: inline-block;
+}
+.submit-btn:hover {
+    background: var(--text-main);
+    color: var(--bg-deep);
+}

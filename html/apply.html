@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insights | CodeVogue</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Apply | CodeVogue</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -20,26 +17,36 @@
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
             <li><a href="lab.html" class="magnetic hover-target">Lab</a></li>
-            <li><a href="insights.html" class="magnetic hover-target" style="color: var(--accent-glow);">Insights</a></li>
+            <li><a href="insights.html" class="magnetic hover-target">Insights</a></li>
             <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
         </ul>
     </nav>
 
     <main class="container" style="padding-top: 220px; padding-bottom: 100px;">
-        <p class="hero-sub reveal text-target">OUR JOURNAL</p>
-        <h1 class="reveal text-target" style="font-size: clamp(3.5rem, 8vw, 8rem); margin-bottom: 2rem; line-height: 0.9;">INSIGHTS</h1>
-        <p class="hero-desc reveal text-target" style="margin-top: 0;">Thoughts on design, engineering, and the future of digital experiences.</p>
+        <p class="hero-sub reveal text-target">JOIN THE COLLECTIVE</p>
+        <h1 class="reveal text-target" style="font-size: clamp(3rem, 7vw, 7rem); margin-bottom: 1rem;">APPLY NOW</h1>
+        
+        <div class="reveal" style="background: rgba(189, 82, 235, 0.05); border-left: 3px solid var(--accent-glow); padding: 20px; margin-bottom: 3rem; max-width: 800px;">
+            <p class="text-target" style="color: #fff; font-weight: 600; font-size: 1.1rem; line-height: 1.6;">
+                CodeVogue is a part-time company, built purely for the passion of creating digital excellence, with absolutely no intentions of making money.
+            </p>
+        </div>
 
-        <div id="blog-container" class="insights-grid"></div>
+        <p class="hero-desc reveal text-target" style="margin-top: 0; margin-bottom: 3rem; max-width: 600px;">
+            If you align with our vision of delivering pure, aesthetically flawless software, we invite you to join our lab.
+        </p>
+        
+        <div class="reveal">
+            <!-- Replace # with your actual Google Form Link -->
+            <a href="#" target="_blank" class="submit-btn magnetic hover-target">OPEN APPLICATION FORM ↗</a>
+        </div>
     </main>
 
     <footer>
-        <p class="section-label reveal text-target" style="margin-bottom: 30px;">READY TO BUILD?</p>
-        <a href="contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none;">LET'S TALK</a>
-        <div class="footer-bottom reveal" style="margin-top: 4rem;">
+        <div class="footer-bottom reveal" style="border-top: none;">
             <p class="text-target">&copy; 2026 CodeVogue.</p>
             <div style="display: flex; gap: 20px;">
-                <a href="apply.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Apply</a>
+                <a href="apply.html" class="hover-target" style="color: var(--accent-glow); text-decoration: none;">Apply</a>
                 <a href="terms.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Terms & Policy</a>
             </div>
             <p class="text-target">Sagar, Madhya Pradesh, IN</p>
@@ -47,14 +54,5 @@
     </footer>
 
     <script src="../js/script.js"></script>
-    <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
-          }
-        });
-      }
-    </script>
 </body>
 </html>

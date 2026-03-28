@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth > 768) { initCursor(); }
     initMagneticElements();
     
+    // Initialize Page Transitions
+    initPageTransitions();
+    
     // We load blogs first, then initialize the scroll reveal animations
     loadBlogs().then(() => {
         initScrollReveal();
@@ -102,5 +105,23 @@ function initScrollReveal() {
     document.querySelectorAll('.reveal').forEach((el, index) => {
         el.style.transitionDelay = `${index * 0.05}s`;
         observer.observe(el);
+    });
+}
+
+function initPageTransitions() {
+    document.querySelectorAll('a').forEach(link => {
+        // Only animate internal links, ignore links meant to open in a new tab or mailto links
+        if (link.hostname === window.location.hostname && link.target !== "_blank" && !link.href.includes('mailto:')) {
+            link.addEventListener('click', e => {
+                e.preventDefault(); 
+                const targetUrl = link.href;
+                
+                document.body.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    window.location.href = targetUrl;
+                }, 500); 
+            });
+        }
     });
 }

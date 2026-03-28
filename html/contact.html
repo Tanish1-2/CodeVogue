@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insights | CodeVogue</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>Contact | CodeVogue</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -20,23 +17,31 @@
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
             <li><a href="lab.html" class="magnetic hover-target">Lab</a></li>
-            <li><a href="insights.html" class="magnetic hover-target" style="color: var(--accent-glow);">Insights</a></li>
-            <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
+            <li><a href="insights.html" class="magnetic hover-target">Insights</a></li>
+            <li><a href="contact.html" class="magnetic hover-target" style="color: var(--accent-glow);">Contact</a></li>
         </ul>
     </nav>
 
     <main class="container" style="padding-top: 220px; padding-bottom: 100px;">
-        <p class="hero-sub reveal text-target">OUR JOURNAL</p>
-        <h1 class="reveal text-target" style="font-size: clamp(3.5rem, 8vw, 8rem); margin-bottom: 2rem; line-height: 0.9;">INSIGHTS</h1>
-        <p class="hero-desc reveal text-target" style="margin-top: 0;">Thoughts on design, engineering, and the future of digital experiences.</p>
-
-        <div id="blog-container" class="insights-grid"></div>
+        <p class="hero-sub reveal text-target">START A CONVERSATION</p>
+        <h1 class="reveal text-target" style="font-size: clamp(3rem, 7vw, 7rem); margin-bottom: 3rem;">LET'S TALK</h1>
+        
+        <form name="contact" method="POST" data-netlify="true" class="contact-form reveal">
+            <div class="input-group">
+                <input type="text" name="name" required placeholder="Your Name" class="hover-target">
+            </div>
+            <div class="input-group">
+                <input type="email" name="email" required placeholder="Email Address" class="hover-target">
+            </div>
+            <div class="input-group">
+                <textarea name="message" rows="4" required placeholder="Tell me about your project..." class="hover-target"></textarea>
+            </div>
+            <button type="submit" class="submit-btn hover-target magnetic">SEND MESSAGE</button>
+        </form>
     </main>
-
+    
     <footer>
-        <p class="section-label reveal text-target" style="margin-bottom: 30px;">READY TO BUILD?</p>
-        <a href="contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none;">LET'S TALK</a>
-        <div class="footer-bottom reveal" style="margin-top: 4rem;">
+        <div class="footer-bottom reveal" style="border-top: none;">
             <p class="text-target">&copy; 2026 CodeVogue.</p>
             <div style="display: flex; gap: 20px;">
                 <a href="apply.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Apply</a>
@@ -47,14 +52,5 @@
     </footer>
 
     <script src="../js/script.js"></script>
-    <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
-          }
-        });
-      }
-    </script>
 </body>
 </html>

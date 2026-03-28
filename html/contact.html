@@ -26,8 +26,9 @@
         <p class="hero-sub reveal text-target">START A CONVERSATION</p>
         <h1 class="reveal text-target" style="font-size: clamp(3rem, 7vw, 7rem); margin-bottom: 3rem;">LET'S TALK</h1>
         
-        <!-- We added id="contactForm" and removed the action attribute -->
-        <form id="contactForm" name="contact" method="POST" data-netlify="true" class="contact-form reveal">
+        <!-- Action attribute is REQUIRED for Netlify to register the form in the dashboard -->
+        <form id="contactForm" name="contact" method="POST" data-netlify="true" action="/index.html" class="contact-form reveal">
+            <!-- Hidden input guarantees the data gets routed correctly -->
             <input type="hidden" name="form-name" value="contact" />
             
             <div class="input-group">
@@ -59,19 +60,18 @@
     <!-- AJAX Form Submission Script -->
     <script>
       document.querySelector("#contactForm").addEventListener("submit", function(e) {
-        e.preventDefault(); // Stop the default 404-causing redirect
+        e.preventDefault(); 
         
         let myForm = document.getElementById("contactForm");
         let formData = new FormData(myForm);
         
-        // Send the data to Netlify silently in the background
+        // Send data directly to the root for Netlify to process
         fetch("/", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams(formData).toString(),
         })
         .then(() => {
-          // If successful, change button text and redirect after 1 second
           const btn = myForm.querySelector('button');
           btn.innerHTML = "MESSAGE SENT!";
           btn.style.color = "var(--accent-glow)";

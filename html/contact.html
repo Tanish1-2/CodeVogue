@@ -26,11 +26,8 @@
         <p class="hero-sub reveal text-target">START A CONVERSATION</p>
         <h1 class="reveal text-target" style="font-size: clamp(3rem, 7vw, 7rem); margin-bottom: 3rem;">LET'S TALK</h1>
         
-        <!-- Action attribute is REQUIRED for Netlify to register the form in the dashboard -->
-        <form id="contactForm" name="contact" method="POST" data-netlify="true" action="/index.html" class="contact-form reveal">
-            <!-- Hidden input guarantees the data gets routed correctly -->
-            <input type="hidden" name="form-name" value="contact" />
-            
+        <!-- 🔥 Formspree Integration (No Netlify needed!) -->
+        <form id="contactForm" action="https://formspree.io/f/xdkjjvoe" method="POST" class="contact-form reveal">
             <div class="input-group">
                 <input type="text" name="name" required placeholder="Your Name" class="hover-target">
             </div>
@@ -56,31 +53,38 @@
     </footer>
 
     <script src="../js/script.js"></script>
-    
-    <!-- AJAX Form Submission Script -->
+
+    <!-- JS to handle smooth redirect after Formspree sends the email -->
     <script>
-      document.querySelector("#contactForm").addEventListener("submit", function(e) {
-        e.preventDefault(); 
+      document.getElementById("contactForm").addEventListener("submit", async function(event) {
+        event.preventDefault(); // Stop standard redirect to Formspree page
         
-        let myForm = document.getElementById("contactForm");
-        let formData = new FormData(myForm);
+        var form = event.target;
+        var data = new FormData(form);
+        var btn = form.querySelector('button');
         
-        // Send data directly to the root for Netlify to process
-        fetch("/", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams(formData).toString(),
-        })
-        .then(() => {
-          const btn = myForm.querySelector('button');
-          btn.innerHTML = "MESSAGE SENT!";
-          btn.style.color = "var(--accent-glow)";
-          
-          setTimeout(() => {
-              window.location.href = "../index.html"; 
-          }, 1000);
-        })
-        .catch((error) => alert("Error sending message. Please try again."));
+        btn.innerHTML = "SENDING...";
+
+        fetch(form.action, {
+          method: form.method,
+          body: data,
+          headers: {
+            'Accept': 'application/json'
+          }
+        }).then(response => {
+          if (response.ok) {
+            btn.innerHTML = "MESSAGE SENT!";
+            btn.style.color = "var(--accent-glow)";
+            // Redirect to home page after 1.5 seconds
+            setTimeout(() => {
+                window.location.href = "../index.html"; 
+            }, 1500);
+          } else {
+            btn.innerHTML = "ERROR. TRY AGAIN.";
+          }
+        }).catch(error => {
+            btn.innerHTML = "ERROR. TRY AGAIN.";
+        });
       });
     </script>
 </body>

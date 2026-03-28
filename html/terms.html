@@ -13,13 +13,16 @@
 
     <nav>
         <div class="logo magnetic hover-target">CODE<span>VOGUE</span></div>
-        <ul class="nav-links">
+        <ul class="nav-links" id="navLinks">
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
             <li><a href="lab.html" class="magnetic hover-target">Lab</a></li>
             <li><a href="insights.html" class="magnetic hover-target">Insights</a></li>
             <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
         </ul>
+        <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
 
     <main class="container" style="padding-top: 220px; padding-bottom: 100px; max-width: 800px;">
@@ -31,24 +34,50 @@
             <p class="text-target" style="margin-bottom: 2rem;">CodeVogue operates exclusively as a part-time, non-profit digital lab. All projects, experiments, and collaborations are undertaken for educational purposes, portfolio building, and passion for web development. We do not operate for financial gain.</p>
 
             <h3 style="color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">2. Intellectual Property</h3>
-            <p class="text-target" style="margin-bottom: 2rem;">The design, code, and content on this website are the intellectual property of CodeVogue and Tanish Nandanwar. Certain projects (e.g., School Portals) belong to their respective institutions. Do not duplicate or distribute without permission.</p>
+            <p class="text-target" style="margin-bottom: 2rem;">The design, code, and content on this website are the intellectual property of CodeVogue and Tanish Nandanwar. Certain projects belong to their respective institutions. Do not duplicate or distribute without permission.</p>
 
             <h3 style="color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif;">3. Privacy Policy</h3>
             <p class="text-target" style="margin-bottom: 2rem;">Any data submitted through our contact forms or application links is kept strictly confidential. We only use this information to respond to your inquiries and never share it with third parties.</p>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-bottom reveal" style="border-top: none;">
-            <p class="text-target">&copy; 2026 CodeVogue.</p>
-            <div style="display: flex; gap: 20px;">
-                <a href="apply.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Apply</a>
-                <a href="terms.html" class="hover-target" style="color: var(--accent-glow); text-decoration: none;">Terms & Policy</a>
+    <footer class="main-footer">
+        <div class="footer-grid reveal">
+            <div class="footer-brand">
+                <h2>CODE<span>VOGUE</span></h2>
+                <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
-            <p class="text-target">Sagar, Madhya Pradesh, IN</p>
+            <div class="footer-links">
+                <h4>EXPLORE</h4>
+                <ul>
+                    <li><a href="projects.html" class="hover-target">Our Work</a></li>
+                    <li><a href="lab.html" class="hover-target">The Lab</a></li>
+                    <li><a href="insights.html" class="hover-target">Insights Journal</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>CONNECT</h4>
+                <ul>
+                    <li><a href="contact.html" class="hover-target">Contact Us</a></li>
+                    <li><a href="apply.html" class="hover-target">Join the Lab</a></li>
+                    <li><a href="terms.html" class="hover-target" style="color: var(--accent-glow);">Terms & Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom-bar reveal">
+            <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
+            <div class="location">Sagar, Madhya Pradesh, IN</div>
         </div>
     </footer>
 
     <script src="../js/script.js"></script>
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+        if(hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('active'); navLinks.classList.toggle('active'); });
+            navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); navLinks.classList.remove('active'); }); });
+        }
+    </script>
 </body>
 </html>

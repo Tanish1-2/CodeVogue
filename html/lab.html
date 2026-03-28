@@ -12,28 +12,20 @@
         .game-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%); opacity: 0; transition: opacity 0.5s ease; pointer-events: none; z-index: 0; }
         .game-card:hover { transform: translateY(-10px) scale(1.02); border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6); }
         .game-card:hover::before { opacity: 1; }
-
         .game-thumb { width: 100%; height: 180px; border-radius: 12px; margin-bottom: 25px; position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 1; }
-        
         .thumb-jumper { background: linear-gradient(to bottom, #020617, #082f49); }
         .thumb-jumper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(14, 165, 233, 0.2) 20px, rgba(14, 165, 233, 0.2) 21px), repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(14, 165, 233, 0.2) 10px, rgba(14, 165, 233, 0.2) 11px); transform: perspective(200px) rotateX(60deg); }
         .jumper-cube { position: absolute; bottom: 30%; left: 20%; width: 20px; height: 20px; background: #0ea5e9; box-shadow: 0 0 15px #0ea5e9; border-radius: 4px; }
-
         .thumb-shinobi { background: radial-gradient(circle at center, #450a0a, #000); }
         .thumb-shinobi::before { content: ''; position: absolute; top: 50%; left: -20%; width: 140%; height: 2px; background: #ef4444; transform: rotate(-15deg); box-shadow: 0 0 20px #ef4444, 0 0 40px #ef4444; }
-
         .thumb-snake { background: #000; background-image: radial-gradient(rgba(34, 197, 94, 0.15) 1px, transparent 1px); background-size: 15px 15px; }
         .snake-body { position: absolute; top: 40%; left: 30%; width: 60px; height: 12px; background: #22c55e; box-shadow: 0 0 15px #22c55e; border-radius: 6px; }
         .snake-apple { position: absolute; top: 40%; right: 25%; width: 12px; height: 12px; background: #ef4444; box-shadow: 0 0 15px #ef4444; border-radius: 50%; }
-
         .game-title { font-size: 2.2rem; margin-bottom: 10px; font-family: 'Syne', sans-serif; color: #fff; position: relative; z-index: 1; }
         .game-desc { color: var(--text-muted); line-height: 1.6; margin-bottom: 25px; font-size: 0.95rem; flex-grow: 1; position: relative; z-index: 1; }
-
         .tech-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; position: relative; z-index: 1; }
         .tech-tags span { background: rgba(255, 255, 255, 0.05); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; letter-spacing: 1px; color: #ccc; text-transform: uppercase; }
-
         .play-btn { background: transparent; color: var(--text-main); border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px; text-align: center; font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: 3px; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; cursor: pointer; position: relative; z-index: 10; }
-        
         .btn-jumper:hover { background: #0ea5e9; color: #000; border-color: #0ea5e9; box-shadow: 0 0 20px rgba(14, 165, 233, 0.4); }
         .btn-shinobi:hover { background: #ef4444; color: #000; border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
         .btn-snake:hover { background: #22c55e; color: #000; border-color: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
@@ -45,13 +37,16 @@
 
     <nav>
         <div class="logo magnetic hover-target">CODE<span>VOGUE</span></div>
-        <ul class="nav-links">
+        <ul class="nav-links" id="navLinks">
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
             <li><a href="lab.html" class="magnetic hover-target" style="color: var(--accent-glow);">Lab</a></li>
             <li><a href="insights.html" class="magnetic hover-target">Insights</a></li>
             <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
         </ul>
+        <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
 
     <main class="container" style="padding-top: 220px; padding-bottom: 100px;">
@@ -86,16 +81,43 @@
         </div>
     </main>
 
-    <footer>
-        <div class="footer-bottom reveal" style="border-top: none;">
-            <p class="text-target">&copy; 2026 CodeVogue.</p>
-            <div style="display: flex; gap: 20px;">
-                <a href="apply.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Apply</a>
-                <a href="terms.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Terms & Policy</a>
+    <footer class="main-footer">
+        <div class="footer-grid reveal">
+            <div class="footer-brand">
+                <h2>CODE<span>VOGUE</span></h2>
+                <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
-            <p class="text-target">Sagar, Madhya Pradesh, IN</p>
+            <div class="footer-links">
+                <h4>EXPLORE</h4>
+                <ul>
+                    <li><a href="projects.html" class="hover-target">Our Work</a></li>
+                    <li><a href="lab.html" class="hover-target">The Lab</a></li>
+                    <li><a href="insights.html" class="hover-target">Insights Journal</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>CONNECT</h4>
+                <ul>
+                    <li><a href="contact.html" class="hover-target">Contact Us</a></li>
+                    <li><a href="apply.html" class="hover-target">Join the Lab</a></li>
+                    <li><a href="terms.html" class="hover-target">Terms & Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom-bar reveal">
+            <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
+            <div class="location">Sagar, Madhya Pradesh, IN</div>
         </div>
     </footer>
+
     <script src="../js/script.js"></script>
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+        if(hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('active'); navLinks.classList.toggle('active'); });
+            navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); navLinks.classList.remove('active'); }); });
+        }
+    </script>
 </body>
 </html>

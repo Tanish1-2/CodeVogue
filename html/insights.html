@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Insights | CodeVogue</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -16,13 +13,16 @@
 
     <nav>
         <div class="logo magnetic hover-target">CODE<span>VOGUE</span></div>
-        <ul class="nav-links">
+        <ul class="nav-links" id="navLinks">
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
             <li><a href="lab.html" class="magnetic hover-target">Lab</a></li>
             <li><a href="insights.html" class="magnetic hover-target" style="color: var(--accent-glow);">Insights</a></li>
             <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
         </ul>
+        <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
 
     <main class="container" style="padding-top: 220px; padding-bottom: 100px;">
@@ -33,28 +33,43 @@
         <div id="blog-container" class="insights-grid"></div>
     </main>
 
-    <footer>
-        <p class="section-label reveal text-target" style="margin-bottom: 30px;">READY TO BUILD?</p>
-        <a href="contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none;">LET'S TALK</a>
-        <div class="footer-bottom reveal" style="margin-top: 4rem;">
-            <p class="text-target">&copy; 2026 CodeVogue.</p>
-            <div style="display: flex; gap: 20px;">
-                <a href="apply.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Apply</a>
-                <a href="terms.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Terms & Policy</a>
+    <footer class="main-footer">
+        <div class="footer-grid reveal">
+            <div class="footer-brand">
+                <h2>CODE<span>VOGUE</span></h2>
+                <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
-            <p class="text-target">Sagar, Madhya Pradesh, IN</p>
+            <div class="footer-links">
+                <h4>EXPLORE</h4>
+                <ul>
+                    <li><a href="projects.html" class="hover-target">Our Work</a></li>
+                    <li><a href="lab.html" class="hover-target">The Lab</a></li>
+                    <li><a href="insights.html" class="hover-target">Insights Journal</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>CONNECT</h4>
+                <ul>
+                    <li><a href="contact.html" class="hover-target">Contact Us</a></li>
+                    <li><a href="apply.html" class="hover-target">Join the Lab</a></li>
+                    <li><a href="terms.html" class="hover-target">Terms & Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom-bar reveal">
+            <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
+            <div class="location">Sagar, Madhya Pradesh, IN</div>
         </div>
     </footer>
 
     <script src="../js/script.js"></script>
     <script>
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on("init", user => {
-          if (!user) {
-            window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
-          }
-        });
-      }
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+        if(hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('active'); navLinks.classList.toggle('active'); });
+            navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); navLinks.classList.remove('active'); }); });
+        }
     </script>
 </body>
 </html>

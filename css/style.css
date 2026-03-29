@@ -179,3 +179,46 @@ body.fade-out {
 
 @media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; } .footer-brand { grid-column: 1 / -1; } .footer-bottom-bar { flex-direction: column; gap: 20px; text-align: center; } .main-footer{ padding: 60px 2rem 2rem; } }
 @media (max-width: 500px) { .footer-grid { grid-template-columns: 1fr; } }
+
+/* =========================================
+   🚀 CYBERPUNK PRELOADER
+========================================= */
+#preloader {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    background: #050507; z-index: 99999;
+    display: flex; justify-content: center; align-items: center;
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.preloader-content { display: flex; flex-direction: column; gap: 15px; width: 250px; }
+.preloader-text { font-family: monospace; color: var(--accent-glow); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; animation: blink 1s infinite alternate; }
+.preloader-bar { width: 100%; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
+.preloader-progress { width: 0%; height: 100%; background: var(--accent-glow); animation: loadBar 1s ease-in-out forwards; }
+@keyframes loadBar { 0% { width: 0%; } 100% { width: 100%; } }
+@keyframes blink { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 10px var(--accent-glow); } }
+.preloader-hide { transform: translateY(-100%); }
+
+/* =========================================
+   ⚡ CAPABILITIES GRID (HOMEPAGE)
+========================================= */
+.capabilities-section { padding: 100px 0; border-top: 1px solid var(--border-color); }
+.cap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 40px; }
+.cap-card { padding: 40px; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(255,255,255,0.01); transition: all 0.4s ease; position: relative; }
+.cap-card:hover { border-color: var(--accent-glow); transform: translateY(-10px); background: rgba(189,82,235,0.05); }
+.cap-icon { font-size: 2rem; margin-bottom: 20px; color: var(--accent-glow); font-family: monospace; }
+.cap-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 15px; color: #fff; }
+.cap-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
+
+/* =========================================
+   🛑 404 GLITCH EFFECT
+========================================= */
+.glitch-wrapper { text-align: center; position: relative; padding: 10vh 0; }
+.glitch-text { font-size: clamp(5rem, 15vw, 12rem); font-family: 'Syne', sans-serif; font-weight: 800; color: #fff; line-height: 1; margin: 0; position: relative; animation: glitch 1s infinite; }
+@keyframes glitch {
+    0% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
+    14% { text-shadow: 0.05em 0 0 rgba(255,0,0,0.75), -0.05em -0.025em 0 rgba(0,255,0,0.75), -0.025em 0.05em 0 rgba(0,0,255,0.75); }
+    15% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
+    49% { text-shadow: -0.05em -0.025em 0 rgba(255,0,0,0.75), 0.025em 0.025em 0 rgba(0,255,0,0.75), -0.05em -0.05em 0 rgba(0,0,255,0.75); }
+    50% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
+    99% { text-shadow: 0.025em 0.05em 0 rgba(255,0,0,0.75), 0.05em 0 0 rgba(0,255,0,0.75), 0 -0.05em 0 rgba(0,0,255,0.75); }
+    100% { text-shadow: -0.025em 0 0 rgba(255,0,0,0.75), -0.025em -0.025em 0 rgba(0,255,0,0.75), -0.025em -0.05em 0 rgba(0,0,255,0.75); }
+}

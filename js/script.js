@@ -125,3 +125,19 @@ function initPageTransitions() {
         }
     });
 }
+// ==========================================
+// 🚀 CYBERPUNK PRELOADER LOGIC
+// ==========================================
+window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        // Wait 1.2 seconds for the bar to "load", then slide screen up
+        setTimeout(() => {
+            preloader.classList.add('preloader-hide');
+            // Remove completely from DOM after animation finishes
+            setTimeout(() => {
+                preloader.remove();
+            }, 800);
+        }, 1200);
+    }
+});

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Updates | CodeVogue</title>
+    <!-- Glowing Purple Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="ambient-glow"></div>
+    <div class="cursor" aria-hidden="true"><span class="cursor-text"></span></div>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="logo magnetic hover-target">CODE<span style="color: var(--accent-glow); font-weight: 800;">&gt;</span>OGUE</div>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
+            <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
+            <li><a href="lab.html" class="magnetic hover-target">Lab</a></li>
+            <li><a href="updates.html" class="magnetic hover-target" style="color: var(--accent-glow);">Updates</a></li>
+            <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
+        </ul>
+        <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <main class="container" style="padding-top: clamp(120px, 15vw, 180px); padding-bottom: 100px;">
+        <p class="hero-sub reveal text-target">SYSTEM CHANGELOG</p>
+        <h1 class="reveal text-target" style="font-size: clamp(2.5rem, 7vw, 5rem); margin-bottom: 3rem;">PATCH NOTES</h1>
+
+        <!-- TIMELINE CONTAINER -->
+        <div class="timeline-wrapper reveal">
+            
+            <!-- v1.4.1 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content hover-target">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.4.1 <span class="badge badge-minor">MINOR</span></h3>
+                        <span class="version-date">March 29, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0ea5e9;">[FIX]</span> Made the Hacker Terminal Contact Form fully responsive for mobile devices.</li>
+                        <li><span style="color:#eab308;">[TWEAK]</span> Improved UI/UX on the contact form by adding visible input backgrounds and side-by-side flexbox alignment.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.4.0 -->
+            <div class="timeline-item">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.4.0 <span class="badge badge-major">MAJOR</span></h3>
+                        <span class="version-date">March 29, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0f0;">[ADD]</span> Completely redesigned <code>contact.html</code> into a fully functional Hacker Terminal interface.</li>
+                        <li><span style="color:#0f0;">[ADD]</span> Implemented fake "encryption & transmission" animation before sending data to Formspree.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.3.1 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content hover-target">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.3.1 <span class="badge badge-minor">MINOR</span></h3>
+                        <span class="version-date">March 29, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0ea5e9;">[FIX]</span> Reverted custom CSS injection in <code>admin/index.html</code> to fix critical layout breaks in Decap CMS.</li>
+                        <li><span style="color:#eab308;">[TWEAK]</span> Re-registered default site CSS for the CMS preview pane.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.3.0 -->
+            <div class="timeline-item">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.3.0 <span class="badge badge-major">MAJOR</span></h3>
+                        <span class="version-date">March 29, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0f0;">[ADD]</span> Configured Decap CMS <code>config.yml</code> for the Insights/Blogs page.</li>
+                        <li><span style="color:#0f0;">[ADD]</span> Integrated custom CodeVogue logo into the CMS login screen.</li>
+                        <li><span style="color:#eab308;">[TWEAK]</span> Updated CMS list widgets to properly display Blog Titles instead of generic item numbers.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.2.0 -->
+            <div class="timeline-item">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.2.0 <span class="badge badge-major">MAJOR</span></h3>
+                        <span class="version-date">March 29, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0f0;">[ADD]</span> Implemented Dynamic Neural Network background canvas on the homepage.</li>
+                        <li><span style="color:#0f0;">[ADD]</span> Floating particle logic with distance-based laser connections.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.1.2 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content hover-target">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.1.2 <span class="badge badge-minor">MINOR</span></h3>
+                        <span class="version-date">March 29, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0ea5e9;">[FIX]</span> Resolved the "T-T" default Live Server favicon bug.</li>
+                        <li><span style="color:#eab308;">[TWEAK]</span> Injected URL-encoded SVG glowing logo across all HTML files.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.1.1 -->
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content hover-target">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.1.1 <span class="badge badge-minor">MINOR</span></h3>
+                        <span class="version-date">March 28, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0f0;">[ADD]</span> Created secret <code>matrix</code> command to inject HTML5 dropping matrix code.</li>
+                        <li><span style="color:#0f0;">[ADD]</span> Created secret <code>party</code> command for hue-rotate CSS animations.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.1.0 -->
+            <div class="timeline-item">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.1.0 <span class="badge badge-major">MAJOR</span></h3>
+                        <span class="version-date">March 28, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0f0;">[ADD]</span> Hidden Developer Terminal Easter Egg triggered by typing <code>admin</code>.</li>
+                        <li><span style="color:#0f0;">[ADD]</span> Terminal command parser for commands like <code>whoami</code>, <code>hack</code>, and <code>clear</code>.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v1.0.0 -->
+            <div class="timeline-item">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v1.0.0 <span class="badge badge-major">INITIAL RELEASE</span></h3>
+                        <span class="version-date">March 28, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span style="color:#0f0;">[ADD]</span> Core CodeVogue architecture and layout.</li>
+                        <li><span style="color:#0f0;">[ADD]</span> Cyberpunk preloader, custom cursor, ambient glow, infinite marquee, and dynamic Bento Box grid.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <!-- FOOTER -->
+    <footer class="main-footer">
+        <div class="footer-grid reveal">
+            <div class="footer-brand">
+                <h2>CODE<span style="color: var(--accent-glow);">&gt;</span>OGUE</h2>
+                <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences.</p>
+            </div>
+            <div class="footer-links">
+                <h4>EXPLORE</h4>
+                <ul>
+                    <li><a href="projects.html" class="hover-target">Our Work</a></li>
+                    <li><a href="updates.html" class="hover-target" style="color: var(--accent-glow);">Updates</a></li>
+                    <li><a href="insights.html" class="hover-target">Insights Journal</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>CONNECT</h4>
+                <ul>
+                    <li><a href="contact.html" class="hover-target">Contact Us</a></li>
+                    <li><a href="apply.html" class="hover-target">Join the Lab</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom-bar reveal">
+            <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
+            <div class="location">Sagar, Madhya Pradesh, IN</div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+    <script>
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+        if(hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => { 
+                hamburgerBtn.classList.toggle('active'); 
+                navLinks.classList.toggle('active'); 
+            });
+            navLinks.querySelectorAll('a').forEach(link => { 
+                link.addEventListener('click', () => { 
+                    hamburgerBtn.classList.remove('active'); 
+                    navLinks.classList.remove('active'); 
+                }); 
+            });
+        }
+    </script>
+</body>
+</html>

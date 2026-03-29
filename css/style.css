@@ -471,3 +471,153 @@ body.fade-out {
     min-height: 20px;
     line-height: 1.5;
 }
+
+/* ==========================================
+   📜 SYSTEM CHANGELOG / TIMELINE
+   ========================================== */
+.timeline-wrapper {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-left: 20px;
+}
+
+/* The vertical glowing line */
+.timeline-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 24px;
+    height: 100%;
+    width: 2px;
+    background: linear-gradient(to bottom, #BD52EB, #333, #BD52EB);
+    opacity: 0.5;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 40px;
+    padding-left: 40px;
+}
+
+/* The Dots */
+.timeline-dot {
+    position: absolute;
+    left: -4px;
+    top: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #111;
+    border: 2px solid #555;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.dot-major {
+    background: #BD52EB;
+    border-color: #fff;
+    box-shadow: 0 0 10px rgba(189, 82, 235, 0.8);
+}
+
+.timeline-item:hover .timeline-dot {
+    transform: scale(1.3);
+    background: #fff;
+    border-color: #BD52EB;
+}
+
+/* The Content Box */
+.timeline-content {
+    background: #0a0a0c;
+    border: 1px solid #222;
+    border-radius: 8px;
+    padding: 25px;
+    transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+    transform: translateX(10px);
+    border-color: #444;
+    background: #111;
+}
+
+.border-major {
+    border-left: 3px solid #BD52EB;
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #222;
+    padding-bottom: 10px;
+}
+
+.version-title {
+    font-family: 'Fira Code', monospace;
+    font-size: 1.5rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.version-date {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Badges */
+.badge {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
+
+.badge-major {
+    background: rgba(189, 82, 235, 0.2);
+    color: #BD52EB;
+    border: 1px solid #BD52EB;
+}
+
+.badge-minor {
+    background: rgba(85, 85, 85, 0.2);
+    color: #aaa;
+    border: 1px solid #555;
+}
+
+/* Patch List */
+.patch-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.patch-list li {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.05rem;
+    color: #ccc;
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.patch-list code {
+    background: #222;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    color: #BD52EB;
+}
+
+@media (max-width: 600px) {
+    .timeline-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+}

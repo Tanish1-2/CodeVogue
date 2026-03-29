@@ -141,3 +141,24 @@ window.addEventListener('load', () => {
         }, 1200);
     }
 });
+// ==========================================
+// 🖱️ CYBERPUNK CUSTOM CURSOR LOGIC
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    const cursor = document.querySelector('.cursor');
+    
+    if (cursor) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Add 'hovering' class to cursor when mousing over interactive elements
+        const hoverTargets = document.querySelectorAll('a, button, input, .hover-target, .bento-cta, .cap-card');
+
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => cursor.classList.add('hovering'));
+            target.addEventListener('mouseleave', () => cursor.classList.remove('hovering'));
+        });
+    }
+});

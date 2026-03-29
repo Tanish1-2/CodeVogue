@@ -7,140 +7,139 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #0a0000; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .back-btn { position: absolute; top: 30px; left: 40px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; transition: color 0.3s; }
+        body { background-color: #0a0000; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; padding: 10px; }
+        .back-btn { position: absolute; top: 20px; left: 20px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1rem; transition: color 0.3s; z-index: 100;}
         .back-btn:hover { color: #ef4444; }
-        .title { font-family: 'Syne', sans-serif; font-size: 3rem; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(239, 68, 68, 0.4); margin-bottom: 5px; text-align: center; }
-        .score-board { font-size: 1.2rem; letter-spacing: 2px; color: #8a8a93; text-align: center; margin-bottom: 20px;}
+        
+        .header { text-align: center; margin-bottom: 15px; margin-top: 30px; }
+        .title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(239, 68, 68, 0.4); margin-bottom: 5px; line-height: 1;}
+        .score-board { font-size: 1.2rem; letter-spacing: 2px; color: #8a8a93; }
         #scoreValue { color: #ef4444; font-weight: 700; font-size: 1.5rem; }
-        canvas { background: radial-gradient(circle at center, #2e0505, #000); border: 2px solid rgba(239, 68, 68, 0.3); border-radius: 12px; box-shadow: 0 0 40px rgba(239, 68, 68, 0.15); }
-        .controls { margin-top: 20px; color: #8a8a93; font-size: 0.9rem; letter-spacing: 1px; }
-        .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; }
-        #gameOverScreen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(15, 5, 5, 0.95); border: 1px solid #ef4444; padding: 40px 60px; border-radius: 16px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.5); display: none; flex-direction: column; gap: 20px; }
-        #gameOverScreen h2 { color: #ef4444; font-family: 'Syne', sans-serif; font-size: 3rem; }
-        .restart-btn { background: transparent; color: #fff; border: 1px solid #ef4444; padding: 15px 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.3s; }
-        .restart-btn:hover { background: #ef4444; color: #000; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+        
+        .game-wrapper { position: relative; display: flex; justify-content: center; align-items: center; }
+        /* FIXED: Height-based scaling prevents it from cutting off the bottom of the screen */
+        canvas { 
+            background: radial-gradient(circle at center, #2e0505, #000); 
+            border: 2px solid rgba(239, 68, 68, 0.3); 
+            border-radius: 12px; 
+            box-shadow: 0 0 40px rgba(239, 68, 68, 0.15); 
+            height: 60vh; 
+            min-height: 300px;
+            max-height: 600px;
+            aspect-ratio: 5/6; 
+            touch-action: none; 
+        }
+
+        .controls { margin-top: 15px; color: #8a8a93; font-size: 0.85rem; letter-spacing: 1px; text-align: center; }
+        .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; border: 1px solid rgba(255,255,255,0.2); }
+
+        /* OVERLAY SCREENS */
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 5, 5, 0.95); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; border: 1px solid rgba(239, 68, 68, 0.5); z-index: 10; backdrop-filter: blur(5px); }
+        .overlay h2 { color: #ef4444; font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 5vw, 2.5rem); margin-bottom: 10px; }
+        .overlay p { color: #ccc; margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; }
+        .action-btn { background: transparent; color: #fff; border: 1px solid #ef4444; padding: 12px 25px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.3s; letter-spacing: 2px; font-size: 0.9rem; }
+        .action-btn:hover { background: #ef4444; color: #000; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+        
+        #gameOverScreen { display: none; }
     </style>
+        <!-- PASTE THIS EXACT LINE HERE -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <a href="lab.html" class="back-btn">← BACK TO LAB</a>
-    <div>
+    <a href="lab.html" class="back-btn">← BACK</a>
+    
+    <div class="header">
         <h1 class="title">SHINOBI SHOWDOWN</h1>
         <div class="score-board">SURVIVED: <span id="scoreValue">0</span>s</div>
     </div>
-    <canvas id="gameCanvas" width="500" height="600"></canvas>
-    <div class="controls">Press <span class="key">A</span> / <span class="key">D</span> or <span class="key">LEFT</span> / <span class="key">RIGHT</span> to dodge</div>
     
-    <div id="gameOverScreen">
-        <h2>CRITICAL HIT</h2>
-        <p>Your defenses were broken.</p>
-        <button class="restart-btn" onclick="resetGame()">REVIVE</button>
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="500" height="600"></canvas>
+        
+        <div id="startScreen" class="overlay">
+            <h2>SYSTEM READY</h2>
+            <p>Dodge the falling kunai spikes.<br>The longer you survive, the faster they fall.</p>
+            <p><strong>DESKTOP:</strong> Use <span class="key">A</span> & <span class="key">D</span><br><br><strong>MOBILE:</strong> Tap left/right sides.</p>
+            <button class="action-btn" onclick="startGame()">INITIALIZE</button>
+        </div>
+
+        <div id="gameOverScreen" class="overlay">
+            <h2>CRITICAL HIT</h2>
+            <p>Your defenses were broken.</p>
+            <button class="action-btn" onclick="startGame()">REVIVE</button>
+        </div>
     </div>
+    
+    <div class="controls">Press <span class="key">A/D</span> or <span class="key">TAP SIDES</span> to dodge</div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreEl = document.getElementById("scoreValue");
         
-        let player, kunais, score, gameSpeed, isGameOver, animationId, frames;
+        let player, kunais, score, gameSpeed, isGameOver, frames, gameLoopTimeout;
         let keys = { left: false, right: false };
+        const GAME_SPEED_MS = 16; 
 
-        function initGame() {
+        ctx.fillStyle = "#ef4444";
+        ctx.fillRect(225, 530, 40, 40);
+
+        function startGame() {
+            document.getElementById("startScreen").style.display = "none";
+            document.getElementById("gameOverScreen").style.display = "none";
             player = { x: 225, y: 530, width: 40, height: 40, speed: 7 };
             kunais = [];
-            score = 0;
-            frames = 0;
-            gameSpeed = 4;
-            isGameOver = false;
-            document.getElementById("gameOverScreen").style.display = "none";
-            update();
+            score = 0; frames = 0; gameSpeed = 4; isGameOver = false;
+            clearTimeout(gameLoopTimeout);
+            gameLoop();
         }
 
-        function update() {
+        function gameLoop() {
             if (isGameOver) return;
             frames++;
             
-            // Move Player
             if (keys.left && player.x > 0) player.x -= player.speed;
             if (keys.right && player.x + player.width < canvas.width) player.x += player.speed;
 
-            // Spawn Kunai (falling red spikes)
-            if (frames % 20 === 0) { // Spawns frequently
+            if (frames % 20 === 0) { 
                 let size = 15 + Math.random() * 20;
                 kunais.push({ x: Math.random() * (canvas.width - size), y: -50, width: 8, height: size * 2, speed: gameSpeed + Math.random() * 3 });
             }
 
-            // Move & Remove Kunai
             for (let i = kunais.length - 1; i >= 0; i--) {
                 kunais[i].y += kunais[i].speed;
-                
-                // Collision Detection
-                if (player.x < kunais[i].x + kunais[i].width &&
-                    player.x + player.width > kunais[i].x &&
-                    player.y < kunais[i].y + kunais[i].height &&
-                    player.y + player.height > kunais[i].y) {
+                if (player.x < kunais[i].x + kunais[i].width && player.x + player.width > kunais[i].x && player.y < kunais[i].y + kunais[i].height && player.y + player.height > kunais[i].y) {
                     isGameOver = true;
                 }
-
-                if (kunais[i].y > canvas.height) {
-                    kunais.splice(i, 1);
-                }
+                if (kunais[i].y > canvas.height) { kunais.splice(i, 1); }
             }
 
-            // Time Score
-            if (frames % 60 === 0) {
-                score++;
-                scoreEl.innerText = score;
-                if(score % 10 === 0) gameSpeed += 1; // Increase difficulty
-            }
+            if (frames % 60 === 0) { score++; scoreEl.innerText = score; if(score % 10 === 0) gameSpeed += 1; }
             
             draw();
-            if (!isGameOver) {
-                animationId = requestAnimationFrame(update);
-            } else {
-                document.getElementById("gameOverScreen").style.display = "flex";
-            }
+
+            if (!isGameOver) { gameLoopTimeout = setTimeout(gameLoop, GAME_SPEED_MS); } 
+            else { document.getElementById("gameOverScreen").style.display = "flex"; }
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Player (Shinobi Box)
-            ctx.fillStyle = "#ef4444";
-            ctx.shadowBlur = 20; ctx.shadowColor = "#ef4444";
+            ctx.fillStyle = "#ef4444"; ctx.shadowBlur = 20; ctx.shadowColor = "#ef4444";
             ctx.fillRect(player.x, player.y, player.width, player.height);
-            
-            // Draw Eyes on Player
-            ctx.fillStyle = "#fff";
-            ctx.shadowBlur = 0;
-            ctx.fillRect(player.x + 8, player.y + 10, 8, 8);
-            ctx.fillRect(player.x + 24, player.y + 10, 8, 8);
-
-            // Draw Kunai
-            ctx.fillStyle = "#f4f4f5";
-            ctx.shadowBlur = 10; ctx.shadowColor = "#fff";
-            kunais.forEach(k => {
-                ctx.fillRect(k.x, k.y, k.width, k.height);
-            });
+            ctx.fillStyle = "#fff"; ctx.shadowBlur = 0;
+            ctx.fillRect(player.x + 8, player.y + 10, 8, 8); ctx.fillRect(player.x + 24, player.y + 10, 8, 8);
+            ctx.fillStyle = "#f4f4f5"; ctx.shadowBlur = 10; ctx.shadowColor = "#fff";
+            kunais.forEach(k => { ctx.fillRect(k.x, k.y, k.width, k.height); });
             ctx.shadowBlur = 0;
         }
 
-        function resetGame() {
-            cancelAnimationFrame(animationId);
-            initGame();
-        }
-
-        document.addEventListener("keydown", (e) => {
-            if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true;
-            if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = true;
-        });
-
-        document.addEventListener("keyup", (e) => {
-            if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
-            if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
-        });
-
-        initGame();
+        document.addEventListener("keydown", (e) => { if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true; if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = true; });
+        document.addEventListener("keyup", (e) => { if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false; if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = false; });
+        canvas.addEventListener("touchstart", (e) => { e.preventDefault(); const rect = canvas.getBoundingClientRect(); const touchX = e.touches[0].clientX - rect.left; if(touchX < rect.width / 2) { keys.left = true; keys.right = false; } else { keys.right = true; keys.left = false; } });
+        canvas.addEventListener("touchend", (e) => { e.preventDefault(); keys.left = false; keys.right = false; });
     </script>
 </body>
 </html>

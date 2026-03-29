@@ -9,37 +9,52 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: #050507; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; background-image: radial-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px); background-size: 20px 20px; }
         
-        .back-btn { position: absolute; top: 30px; left: 40px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; transition: color 0.3s; }
+        .back-btn { position: absolute; top: 30px; left: 40px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; transition: color 0.3s; z-index: 100; }
         .back-btn:hover { color: #22c55e; }
         
-        .game-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .game-wrapper { display: flex; flex-direction: column; align-items: center; gap: 20px; position: relative; }
         
         .header { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .title { font-family: 'Syne', sans-serif; font-size: 3rem; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(34, 197, 94, 0.4); margin-bottom: 0; line-height: 1; }
+        .title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(34, 197, 94, 0.4); margin-bottom: 0; line-height: 1; }
         
         .stats-bar { display: flex; gap: 30px; align-items: center; }
         .score-board { font-size: 1.2rem; letter-spacing: 2px; color: #8a8a93; }
         #scoreValue { color: #22c55e; font-weight: 700; font-size: 1.5rem; }
         
-        /* 🎛️ New Speed Selector UI */
         .difficulty-selector { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; letter-spacing: 2px; color: #8a8a93; }
         .difficulty-selector select { background: rgba(10, 10, 15, 0.8); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 6px; padding: 5px 10px; font-family: 'Space Grotesk', sans-serif; outline: none; cursor: pointer; letter-spacing: 1px; transition: all 0.3s; }
         .difficulty-selector select:hover { border-color: #4ade80; box-shadow: 0 0 10px rgba(34, 197, 94, 0.2); }
         .difficulty-selector select option { background: #050507; color: #fff; }
 
-        canvas { background: rgba(0, 0, 0, 0.8); border: 2px solid rgba(34, 197, 94, 0.3); border-radius: 12px; box-shadow: 0 0 40px rgba(34, 197, 94, 0.15); }
+        .canvas-container { position: relative; width: 500px; height: 500px; }
+        @media (max-width: 600px) { .canvas-container { width: 350px; height: 350px; } canvas { width: 100%; height: 100%; } }
+
+        canvas { background: rgba(0, 0, 0, 0.8); border: 2px solid rgba(34, 197, 94, 0.3); border-radius: 12px; box-shadow: 0 0 40px rgba(34, 197, 94, 0.15); display: block; }
         
         .controls { display: flex; gap: 20px; color: #8a8a93; font-size: 0.9rem; letter-spacing: 1px; }
-        .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; }
+        .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; border: 1px solid rgba(255,255,255,0.2); }
         
-        #gameOverScreen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(10, 10, 15, 0.95); border: 1px solid #ef4444; padding: 40px 60px; border-radius: 16px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.3); backdrop-filter: blur(10px); display: none; flex-direction: column; gap: 20px; }
-        #gameOverScreen h2 { color: #ef4444; font-family: 'Syne', sans-serif; font-size: 3rem; letter-spacing: 2px; }
-        .restart-btn { background: transparent; color: #fff; border: 1px solid #22c55e; padding: 15px 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: 2px; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; }
-        .restart-btn:hover { background: #22c55e; color: #000; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
+        /* OVERLAYS */
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 15, 0.95); border: 1px solid #22c55e; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; box-shadow: 0 0 50px rgba(34, 197, 94, 0.3); backdrop-filter: blur(10px); z-index: 10; }
+        .overlay h2 { color: #22c55e; font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 2.5rem); letter-spacing: 2px; margin-bottom: 10px; }
+        .overlay p { color: #ccc; margin-bottom: 20px; line-height: 1.6; font-size: 0.95rem; }
+        
+        #gameOverScreen { border-color: #ef4444; box-shadow: 0 0 50px rgba(239, 68, 68, 0.3); display: none; }
+        #gameOverScreen h2 { color: #ef4444; }
+
+        .action-btn { background: transparent; color: #fff; border: 1px solid #22c55e; padding: 12px 25px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: 2px; cursor: pointer; border-radius: 8px; transition: all 0.3s ease; }
+        .action-btn:hover { background: #22c55e; color: #000; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
+        #gameOverScreen .action-btn { border-color: #ef4444; }
+        #gameOverScreen .action-btn:hover { background: #ef4444; color: #000; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
     </style>
+        <!-- PASTE THIS EXACT LINE HERE -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <a href="lab.html" class="back-btn">← BACK TO LAB</a>
+    <a href="lab.html" class="back-btn">← BACK</a>
     
     <div class="game-wrapper">
         <div class="header">
@@ -48,124 +63,113 @@
                 <div class="score-board">SCORE: <span id="scoreValue">0</span></div>
                 <div class="difficulty-selector">
                     <label>SPEED:</label>
-                    <select id="speedSelect" onchange="resetGame()">
-                        <option value="180">Easy (Slow)</option>
+                    <select id="speedSelect">
+                        <option value="180">Easy</option>
                         <option value="120" selected>Normal</option>
-                        <option value="75">Hard (Fast)</option>
+                        <option value="75">Hard</option>
                         <option value="45">Insane</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <canvas id="gameCanvas" width="500" height="500"></canvas>
-        <div class="controls"><span>Use <span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> or <span class="key">ARROWS</span> to navigate</span></div>
-    </div>
+        <div class="canvas-container">
+            <canvas id="gameCanvas" width="500" height="500"></canvas>
+            
+            <!-- START SCREEN -->
+            <div id="startScreen" class="overlay">
+                <h2>SYSTEM READY</h2>
+                <p>Navigate the matrix. Consume the red data packets.<br>Do not hit the walls or your own tail.</p>
+                <p>Use <span class="key">W</span> <span class="key">A</span> <span class="key">S</span> <span class="key">D</span> or <span class="key">ARROWS</span></p>
+                <button class="action-btn" onclick="startGame()">INITIALIZE</button>
+            </div>
 
-    <div id="gameOverScreen">
-        <h2>SYSTEM FAILURE</h2>
-        <p>Your snake collided with the void.</p>
-        <button class="restart-btn" onclick="resetGame()">REBOOT SYSTEM</button>
+            <!-- GAME OVER SCREEN -->
+            <div id="gameOverScreen" class="overlay">
+                <h2>SYSTEM FAILURE</h2>
+                <p>Collision detected in the void.</p>
+                <button class="action-btn" onclick="startGame()">REBOOT SYSTEM</button>
+            </div>
+        </div>
+
+        <div class="controls"><span>Select speed above, then click INITIALIZE</span></div>
     </div>
 
     <script>
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreElement = document.getElementById("scoreValue");
+        const startScreen = document.getElementById("startScreen");
         const gameOverScreen = document.getElementById("gameOverScreen");
         const speedSelect = document.getElementById("speedSelect");
 
         const gridSize = 20; 
-        const tileCount = canvas.width / gridSize;
+        const tileCount = 500 / gridSize; // Base internal resolution is 500
         
-        let snake = []; 
-        let dx = 0; let dy = 0; 
-        let foodX; let foodY; 
-        let score = 0; 
-        let gameLoop; 
-        let gameSpeed;
+        let snake = []; let dx = 0; let dy = 0; 
+        let foodX; let foodY; let score = 0; 
+        let gameLoop; let gameSpeed;
 
-        function initGame() {
-            snake = [{x: 10, y: 10}, {x: 10, y: 11}, {x: 10, y: 12}];
-            dx = 0; dy = -1; // Start moving up
-            score = 0; 
-            scoreElement.innerText = score;
+        // Draw initial static state behind start screen
+        ctx.fillStyle = "#4ade80"; ctx.fillRect(10 * gridSize, 10 * gridSize, gridSize - 2, gridSize - 2);
+
+        function startGame() {
+            startScreen.style.display = "none";
             gameOverScreen.style.display = "none";
-            
-            // Set speed based on dropdown selection
+            snake = [{x: 10, y: 10}, {x: 10, y: 11}, {x: 10, y: 12}];
+            dx = 0; dy = -1; score = 0; 
+            scoreElement.innerText = score;
             gameSpeed = parseInt(speedSelect.value);
-            
             placeFood();
             
             if(gameLoop) clearInterval(gameLoop);
             gameLoop = setInterval(draw, gameSpeed);
+            canvas.focus();
         }
 
         function draw() {
             moveSnake();
             if (checkCollision()) { endGame(); return; }
             
-            // Draw Background
             ctx.fillStyle = "rgba(0, 0, 0, 0.8)"; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Draw Food
-            ctx.fillStyle = "#ef4444"; 
-            ctx.shadowBlur = 20; 
-            ctx.shadowColor = "#ef4444";
-            ctx.beginPath(); 
-            ctx.arc(foodX * gridSize + gridSize/2, foodY * gridSize + gridSize/2, gridSize/2 - 2, 0, Math.PI * 2); 
-            ctx.fill(); 
+            ctx.fillStyle = "#ef4444"; ctx.shadowBlur = 20; ctx.shadowColor = "#ef4444";
+            ctx.beginPath(); ctx.arc(foodX * gridSize + gridSize/2, foodY * gridSize + gridSize/2, gridSize/2 - 2, 0, Math.PI * 2); ctx.fill(); 
             ctx.shadowBlur = 0;
 
-            // Draw Snake
             snake.forEach((segment, index) => {
                 ctx.fillStyle = index === 0 ? "#4ade80" : "#22c55e";
-                ctx.shadowBlur = 15; 
-                ctx.shadowColor = "#22c55e";
+                ctx.shadowBlur = 15; ctx.shadowColor = "#22c55e";
                 ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 2, gridSize - 2);
                 ctx.shadowBlur = 0;
             });
         }
 
         function moveSnake() {
-            // Prevent snake from reversing into itself (dy/dx blocks handle key presses, but not rapid double presses)
             const head = { x: snake[0].x + dx, y: snake[0].y + dy };
             snake.unshift(head);
             
             if (head.x === foodX && head.y === foodY) {
-                score += 10; 
-                scoreElement.innerText = score; 
-                placeFood();
-                
-                // Slight speed up over time (cap it so it doesn't get impossible)
-                const minSpeed = parseInt(speedSelect.value) - 30; // Max speed increase is 30ms from base
+                score += 10; scoreElement.innerText = score; placeFood();
+                const minSpeed = parseInt(speedSelect.value) - 30; 
                 if (gameSpeed > minSpeed) { 
-                    clearInterval(gameLoop); 
-                    gameSpeed -= 1; // Gentle progressive speed-up
+                    clearInterval(gameLoop); gameSpeed -= 1; 
                     gameLoop = setInterval(draw, gameSpeed); 
                 }
-            } else { 
-                snake.pop(); 
-            }
+            } else { snake.pop(); }
         }
 
         function placeFood() {
             foodX = Math.floor(Math.random() * tileCount); 
             foodY = Math.floor(Math.random() * tileCount);
-            snake.forEach(segment => { 
-                if (segment.x === foodX && segment.y === foodY) placeFood(); 
-            });
+            snake.forEach(segment => { if (segment.x === foodX && segment.y === foodY) placeFood(); });
         }
 
         function checkCollision() {
             const head = snake[0];
-            // Wall
             if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
-            // Self
-            for (let i = 1; i < snake.length; i++) { 
-                if (head.x === snake[i].x && head.y === snake[i].y) return true; 
-            }
+            for (let i = 1; i < snake.length; i++) { if (head.x === snake[i].x && head.y === snake[i].y) return true; }
             return false;
         }
 
@@ -173,25 +177,17 @@
             clearInterval(gameLoop); 
             gameOverScreen.style.display = "flex"; 
         }
-        
-        function resetGame() { 
-            initGame(); 
-            canvas.focus(); // Keep focus on game after selecting speed
-        }
 
         document.addEventListener("keydown", (e) => {
-            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].indexOf(e.code) > -1) e.preventDefault();
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].indexOf(e.code) > -1) {
+                if(startScreen.style.display === "none" && gameOverScreen.style.display === "none") e.preventDefault();
+            }
             const key = e.key.toLowerCase();
-            
-            // Prevent 180-degree turns
             if ((key === 'w' || key === 'arrowup') && dy !== 1) { dx = 0; dy = -1; }
             if ((key === 's' || key === 'arrowdown') && dy !== -1) { dx = 0; dy = 1; }
             if ((key === 'a' || key === 'arrowleft') && dx !== 1) { dx = -1; dy = 0; }
             if ((key === 'd' || key === 'arrowright') && dx !== -1) { dx = 1; dy = 0; }
         });
-
-        // Initialize on load
-        initGame();
     </script>
 </body>
 </html>

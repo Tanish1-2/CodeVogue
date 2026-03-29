@@ -4,121 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CodeVogue | Digital Excellence</title>
+    <!-- Glowing Purple Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Required for Admin Login on Netlify -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <style>
-        /* =========================================
-           🚀 CYBERPUNK PRELOADER
-        ========================================= */
-        #preloader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
-            background: #050507; z-index: 99999;
-            display: flex; justify-content: center; align-items: center;
-            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .preloader-content { display: flex; flex-direction: column; gap: 15px; width: 250px; }
-        .preloader-text { font-family: monospace; color: var(--accent-glow); font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; animation: blink 1s infinite alternate; }
-        .preloader-bar { width: 100%; height: 2px; background: rgba(255,255,255,0.1); position: relative; overflow: hidden; }
-        .preloader-progress { width: 0%; height: 100%; background: var(--accent-glow); animation: loadBar 1.2s ease-in-out forwards; }
-        @keyframes loadBar { 0% { width: 0%; } 100% { width: 100%; } }
-        @keyframes blink { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 10px var(--accent-glow); } }
-        .preloader-hide { transform: translateY(-100%); }
-
-        /* =========================================
-           📱 RESPONSIVE HAMBURGER MENU STYLES
-        ========================================= */
-        .hamburger-btn {
-            display: none;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            z-index: 9999;
-            padding: 10px;
-            position: relative;
-        }
-
-        .hamburger-btn span {
-            display: block;
-            width: 30px;
-            height: 2px;
-            background: #fff;
-            margin: 6px 0;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @media (max-width: 768px) {
-            nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px !important; width: 100%; box-sizing: border-box; }
-            .hamburger-btn { display: block; }
-            .nav-links {
-                position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
-                background: rgba(5, 5, 7, 0.98); backdrop-filter: blur(15px);
-                flex-direction: column; justify-content: center; align-items: center;
-                gap: 40px; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-                z-index: 9998; display: flex !important; margin: 0; padding: 0;
-            }
-            .nav-links.active { right: 0; }
-            .nav-links li { list-style: none; margin: 0; padding: 0; }
-            .nav-links a { font-size: 1.8rem; letter-spacing: 4px; }
-            /* Hamburger Animation to 'X' */
-            .hamburger-btn.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); background: var(--accent-glow); }
-            .hamburger-btn.active span:nth-child(2) { opacity: 0; }
-            .hamburger-btn.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); background: var(--accent-glow); }
-        }
-
-        /* =========================================
-           ⚡ CAPABILITIES GRID (HOMEPAGE)
-        ========================================= */
-        .capabilities-section { padding: 100px 0; border-top: 1px solid var(--border-color); }
-        .cap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 40px; }
-        .cap-card { padding: 40px; border: 1px solid var(--border-color); border-radius: 12px; background: rgba(255,255,255,0.01); transition: all 0.4s ease; position: relative; }
-        .cap-card:hover { border-color: var(--accent-glow); transform: translateY(-10px); background: rgba(189,82,235,0.05); }
-        .cap-icon { font-size: 2rem; margin-bottom: 20px; color: var(--accent-glow); font-family: monospace; }
-        .cap-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 15px; color: #fff; }
-        .cap-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
-
-        /* =========================================
-           🦶 PROPER RESPONSIVE FOOTER STYLES
-        ========================================= */
-        .main-footer {
-            padding: 100px 4rem 4rem;
-            border-top: 1px solid var(--border-color);
-            background: linear-gradient(180deg, transparent 0%, rgba(189,82,235,0.03) 100%);
-            width: 100%; box-sizing: border-box;
-        }
-
-        .footer-grid {
-            display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 60px;
-            max-width: 1400px; margin: 0 auto 60px; text-align: left;
-        }
-
-        .footer-brand h2 { font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 15px; }
-        .footer-brand h2 span { color: var(--accent-glow); }
-        .footer-brand p { color: var(--text-muted); line-height: 1.6; max-width: 400px; }
-        
-        .footer-links h4 { color: #fff; margin-bottom: 25px; font-family: 'Space Grotesk', sans-serif; letter-spacing: 2px; font-size: 0.9rem; }
-        .footer-links ul { list-style: none; padding: 0; margin: 0; }
-        .footer-links ul li { margin-bottom: 15px; }
-        .footer-links ul a { color: var(--text-muted); text-decoration: none; transition: color 0.3s ease; }
-        .footer-links ul a:hover { color: var(--accent-glow); }
-
-        .footer-bottom-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding-top: 30px; border-top: 1px solid var(--border-color);
-            max-width: 1400px; margin: 0 auto; color: var(--text-muted); font-size: 0.85rem;
-        }
-
-        @media (max-width: 900px) {
-            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
-            .footer-brand { grid-column: 1 / -1; }
-            .footer-bottom-bar { flex-direction: column; gap: 20px; text-align: center; }
-            .main-footer { padding: 60px 2rem 2rem; }
-        }
-        @media (max-width: 500px) { .footer-grid { grid-template-columns: 1fr; } }
-    </style>
 </head>
 <body>
 
@@ -130,13 +22,28 @@
         </div>
     </div>
 
+    <!-- 💻 DEVELOPER TERMINAL EASTER EGG -->
+    <div id="dev-terminal">
+        <div class="terminal-header">
+            <span>root@codevogue:~</span>
+            <span class="terminal-close" id="close-terminal">[X]</span>
+        </div>
+        <div class="terminal-body" id="terminal-output">
+            <div>CodeVogue OS v2.0 (Type 'help' for commands)</div>
+            <div class="terminal-input-line">
+                <span>></span>
+                <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false" autofocus>
+            </div>
+        </div>
+    </div>
+
     <div class="ambient-glow"></div>
     <div class="cursor" aria-hidden="true"><span class="cursor-text"></span></div>
 
     <!-- NAVBAR WITH HAMBURGER -->
     <nav>
-        <div class="logo magnetic hover-target">CODE<span>VOGUE</span></div>
-        
+        <!-- Stylized Logo -->
+        <div class="logo magnetic hover-target">CODE<span style="color: var(--accent-glow); font-weight: 800;">&gt;</span>OGUE</div>
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html" class="magnetic hover-target" style="color: var(--accent-glow);">Home</a></li>
             <li><a href="html/projects.html" class="magnetic hover-target">Work</a></li>
@@ -144,11 +51,8 @@
             <li><a href="html/insights.html" class="magnetic hover-target">Insights</a></li>
             <li><a href="html/contact.html" class="magnetic hover-target">Contact</a></li>
         </ul>
-
         <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </button>
     </nav>
 
@@ -159,27 +63,51 @@
             <p class="hero-desc text-target">We engineer high-performance, minimalist digital experiences. Stripping away the noise to build powerful software from Sagar, MP.</p>
         </section>
 
-        <section class="about-section reveal">
-            <div class="about-grid">
-                <div><p class="section-label text-target">THE VISION</p></div>
-                <div>
-                    <h5 class="about-text text-target">Delivering pure, powerful, and aesthetically flawless software for brands that refuse to blend in.</h5>
-                    <div class="founder-tag">
-                        <div>
-                            <p class="text-target" style="color: white; font-weight: 600; font-size: 1.1rem;">Tanish Nandanwar</p>
-                            <p class="text-target" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 5px;">Founder & CEO</p>
-                        </div>
-                        <a href="html/projects.html" class="hover-target magnetic" style="color: var(--accent-glow); text-decoration: none; font-weight: 600; display: inline-block;">Explore Our Work →</a>
+        <!-- ♾️ NEW INFINITE MARQUEE -->
+        <div class="marquee-container reveal">
+            <div class="marquee-content">
+                <span>✦ HTML5</span><span>✦ CSS3</span><span>✦ VANILLA JS</span><span>✦ FIREBASE</span><span>✦ FIGMA</span><span>✦ NETLIFY</span><span>✦ CANVAS API</span><span>✦ UI/UX</span>
+                <span>✦ HTML5</span><span>✦ CSS3</span><span>✦ VANILLA JS</span><span>✦ FIREBASE</span><span>✦ FIGMA</span><span>✦ NETLIFY</span><span>✦ CANVAS API</span><span>✦ UI/UX</span>
+            </div>
+        </div>
+
+        <!-- 🍱 NEW BENTO BOX GRID -->
+        <section class="reveal">
+            <p class="section-label text-target" style="text-align: center;">THE VISION</p>
+            <div class="bento-grid">
+                
+                <div class="bento-box bento-main">
+                    <h3 class="bento-title">Pure Performance.</h3>
+                    <p class="bento-desc" style="font-size: 1.1rem;">Delivering pure, powerful, and aesthetically flawless software for brands that refuse to blend in. We do not just write code; we engineer digital architecture that feels magnetic.</p>
+                </div>
+
+                <div class="bento-box bento-clock">
+                    <div>
+                        <div id="live-clock">00:00:00</div>
+                        <div class="clock-label">LOCAL TIME (IST)</div>
                     </div>
                 </div>
+
+                <div class="bento-box bento-founder">
+                    <h3 class="bento-title">Tanish N.</h3>
+                    <p class="bento-desc">Founder & Lead Engineer</p>
+                    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--accent-glow);">[ SYSTEM ADMIN ]</div>
+                </div>
+
+                <div class="bento-box bento-cta hover-target magnetic" style="cursor: pointer;" onclick="window.location.href='html/projects.html'">
+                    <h3 class="bento-title" style="margin: 0; display: flex; justify-content: space-between; align-items: center;">
+                        Explore Our Work 
+                        <span style="color: var(--accent-glow);">↗</span>
+                    </h3>
+                </div>
+
             </div>
         </section>
 
-        <!-- ⚡ NEW CAPABILITIES GRID -->
+        <!-- ⚡ CAPABILITIES GRID -->
         <section class="capabilities-section reveal">
             <p class="section-label text-target">OUR EXPERTISE</p>
             <h2 class="text-target" style="font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 2rem;">WHAT WE DO</h2>
-            
             <div class="cap-grid">
                 <div class="cap-card hover-target">
                     <div class="cap-icon">{/}</div>
@@ -199,21 +127,19 @@
             </div>
         </section>
 
-        <!-- Keep your giant CTA right above the footer -->
         <section style="padding: 100px 0; text-align: center;">
             <p class="section-label reveal text-target" style="margin-bottom: 30px;">READY TO BUILD?</p>
             <a href="html/contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none;">LET'S TALK</a>
         </section>
     </main>
 
-    <!-- NEW ADVANCED FOOTER -->
+    <!-- FOOTER -->
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
-                <h2>CODE<span>VOGUE</span></h2>
+                <h2>CODE<span style="color: var(--accent-glow);">&gt;</span>OGUE</h2>
                 <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
-            
             <div class="footer-links">
                 <h4>EXPLORE</h4>
                 <ul>
@@ -222,7 +148,6 @@
                     <li><a href="html/insights.html" class="hover-target">Insights Journal</a></li>
                 </ul>
             </div>
-
             <div class="footer-links">
                 <h4>CONNECT</h4>
                 <ul>
@@ -232,61 +157,181 @@
                 </ul>
             </div>
         </div>
-
         <div class="footer-bottom-bar reveal">
-            <div class="copyright">
-                &copy; 2026 CodeVogue. All Rights Reserved.
-            </div>
-            <div class="location">
-                Sagar, Madhya Pradesh, IN
-            </div>
+            <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
+            <div class="location">Sagar, Madhya Pradesh, IN</div>
         </div>
     </footer>
 
     <script src="js/script.js"></script>
-
     <script>
-        // ==========================================
-        // 🚀 CYBERPUNK PRELOADER LOGIC
-        // ==========================================
+        // 🚀 Preloader
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            if (preloader) {
-                setTimeout(() => {
-                    preloader.classList.add('preloader-hide');
-                    setTimeout(() => { preloader.remove(); }, 800);
-                }, 1400); // 1.4 second loading effect
+            if (preloader) { setTimeout(() => { preloader.classList.add('preloader-hide'); setTimeout(() => { preloader.remove(); }, 800); }, 1400); }
+        });
+
+        // 📱 Hamburger Menu
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.getElementById('navLinks');
+        if(hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('active'); navLinks.classList.toggle('active'); });
+            navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); navLinks.classList.remove('active'); }); });
+        }
+
+        // ⏱️ Live Clock
+        function updateClock() {
+            const clockEl = document.getElementById('live-clock');
+            if(clockEl) {
+                const now = new Date();
+                clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+            }
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // ==========================================
+        // 💻 GOATED TERMINAL EASTER EGG LOGIC
+        // ==========================================
+        let keySequence = '';
+        const terminal = document.getElementById('dev-terminal');
+        const termInput = document.getElementById('terminal-input');
+        const termOutput = document.getElementById('terminal-output');
+
+        // Secret Admin Login
+        document.addEventListener('keydown', (e) => {
+            keySequence += e.key.toLowerCase();
+            if (keySequence.length > 5) keySequence = keySequence.slice(-5);
+            if (keySequence === 'admin') {
+                terminal.classList.add('active');
+                setTimeout(() => termInput.focus(), 500);
             }
         });
 
-        // ==========================================
-        // 📱 HAMBURGER MENU LOGIC
-        // ==========================================
-        const hamburgerBtn = document.getElementById('hamburgerBtn');
-        const navLinks = document.getElementById('navLinks');
-        const links = navLinks.querySelectorAll('a');
-
-        hamburgerBtn.addEventListener('click', () => {
-            hamburgerBtn.classList.toggle('active');
-            navLinks.classList.toggle('active');
+        document.getElementById('close-terminal').addEventListener('click', () => {
+            terminal.classList.remove('active');
+            keySequence = ''; 
         });
 
-        // Close menu when clicking a link
-        links.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerBtn.classList.remove('active');
-                navLinks.classList.remove('active');
-            });
-        });
-
-        // Netlify Auth
-        if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("init", user => {
-                if (!user) {
-                    window.netlifyIdentity.on("login", () => { document.location.href = "/admin/"; });
-                }
-            });
+        function printLine(text) {
+            const resLine = document.createElement('div');
+            resLine.innerHTML = text;
+            termOutput.insertBefore(resLine, termInput.parentElement);
+            termOutput.scrollTop = termOutput.scrollHeight;
         }
+
+        function startMatrix() {
+            if(document.getElementById('matrix-canvas')) return;
+            const c = document.createElement('canvas');
+            c.id = 'matrix-canvas';
+            c.style.position = 'fixed'; c.style.top = '0'; c.style.left = '0';
+            c.style.width = '100vw'; c.style.height = '100vh';
+            c.style.zIndex = '9997'; c.style.pointerEvents = 'none';
+            document.body.appendChild(c);
+            
+            const ctx = c.getContext('2d');
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            
+            const letters = '01CODEVOGUE'.split('');
+            const fontSize = 16; const columns = c.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+            
+            setInterval(() => {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px monospace';
+                for(let i = 0; i < drops.length; i++) {
+                    const text = letters[Math.floor(Math.random() * letters.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    if(drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+            }, 33);
+        }
+
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = termInput.value.trim().toLowerCase();
+                printLine(`> <span style="color:#fff">${cmd}</span>`);
+
+                // --- COMMAND LOGIC ---
+                if (cmd === 'help') {
+                    printLine(`
+                    SYSTEM COMMANDS:<br>
+                    - whoami<br>
+                    - contact<br>
+                    - clear<br>
+                    <br>
+                    <span style="color:#0ea5e9;">ARCADE MODULES:</span><br>
+                    - play snake<br>
+                    - play shinobi<br>
+                    - play jumper<br>
+                    <br>
+                    <span style="color:#ef4444;">[SUDO] SECRET COMMANDS:</span><br>
+                    - matrix (Injects HTML5 Canvas Overlay)<br>
+                    - party (Injects Hue-Rotate Keyframes)<br>
+                    - hack (Simulates bypass protocol)<br>
+                    - sudo rm -rf / (Dangerous)<br>
+                    - reboot (Clears all injected protocols)
+                    `);
+                } 
+                else if (cmd === 'whoami') { printLine("USER: Tanish Nandanwar. CLEARANCE: SYSTEM ADMIN. ASPIRING MED STUDENT. FULL-STACK GOD."); } 
+                else if (cmd === 'contact') { printLine("REDIRECTING TO SECURE COMMS..."); setTimeout(() => window.location.href = "html/contact.html", 1000); } 
+                else if (cmd === 'play snake') { printLine("INITIALIZING VOID SNAKE..."); setTimeout(() => window.location.href = "html/void-snake.html", 800); }
+                else if (cmd === 'play shinobi') { printLine("INITIALIZING SHINOBI SHOWDOWN..."); setTimeout(() => window.location.href = "html/shinobi-showdown.html", 800); }
+                else if (cmd === 'play jumper') { printLine("INITIALIZING NEON JUMPER..."); setTimeout(() => window.location.href = "html/neon-jumper.html", 800); }
+                
+                else if (cmd === 'hack') {
+                    printLine("Initiating bypass protocol...");
+                    setTimeout(() => printLine("Bypassing mainframe firewall... [OK]"), 1000);
+                    setTimeout(() => printLine("Decrypting AES-256 hash... [OK]"), 2200);
+                    setTimeout(() => printLine("<span style='color:#0ea5e9'>ACCESS GRANTED. Welcome to the backend.</span>"), 3500);
+                }
+                else if (cmd === 'matrix') { printLine("Wake up, Neo..."); startMatrix(); }
+                else if (cmd === 'party') {
+                    printLine("Initiating Rave Protocol 🕺💃");
+                    
+                    if(!document.getElementById('party-style')) {
+                        const style = document.createElement('style');
+                        style.id = 'party-style';
+                        style.innerHTML = `
+                            @keyframes partyGlow {
+                                0% { color: #ff00ff; text-shadow: 0 0 20px #ff00ff; border-color: #ff00ff; }
+                                25% { color: #00ffff; text-shadow: 0 0 20px #00ffff; border-color: #00ffff; }
+                                50% { color: #00ff00; text-shadow: 0 0 20px #00ff00; border-color: #00ff00; }
+                                75% { color: #ffff00; text-shadow: 0 0 20px #ffff00; border-color: #ffff00; }
+                                100% { color: #ff00ff; text-shadow: 0 0 20px #ff00ff; border-color: #ff00ff; }
+                            }
+                            h1, h2, h3, a, .logo, .ambient-glow, .bento-box:hover {
+                                animation: partyGlow 1s infinite linear !important;
+                                transition: none !important;
+                            }
+                            #dev-terminal {
+                                border-color: #00ff00 !important;
+                                box-shadow: 0 0 50px rgba(0,255,0,0.5) !important;
+                                animation: partyGlow 1s infinite linear !important;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                }
+                else if (cmd === 'sudo rm -rf /') {
+                    printLine("<span style='color:#ef4444'>CRITICAL WARNING: Deleting root file system...</span>");
+                    setTimeout(() => printLine("Deleting /html..."), 1000);
+                    setTimeout(() => printLine("Deleting /css..."), 1800);
+                    setTimeout(() => printLine("Deleting /js..."), 2600);
+                    setTimeout(() => printLine("...Just kidding. I wouldn't let you delete CodeVogue that easily."), 4000);
+                }
+                else if (cmd === 'reboot') { printLine("Rebooting system..."); setTimeout(() => window.location.reload(), 1000); }
+                else if (cmd === 'clear') {
+                    const lines = termOutput.querySelectorAll('div:not(.terminal-input-line)');
+                    lines.forEach(l => l.remove());
+                } 
+                else if (cmd !== '') { printLine(`Command not found: ${cmd}. Type 'help' for available options.`); }
+
+                termInput.value = '';
+            }
+        });
     </script>
 </body>
 </html>

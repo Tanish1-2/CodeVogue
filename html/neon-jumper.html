@@ -7,33 +7,53 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #020617; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
-        .back-btn { position: absolute; top: 30px; left: 40px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1.2rem; transition: color 0.3s; }
+        body { background-color: #020617; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow: hidden; padding: 20px; }
+        .back-btn { position: absolute; top: 20px; left: 20px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1rem; transition: color 0.3s; z-index: 100; }
         .back-btn:hover { color: #0ea5e9; }
-        .title { font-family: 'Syne', sans-serif; font-size: 3rem; text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(14, 165, 233, 0.4); margin-bottom: 5px; text-align: center; }
+        .title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(14, 165, 233, 0.4); margin-bottom: 5px; text-align: center; margin-top: 40px; }
         .score-board { font-size: 1.2rem; letter-spacing: 2px; color: #8a8a93; text-align: center; margin-bottom: 20px;}
         #scoreValue { color: #0ea5e9; font-weight: 700; font-size: 1.5rem; }
-        canvas { background: linear-gradient(to bottom, #020617, #082f49); border: 2px solid rgba(14, 165, 233, 0.3); border-radius: 12px; box-shadow: 0 0 40px rgba(14, 165, 233, 0.15); }
-        .controls { margin-top: 20px; color: #8a8a93; font-size: 0.9rem; letter-spacing: 1px; }
-        .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; }
-        #gameOverScreen { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(10, 10, 15, 0.95); border: 1px solid #ef4444; padding: 40px 60px; border-radius: 16px; text-align: center; box-shadow: 0 0 50px rgba(239, 68, 68, 0.3); display: none; flex-direction: column; gap: 20px; }
-        #gameOverScreen h2 { color: #ef4444; font-family: 'Syne', sans-serif; font-size: 3rem; }
-        .restart-btn { background: transparent; color: #fff; border: 1px solid #0ea5e9; padding: 15px 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.3s; }
-        .restart-btn:hover { background: #0ea5e9; color: #000; box-shadow: 0 0 20px rgba(14, 165, 233, 0.5); }
+        
+        .game-wrapper { position: relative; width: 100%; max-width: 800px; display: flex; justify-content: center; }
+        canvas { background: linear-gradient(to bottom, #020617, #082f49); border: 2px solid rgba(14, 165, 233, 0.3); border-radius: 12px; box-shadow: 0 0 40px rgba(14, 165, 233, 0.15); width: 100%; max-width: 800px; height: auto; touch-action: none; }
+        
+        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 10, 15, 0.95); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; border: 1px solid rgba(14, 165, 233, 0.5); z-index: 10; backdrop-filter: blur(5px); }
+        .overlay h2 { color: #0ea5e9; font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 2.5rem); margin-bottom: 15px; }
+        .overlay p { color: #ccc; margin-bottom: 25px; line-height: 1.6; font-size: 0.95rem; }
+        .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; border: 1px solid rgba(255,255,255,0.2); }
+        .action-btn { background: transparent; color: #fff; border: 1px solid #0ea5e9; padding: 15px 30px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.3s; letter-spacing: 2px; }
+        .action-btn:hover { background: #0ea5e9; color: #000; box-shadow: 0 0 20px rgba(14, 165, 233, 0.5); }
+        
+        #gameOverScreen { display: none; }
     </style>
+        <!-- PASTE THIS EXACT LINE HERE -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <a href="lab.html" class="back-btn">← BACK TO LAB</a>
+    <a href="lab.html" class="back-btn">← BACK</a>
     <div>
         <h1 class="title">NEON JUMPER</h1>
         <div class="score-board">SCORE: <span id="scoreValue">0</span></div>
     </div>
-    <canvas id="gameCanvas" width="800" height="300"></canvas>
-    <div class="controls">Press <span class="key">SPACE</span> or <span class="key">UP ARROW</span> to jump</div>
-    <div id="gameOverScreen">
-        <h2>SYSTEM HALT</h2>
-        <p>Impact detected.</p>
-        <button class="restart-btn" onclick="resetGame()">RESTART RUN</button>
+    
+    <div class="game-wrapper">
+        <canvas id="gameCanvas" width="800" height="300"></canvas>
+        
+        <div id="startScreen" class="overlay">
+            <h2>SYSTEM READY</h2>
+            <p>Avoid the red obstacles. Gravity physics are active.</p>
+            <p><strong>DESKTOP:</strong> Press <span class="key">SPACE</span> or <span class="key">UP</span><br><br><strong>MOBILE:</strong> Tap the game area to jump.</p>
+            <button class="action-btn" onclick="startGame()">INITIALIZE</button>
+        </div>
+
+        <div id="gameOverScreen" class="overlay">
+            <h2 style="color: #ef4444;">SYSTEM HALT</h2>
+            <p>Impact detected.</p>
+            <button class="action-btn" onclick="startGame()">RESTART RUN</button>
+        </div>
     </div>
 
     <script>
@@ -41,115 +61,56 @@
         const ctx = canvas.getContext("2d");
         const scoreEl = document.getElementById("scoreValue");
         
-        let player, obstacles, score, gameSpeed, isGameOver, animationId;
+        let player, obstacles, score, gameSpeed, isGameOver, gameLoopTimeout;
+        const GAME_SPEED_MS = 16; 
 
-        function initGame() {
-            player = { x: 50, y: 200, width: 30, height: 30, dy: 0, gravity: 0.6, jumpPower: -10, grounded: false };
-            obstacles = [];
-            score = 0;
-            gameSpeed = 5;
-            isGameOver = false;
+        // Draw initial state
+        ctx.fillStyle = "rgba(14, 165, 233, 0.2)"; ctx.fillRect(0, 250, canvas.width, 50);
+        ctx.fillStyle = "#0ea5e9"; ctx.fillRect(50, 220, 30, 30);
+
+        function startGame() {
+            document.getElementById("startScreen").style.display = "none";
             document.getElementById("gameOverScreen").style.display = "none";
-            update();
+            player = { x: 50, y: 200, width: 30, height: 30, dy: 0, gravity: 0.6, jumpPower: -10, grounded: false };
+            obstacles = []; score = 0; gameSpeed = 5; isGameOver = false;
+            clearTimeout(gameLoopTimeout);
+            gameLoop();
         }
 
-        function update() {
+        function gameLoop() {
             if (isGameOver) return;
-            
-            // Physics
-            player.dy += player.gravity;
-            player.y += player.dy;
-            
-            // Floor Collision (Floor is at y=250)
-            if (player.y + player.height >= 250) {
-                player.y = 250 - player.height;
-                player.dy = 0;
-                player.grounded = true;
-            }
+            player.dy += player.gravity; player.y += player.dy;
+            if (player.y + player.height >= 250) { player.y = 250 - player.height; player.dy = 0; player.grounded = true; }
 
-            // Spawn Obstacles
             if (Math.random() < 0.015) {
                 let h = 20 + Math.random() * 30;
-                // Avoid spawning too close together
-                if (obstacles.length === 0 || obstacles[obstacles.length-1].x < 500) {
-                    obstacles.push({ x: 800, y: 250 - h, width: 20, height: h });
-                }
+                if (obstacles.length === 0 || obstacles[obstacles.length-1].x < 500) { obstacles.push({ x: 800, y: 250 - h, width: 20, height: h }); }
             }
 
-            // Move & Remove Obstacles
             for (let i = obstacles.length - 1; i >= 0; i--) {
                 obstacles[i].x -= gameSpeed;
-                
-                // Collision Detection (AABB)
-                if (player.x < obstacles[i].x + obstacles[i].width &&
-                    player.x + player.width > obstacles[i].x &&
-                    player.y < obstacles[i].y + obstacles[i].height &&
-                    player.y + player.height > obstacles[i].y) {
-                    isGameOver = true;
-                }
-
-                if (obstacles[i].x + obstacles[i].width < 0) {
-                    obstacles.splice(i, 1);
-                    score += 10;
-                    if(score % 100 === 0) gameSpeed += 0.5; // Increase speed
-                }
+                if (player.x < obstacles[i].x + obstacles[i].width && player.x + player.width > obstacles[i].x && player.y < obstacles[i].y + obstacles[i].height && player.y + player.height > obstacles[i].y) { isGameOver = true; }
+                if (obstacles[i].x + obstacles[i].width < 0) { obstacles.splice(i, 1); score += 10; if(score % 100 === 0) gameSpeed += 0.5; }
             }
 
-            score++;
-            scoreEl.innerText = Math.floor(score / 10);
-            
+            score++; scoreEl.innerText = Math.floor(score / 10);
             draw();
-            if (!isGameOver) {
-                animationId = requestAnimationFrame(update);
-            } else {
-                document.getElementById("gameOverScreen").style.display = "flex";
-            }
+
+            if (!isGameOver) { gameLoopTimeout = setTimeout(gameLoop, GAME_SPEED_MS); } 
+            else { document.getElementById("gameOverScreen").style.display = "flex"; }
         }
 
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw Floor
-            ctx.fillStyle = "rgba(14, 165, 233, 0.2)";
-            ctx.fillRect(0, 250, canvas.width, 50);
-            ctx.strokeStyle = "#0ea5e9";
-            ctx.beginPath(); ctx.moveTo(0, 250); ctx.lineTo(canvas.width, 250); ctx.stroke();
-
-            // Draw Player
-            ctx.fillStyle = "#0ea5e9";
-            ctx.shadowBlur = 20; ctx.shadowColor = "#0ea5e9";
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            ctx.shadowBlur = 0;
-
-            // Draw Obstacles
-            ctx.fillStyle = "#ef4444";
-            ctx.shadowBlur = 15; ctx.shadowColor = "#ef4444";
-            obstacles.forEach(obs => {
-                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-            });
-            ctx.shadowBlur = 0;
+            ctx.fillStyle = "rgba(14, 165, 233, 0.2)"; ctx.fillRect(0, 250, canvas.width, 50);
+            ctx.strokeStyle = "#0ea5e9"; ctx.beginPath(); ctx.moveTo(0, 250); ctx.lineTo(canvas.width, 250); ctx.stroke();
+            ctx.fillStyle = "#0ea5e9"; ctx.shadowBlur = 20; ctx.shadowColor = "#0ea5e9"; ctx.fillRect(player.x, player.y, player.width, player.height); ctx.shadowBlur = 0;
+            ctx.fillStyle = "#ef4444"; ctx.shadowBlur = 15; ctx.shadowColor = "#ef4444"; obstacles.forEach(obs => { ctx.fillRect(obs.x, obs.y, obs.width, obs.height); }); ctx.shadowBlur = 0;
         }
 
-        function jump() {
-            if (player.grounded) {
-                player.dy = player.jumpPower;
-                player.grounded = false;
-            }
-        }
-
-        function resetGame() {
-            cancelAnimationFrame(animationId);
-            initGame();
-        }
-
-        document.addEventListener("keydown", (e) => {
-            if(e.code === "Space" || e.code === "ArrowUp") {
-                e.preventDefault();
-                jump();
-            }
-        });
-
-        initGame();
+        function jump() { if (player.grounded) { player.dy = player.jumpPower; player.grounded = false; } }
+        document.addEventListener("keydown", (e) => { if(e.code === "Space" || e.code === "ArrowUp") { e.preventDefault(); jump(); } });
+        canvas.addEventListener("touchstart", (e) => { e.preventDefault(); jump(); });
     </script>
 </body>
 </html>

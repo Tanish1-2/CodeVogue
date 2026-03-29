@@ -329,3 +329,145 @@ body.fade-out {
 .marquee-content span { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.1rem; color: var(--text-muted); margin: 0 40px; letter-spacing: 3px; transition: color 0.3s ease; cursor: default; }
 .marquee-content span:hover { color: var(--accent-glow); text-shadow: 0 0 10px var(--accent-glow); }
 @keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ==========================================
+   💻 RESPONSIVE HACKER TERMINAL CONTACT FORM
+   ========================================== */
+.contact-main {
+    padding-top: clamp(120px, 15vw, 180px);
+    padding-bottom: clamp(60px, 10vw, 100px);
+}
+
+.terminal-container {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Header UI */
+.terminal-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: clamp(8px, 2vw, 12px) clamp(15px, 3vw, 20px);
+    background: #111;
+    border-bottom: 1px solid #333;
+    border-radius: 10px 10px 0 0;
+}
+
+.term-title {
+    font-family: 'Fira Code', monospace;
+    font-size: clamp(0.6rem, 2vw, 0.85rem);
+    color: #888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+}
+
+.term-controls {
+    color: #555;
+    font-size: clamp(0.7rem, 2vw, 0.9rem);
+    white-space: nowrap;
+}
+
+/* Body UI */
+.terminal-body-box {
+    background: #050507;
+    border: 1px solid #333;
+    border-top: none;
+    padding: clamp(20px, 5vw, 40px);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.term-init {
+    font-family: 'Fira Code', monospace;
+    color: #BD52EB;
+    margin-bottom: 25px;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    line-height: 1.6;
+}
+
+/* Form Inputs */
+.cmd-line {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: clamp(15px, 3vw, 25px);
+    font-family: 'Fira Code', monospace;
+}
+
+@media (min-width: 768px) {
+    .cmd-line {
+        flex-direction: row;
+        align-items: center;
+    }
+    .message-line {
+        align-items: flex-start;
+    }
+    .message-line .cmd-prompt {
+        margin-top: 15px; /* Aligns prompt to top of textarea on desktop */
+    }
+}
+
+.cmd-prompt {
+    color: #BD52EB;
+    min-width: 120px;
+    font-weight: 600;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    margin-bottom: 8px;
+}
+
+.cmd-input {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid #333 !important;
+    color: #fff !important;
+    font-family: 'Fira Code', monospace;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    width: 100%;
+    padding: clamp(12px, 2vw, 15px) !important;
+    outline: none !important;
+    border-radius: 4px !important;
+    transition: all 0.3s ease;
+}
+
+.cmd-input:focus {
+    background: rgba(189, 82, 235, 0.05) !important;
+    border: 1px solid #BD52EB !important;
+    box-shadow: 0 0 15px rgba(189, 82, 235, 0.2) !important;
+}
+
+.cmd-input::placeholder {
+    color: #555;
+    font-style: italic;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+}
+
+.cmd-submit {
+    background: rgba(189, 82, 235, 0.1);
+    border: 1px solid #BD52EB;
+    color: #BD52EB;
+    font-family: 'Fira Code', monospace;
+    font-weight: bold;
+    padding: clamp(12px, 3vw, 15px) 24px;
+    font-size: clamp(0.9rem, 2vw, 1.1rem);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.cmd-submit:hover {
+    background: #BD52EB;
+    color: #050507;
+    box-shadow: 0 0 20px rgba(189, 82, 235, 0.6);
+}
+
+.terminal-status {
+    font-family: 'Fira Code', monospace;
+    font-size: clamp(0.75rem, 2vw, 0.85rem);
+    margin-top: 20px;
+    min-height: 20px;
+    line-height: 1.5;
+}

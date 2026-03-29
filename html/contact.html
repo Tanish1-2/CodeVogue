@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | CodeVogue</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
-        <!-- PASTE THIS EXACT LINE HERE -->
+    <!-- Glowing Purple Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="ambient-glow"></div>
     <div class="cursor" aria-hidden="true"><span class="cursor-text"></span></div>
 
+    <!-- RESPONSIVE NAVBAR -->
     <nav>
-        <div class="logo magnetic hover-target">CODE<span>VOGUE</span></div>
+        <div class="logo magnetic hover-target">CODE<span style="color: var(--accent-glow); font-weight: 800;">&gt;</span>OGUE</div>
         <ul class="nav-links" id="navLinks">
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
@@ -30,28 +28,51 @@
         </button>
     </nav>
 
-    <main class="container" style="padding-top: 220px; padding-bottom: 100px;">
+    <!-- RESPONSIVE MAIN CONTAINER -->
+    <main class="container contact-main">
         <p class="hero-sub reveal text-target">START A CONVERSATION</p>
-        <h1 class="reveal text-target" style="font-size: clamp(3rem, 7vw, 7rem); margin-bottom: 3rem;">LET'S TALK</h1>
+        <h1 class="reveal text-target" style="font-size: clamp(2.5rem, 7vw, 6rem); margin-bottom: clamp(1.5rem, 4vw, 3rem);">LET'S TALK</h1>
         
-        <form id="contactForm" action="https://formspree.io/f/xdkjjvoe" method="POST" class="contact-form reveal">
-            <div class="input-group">
-                <input type="text" name="name" required placeholder="Your Name" class="hover-target">
+        <div class="terminal-container reveal">
+            <!-- TERMINAL HEADER -->
+            <div class="terminal-header-bar">
+                <span class="term-title">root@codevogue:~/secure-comms</span>
+                <span class="term-controls">[_] [🗖] [X]</span>
             </div>
-            <div class="input-group">
-                <input type="email" name="email" required placeholder="Email Address" class="hover-target">
+            
+            <!-- TERMINAL BODY -->
+            <div class="terminal-body-box">
+                <p class="term-init">> INITIALIZING SECURE CONNECTION... <span style="color:#0f0;">[OK]</span><br>> WAITING FOR USER INPUT_</p>
+
+                <form id="contactForm" action="https://formspree.io/f/xdkjjvoe" method="POST" class="hacker-form">
+                    
+                    <div class="cmd-line">
+                        <span class="cmd-prompt">NAME_</span>
+                        <input type="text" name="name" required placeholder="// Type your full name here..." class="cmd-input hover-target" autocomplete="off" spellcheck="false">
+                    </div>
+
+                    <div class="cmd-line">
+                        <span class="cmd-prompt">EMAIL_</span>
+                        <input type="email" name="email" required placeholder="// Type your email address here..." class="cmd-input hover-target" autocomplete="off" spellcheck="false">
+                    </div>
+
+                    <div class="cmd-line message-line">
+                        <span class="cmd-prompt">MESSAGE_</span>
+                        <textarea name="message" rows="5" required placeholder="// What would you like to build? Type your message here..." class="cmd-input hover-target" autocomplete="off" spellcheck="false"></textarea>
+                    </div>
+
+                    <div class="terminal-status" id="terminalStatus"></div>
+
+                    <button type="submit" class="cmd-submit magnetic hover-target">[ INITIALIZE TRANSMISSION ]</button>
+                </form>
             </div>
-            <div class="input-group">
-                <textarea name="message" rows="4" required placeholder="Tell me about your project..." class="hover-target"></textarea>
-            </div>
-            <button type="submit" class="submit-btn hover-target magnetic">SEND MESSAGE</button>
-        </form>
+        </div>
     </main>
     
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
-                <h2>CODE<span>VOGUE</span></h2>
+                <h2>CODE<span style="color: var(--accent-glow);">&gt;</span>OGUE</h2>
                 <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
             <div class="footer-links">
@@ -66,7 +87,7 @@
                 <h4>CONNECT</h4>
                 <ul>
                     <li><a href="contact.html" class="hover-target">Contact Us</a></li>
-                    <li><a href="apply.html" class="hover-target">Join the Lab</a></li>
+                    <li><a href="apply.html" class="hover-target" style="color: var(--accent-glow);">Join the Lab</a></li>
                     <li><a href="terms.html" class="hover-target">Terms & Policy</a></li>
                 </ul>
             </div>
@@ -79,33 +100,68 @@
 
     <script src="../js/script.js"></script>
     <script>
+        // Hamburger Menu Logic
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
         if(hamburgerBtn && navLinks) {
-            hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('active'); navLinks.classList.toggle('active'); });
-            navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); navLinks.classList.remove('active'); }); });
+            hamburgerBtn.addEventListener('click', () => { 
+                hamburgerBtn.classList.toggle('active'); 
+                navLinks.classList.toggle('active'); 
+            });
+            navLinks.querySelectorAll('a').forEach(link => { 
+                link.addEventListener('click', () => { 
+                    hamburgerBtn.classList.remove('active'); 
+                    navLinks.classList.remove('active'); 
+                }); 
+            });
         }
 
+        // Hacker Form Logic
         document.getElementById("contactForm").addEventListener("submit", function(event) {
             event.preventDefault(); 
             var form = event.target;
             var data = new FormData(form);
-            var btn = form.querySelector('button');
-            btn.innerHTML = "SENDING...";
-
-            fetch(form.action, {
-                method: form.method,
-                body: data,
-                headers: { 'Accept': 'application/json' }
-            }).then(response => {
-                if (response.ok) {
-                    btn.innerHTML = "MESSAGE SENT!";
-                    btn.style.color = "var(--accent-glow)";
-                    setTimeout(() => { window.location.href = "../index.html"; }, 1500);
+            var btn = form.querySelector('.cmd-submit');
+            var statusBox = document.getElementById('terminalStatus');
+            
+            btn.style.display = 'none'; 
+            
+            let statusText = [
+                "> Encrypting payload with AES-256...",
+                "> Bypassing local firewall...",
+                "> Establishing secure tunnel to Formspree...",
+                "> Transmitting data packages..."
+            ];
+            
+            let i = 0;
+            statusBox.innerHTML = statusText[0];
+            statusBox.style.color = "#0ea5e9";
+            
+            let hackerInterval = setInterval(() => {
+                i++;
+                if (i < statusText.length) {
+                    statusBox.innerHTML += "<br>" + statusText[i];
                 } else {
-                    btn.innerHTML = "ERROR. TRY AGAIN.";
+                    clearInterval(hackerInterval);
+                    
+                    fetch(form.action, {
+                        method: form.method,
+                        body: data,
+                        headers: { 'Accept': 'application/json' }
+                    }).then(response => {
+                        if (response.ok) {
+                            statusBox.innerHTML += "<br>> <span style='color:#0f0;'>[SUCCESS] Payload delivered. Ending session.</span>";
+                            setTimeout(() => { window.location.href = "../index.html"; }, 2000);
+                        } else {
+                            statusBox.innerHTML += "<br>> <span style='color:#f00;'>[ERROR] Connection refused. Try again.</span>";
+                            btn.style.display = 'block';
+                        }
+                    }).catch(error => { 
+                        statusBox.innerHTML += "<br>> <span style='color:#f00;'>[FATAL ERROR] System offline.</span>";
+                        btn.style.display = 'block';
+                    });
                 }
-            }).catch(error => { btn.innerHTML = "ERROR. TRY AGAIN."; });
+            }, 600);
         });
     </script>
 </body>

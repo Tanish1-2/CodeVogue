@@ -38,6 +38,10 @@
     </div>
 
     <div class="ambient-glow"></div>
+    
+    <!-- 🕸️ DYNAMIC NEURAL NETWORK BACKGROUND -->
+    <canvas id="cyber-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; opacity: 0.4; pointer-events: none;"></canvas>
+
     <div class="cursor" aria-hidden="true"><span class="cursor-text"></span></div>
 
     <!-- NAVBAR WITH HAMBURGER -->
@@ -189,6 +193,68 @@
         }
         setInterval(updateClock, 1000);
         updateClock();
+
+        // 🕸️ DIGITAL NEURAL NETWORK CANVAS
+        const cyberCanvas = document.getElementById('cyber-canvas');
+        if (cyberCanvas) {
+            const ctx = cyberCanvas.getContext('2d');
+            let width, height, particles;
+
+            function initNetwork() {
+                width = cyberCanvas.width = window.innerWidth;
+                height = cyberCanvas.height = window.innerHeight;
+                particles = [];
+                // Create 70 particles
+                for (let i = 0; i < 70; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 1.2,
+                        vy: (Math.random() - 0.5) * 1.2,
+                        radius: Math.random() * 2 + 1
+                    });
+                }
+            }
+
+            function animateNetwork() {
+                requestAnimationFrame(animateNetwork);
+                ctx.clearRect(0, 0, width, height);
+                
+                for (let i = 0; i < particles.length; i++) {
+                    let p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    // Bounce off walls
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                    // Draw particle
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = '#BD52EB'; 
+                    ctx.fill();
+
+                    // Draw lines connecting nearby particles
+                    for (let j = i + 1; j < particles.length; j++) {
+                        let p2 = particles[j];
+                        let dist = Math.sqrt(Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2));
+                        
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(189, 82, 235, ${1 - dist/120})`; 
+                            ctx.lineWidth = 1;
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+            initNetwork();
+            animateNetwork();
+            window.addEventListener('resize', initNetwork);
+        }
 
         // ==========================================
         // 💻 GOATED TERMINAL EASTER EGG LOGIC

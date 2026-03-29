@@ -4,11 +4,102 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CodeVogue Admin Panel</title>
+    
     <!-- Netlify Identity Widget -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    
+    <!-- Glowing Purple Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+
+    <!-- ⚡ CUSTOM CODEVOGUE ADMIN THEME -->
+    <style>
+      /* Injecting Dark Mode & Purple Accents */
+      body {
+        background-color: #050507 !important; /* CodeVogue Dark Background */
+      }
+      
+      /* Login Screen / Authentication Button */
+      [class*="Login-button"] {
+        background-color: #BD52EB !important; /* CodeVogue Purple */
+        color: #fff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 600 !important;
+      }
+      
+      /* Top Navbar */
+      [class*="AppHeader-header"] {
+        background-color: #111 !important;
+        border-bottom: 1px solid #BD52EB !important;
+      }
+      
+      /* Sidebar */
+      [class*="AppHeader-sidebar"] {
+        background-color: #111 !important;
+        border-right: 1px solid #333 !important;
+      }
+      
+      /* Main Content Background */
+      [class*="AppMainContainer"] {
+        background-color: #050507 !important;
+      }
+      
+      /* Typography Overrides */
+      h1, h2, h3, h4, h5, h6, span, p, label, a {
+        font-family: 'Space Grotesk', sans-serif !important;
+      }
+
+      /* Force Headings to be Light */
+      h1, h2, h3, label, [class*="CardHeading"] {
+        color: #f1f1f1 !important;
+      }
+      
+      /* Primary Buttons (Publish, Save) */
+      button[class*="Publish"], button[class*="Save"], button[class*="Button-button-default"] {
+        background-color: #BD52EB !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 4px !important;
+      }
+      
+      /* Input Fields */
+      input, textarea, [class*="ControlPane"] select {
+        background-color: #1a1a1a !important;
+        color: white !important;
+        border: 1px solid #444 !important;
+        border-radius: 5px !important;
+      }
+      input:focus, textarea:focus {
+        border-color: #BD52EB !important;
+        outline: none !important;
+        box-shadow: 0 0 10px rgba(189, 82, 235, 0.3) !important;
+      }
+      
+      /* Cards & List Items (For Blog Entries) */
+      [class*="ControlPane"] [class*="ListItem"], [class*="Card-card"] {
+        background-color: #111 !important;
+        border: 1px solid #333 !important;
+        color: white !important;
+      }
+
+      /* Editor Top Toolbar */
+      [class*="ToolbarContainer"] {
+         background-color: #111 !important;
+         border-bottom: 1px solid #333 !important;
+      }
+    </style>
   </head>
   <body>
     <!-- Decap CMS Script -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+    
+    <!-- Link preview pane to your actual website CSS -->
+    <script>
+      CMS.registerPreviewStyle("../css/style.css");
+    </script>
   </body>
 </html>

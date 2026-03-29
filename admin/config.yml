@@ -2,6 +2,9 @@ backend:
   name: git-gateway
   branch: main
 
+# Adds your custom branding to the login screen
+logo_url: "https://codevogue.netlify.app/output/codevogue_logo.png"
+
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
@@ -16,9 +19,11 @@ collections:
           - name: "posts"
             label: "Articles"
             widget: "list"
+            # This makes the list items show the Title and Category instead of just saying "Item 1, Item 2"
+            summary: '{{title}} [{{category}}]'
             fields:
-              - {label: "Category (e.g. DESIGN)", name: "category", widget: "string"}
-              - {label: "Date", name: "date", widget: "string"}
+              - {label: "Category (e.g. DESIGN, TECH)", name: "category", widget: "string"}
+              - {label: "Date", name: "date", widget: "datetime", date_format: "DD MMM YYYY", format: "DD MMM YYYY"}
               - {label: "Title", name: "title", widget: "string"}
               - {label: "Description", name: "description", widget: "text"}
               - {label: "URL Link", name: "link", widget: "string", default: "#"}

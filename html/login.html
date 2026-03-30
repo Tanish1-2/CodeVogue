@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Login | CodeVogue OS</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; background: #050507;">
+
+    <!-- Background Effects -->
+    <div class="ambient-glow" style="width: 600px; height: 600px; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.15;"></div>
+    <div class="cursor" aria-hidden="true"><span class="cursor-text"></span></div>
+
+    <!-- AUTHENTICATION GATEWAY BOX -->
+    <div class="auth-container reveal">
+        
+        <div class="auth-header">
+            <h2>CODE<span style="color: var(--accent-glow);">&gt;</span>OS</h2>
+            <p>SECURE ACCESS GATEWAY</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">LOGIN</button>
+            <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">REQUEST ACCESS</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm" class="auth-form active-form">
+            <div class="cmd-line" style="flex-direction: column; align-items: flex-start; margin-bottom: 15px;">
+                <span class="cmd-prompt" style="font-size: 0.9rem; margin-bottom: 5px;">USER_ID (EMAIL)</span>
+                <input type="email" id="loginEmail" required placeholder="// user@network.com" class="cmd-input hover-target" autocomplete="off">
+            </div>
+            <div class="cmd-line" style="flex-direction: column; align-items: flex-start;">
+                <span class="cmd-prompt" style="font-size: 0.9rem; margin-bottom: 5px;">PASSCODE</span>
+                <input type="password" id="loginPassword" required placeholder="// •••••••••" class="cmd-input hover-target">
+            </div>
+            <button type="submit" class="cmd-submit magnetic hover-target" style="margin-top: 25px; width: 100%;">[ INITIALIZE SESSION ]</button>
+        </form>
+
+        <!-- SIGNUP FORM -->
+        <form id="signupForm" class="auth-form" style="display: none;">
+            <div class="cmd-line" style="flex-direction: column; align-items: flex-start; margin-bottom: 15px;">
+                <span class="cmd-prompt" style="font-size: 0.9rem; margin-bottom: 5px;">CLIENT ALIAS (NAME)</span>
+                <input type="text" id="signupName" required placeholder="// John Doe" class="cmd-input hover-target" autocomplete="off">
+            </div>
+            <div class="cmd-line" style="flex-direction: column; align-items: flex-start; margin-bottom: 15px;">
+                <span class="cmd-prompt" style="font-size: 0.9rem; margin-bottom: 5px;">USER_ID (EMAIL)</span>
+                <input type="email" id="signupEmail" required placeholder="// user@network.com" class="cmd-input hover-target" autocomplete="off">
+            </div>
+            <div class="cmd-line" style="flex-direction: column; align-items: flex-start;">
+                <span class="cmd-prompt" style="font-size: 0.9rem; margin-bottom: 5px;">CREATE PASSCODE</span>
+                <input type="password" id="signupPassword" required placeholder="// •••••••••" class="cmd-input hover-target">
+            </div>
+            <button type="submit" class="cmd-submit magnetic hover-target" style="margin-top: 25px; width: 100%;">[ GENERATE SECURITY KEY ]</button>
+        </form>
+
+        <div class="terminal-status" id="authStatus" style="text-align: center; margin-top: 25px; color: #555; font-family: 'Fira Code', monospace; font-size: 0.85rem;">> SYSTEM ONLINE. AWAITING CREDENTIALS_</div>
+        
+        <a href="../index.html" class="hover-target" style="display: block; text-align: center; margin-top: 20px; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #888; text-decoration: none;">&lt; RETURN TO PUBLIC GRID</a>
+    </div>
+
+    <script src="../js/script.js"></script>
+
+    <!-- UI Logic Script -->
+    <script>
+        const uiStatus = document.getElementById('authStatus');
+
+        window.switchTab = function(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabSignup = document.getElementById('tabSignup');
+
+            if (tab === 'login') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+                tabLogin.classList.add('active');
+                tabSignup.classList.remove('active');
+                uiStatus.innerHTML = "> SYSTEM ONLINE. AWAITING CREDENTIALS_";
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+                tabSignup.classList.add('active');
+                tabLogin.classList.remove('active');
+                uiStatus.innerHTML = "> REGISTRATION PROTOCOL ACTIVATED_";
+            }
+        };
+    </script>
+
+    <!-- Firebase Backend Logic Script -->
+    <script type="module">
+        import { auth, db } from "../js/firebase-config.js";
+        import {
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            updateProfile,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import {
+            doc,
+            setDoc,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const loginForm = document.getElementById("loginForm");
+        const signupForm = document.getElementById("signupForm");
+        const terminalStatus = document.getElementById("authStatus");
+
+        // IF USER IS ALREADY LOGGED IN, SKIP THIS PAGE
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = "landing.html";
+            }
+        });
+
+        // HANDLE LOGIN
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value;
+
+            terminalStatus.innerHTML = "<span style='color:#0ea5e9;'>> VERIFYING CREDENTIALS...</span>";
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                terminalStatus.innerHTML = "<span style='color:var(--accent-glow);'>> ACCESS GRANTED. REDIRECTING...</span>";
+                setTimeout(() => {
+                    window.location.href = "landing.html";
+                }, 800);
+            } catch (error) {
+                terminalStatus.innerHTML = `<span style="color:#ef4444;">>> ERROR: ${error.message.replace('Firebase: ', '')}</span>`;
+            }
+        });
+
+        // HANDLE SIGNUP
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("signupName").value.trim();
+            const email = document.getElementById("signupEmail").value.trim();
+            const password = document.getElementById("signupPassword").value;
+
+            terminalStatus.innerHTML = "<span style='color:#0ea5e9;'>> GENERATING USER PROFILE...</span>";
+
+            try {
+                // 1. Create the user in Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Update their display name
+                await updateProfile(user, {
+                    displayName: name
+                });
+
+                // 3. Save their details to Firestore Database
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    name: name,
+                    email: email,
+                    role: "client", // Default role
+                    createdAt: serverTimestamp()
+                });
+
+                terminalStatus.innerHTML = "<span style='color:var(--accent-glow);'>> PROFILE CREATED. REDIRECTING...</span>";
+
+                setTimeout(() => {
+                    window.location.href = "landing.html";
+                }, 800);
+
+            } catch (error) {
+                terminalStatus.innerHTML = `<span style="color:#ef4444;">>> ERROR: ${error.message.replace('Firebase: ', '')}</span>`;
+            }
+        });
+    </script>
+</body>
+</html>

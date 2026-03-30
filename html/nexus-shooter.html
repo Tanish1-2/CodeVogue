@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Shooter | CodeVogue OS</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            margin: 0;
+            background: #050507;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        #game-container {
+            position: relative;
+            border: 2px solid #333;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.2);
+            background: #0a0a0c;
+            overflow: hidden; /* Keeps UI from spilling out */
+        }
+        canvas {
+            display: block;
+            border-radius: 6px;
+        }
+        .game-ui {
+            width: 400px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-family: 'Fira Code', monospace;
+        }
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #888;
+            text-decoration: none;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        .back-btn:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
+        }
+
+        /* GAME OVER SCREEN */
+        #gameOverScreen {
+            display: none; 
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 5, 7, 0.95);
+            backdrop-filter: blur(8px);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="landing.html" class="back-btn">&lt; RETURN TO OS</a>
+
+    <div class="game-ui">
+        <span style="color: #0ea5e9;">SCORE: <span id="score">0</span></span>
+        <span style="color: #ef4444;">NEXUS SHOOTER</span>
+    </div>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+        <!-- THE GAME OVER OVERLAY -->
+        <div id="gameOverScreen">
+            <h2 style="color: #ef4444; font-family: 'Syne', sans-serif; font-size: 2.2rem; margin: 0; text-shadow: 0 0 15px rgba(239, 68, 68, 0.8); line-height: 1.1;">SYSTEM<br>BREACHED</h2>
+            <p style="color: #888; font-family: 'Fira Code', monospace; font-size: 0.8rem; margin: 15px 0 30px 0;">> FIREWALL INTEGRITY AT 0%</p>
+            <button class="cmd-submit magnetic hover-target" onclick="location.reload()" style="border-color: #ef4444; color: #ef4444; width: 80%; font-size: 0.9rem;">[ REBOOT SYSTEM ]</button>
+        </div>
+    </div>
+
+    <!-- Firebase Auth Protection -->
+    <script type="module">
+        import { auth } from "../js/firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        // KICK INTRUDERS OUT
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "login.html";
+            } else {
+                initGame();
+            }
+        });
+    </script>
+
+    <!-- Game Logic -->
+    <script>
+        function initGame() {
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
+            const scoreEl = document.getElementById("score");
+            const gameOverScreen = document.getElementById("gameOverScreen");
+
+            // Game Constants
+            const COLORS = ["#0ea5e9", "#BD52EB", "#ef4444", "#0f0"];
+            const RADIUS = 15;
+            const ROWS = 5;
+            const COLS = Math.floor(canvas.width / (RADIUS * 2));
+            const DANGER_LINE = canvas.height - 110; // The Game Over Line at the bottom
+            
+            let grid = [];
+            let particles = [];
+            let shockwaves = [];
+            let score = 0;
+            let currentBubble = null;
+            let mouseX = canvas.width / 2;
+            let mouseY = 0;
+            let isGameOver = false;
+
+            // Generate initial grid
+            for (let r = 0; r < ROWS; r++) {
+                grid[r] = [];
+                for (let c = 0; c < COLS; c++) {
+                    grid[r][c] = {
+                        x: c * (RADIUS * 2) + RADIUS,
+                        y: r * (RADIUS * 2) + RADIUS,
+                        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                        active: true,
+                        popping: false,
+                        scale: 1
+                    };
+                }
+            }
+
+            // Create the bubble you are going to shoot
+            function spawnBubble() {
+                currentBubble = {
+                    x: canvas.width / 2,
+                    y: canvas.height - RADIUS - 10,
+                    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                    dx: 0,
+                    dy: 0,
+                    moving: false
+                };
+            }
+
+            spawnBubble();
+
+            // Track Mouse for aiming
+            canvas.addEventListener("mousemove", (e) => {
+                if (isGameOver) return;
+                const rect = canvas.getBoundingClientRect();
+                mouseX = e.clientX - rect.left;
+                mouseY = e.clientY - rect.top;
+            });
+
+            // Shoot Bubble
+            canvas.addEventListener("click", () => {
+                if (isGameOver) return;
+                if (!currentBubble.moving) {
+                    const angle = Math.atan2(mouseY - currentBubble.y, mouseX - currentBubble.x);
+                    const speed = 15;
+                    currentBubble.dx = Math.cos(angle) * speed;
+                    currentBubble.dy = Math.sin(angle) * speed;
+                    currentBubble.moving = true;
+                }
+            });
+
+            function update() {
+                // Update Explosions & Shockwaves
+                particles.forEach(p => { p.x += p.vx; p.y += p.vy; p.alpha -= 0.03; });
+                particles = particles.filter(p => p.alpha > 0);
+
+                shockwaves.forEach(s => { s.radius += 2; s.alpha -= 0.05; });
+                shockwaves = shockwaves.filter(s => s.alpha > 0);
+
+                for (let r = 0; r < grid.length; r++) {
+                    for (let c = 0; c < grid[r].length; c++) {
+                        let b = grid[r][c];
+                        if (b && b.active && b.popping) {
+                            b.scale -= 0.15;
+                            if (b.scale <= 0) {
+                                b.active = false;
+                                b.scale = 0;
+                            }
+                        }
+                    }
+                }
+
+                // If game is over, freeze the shooter bubble logic
+                if (isGameOver) return;
+
+                // CHECK FOR GAME OVER CONDITION (Did a bubble cross the Danger Line?)
+                let breached = false;
+                for (let r = 0; r < grid.length; r++) {
+                    for (let c = 0; c < grid[r].length; c++) {
+                        let b = grid[r][c];
+                        if (b && b.active && !b.popping) {
+                            if (b.y + RADIUS > DANGER_LINE) {
+                                breached = true;
+                            }
+                        }
+                    }
+                }
+                
+                if (breached) {
+                    isGameOver = true;
+                    gameOverScreen.style.display = "flex"; // Show the properly formatted UI
+                    return;
+                }
+
+                // Update Shooter Bubble
+                if (currentBubble.moving) {
+                    currentBubble.x += currentBubble.dx;
+                    currentBubble.y += currentBubble.dy;
+
+                    // Bounce off walls
+                    if (currentBubble.x <= RADIUS || currentBubble.x >= canvas.width - RADIUS) {
+                        currentBubble.dx *= -1;
+                    }
+
+                    // Snap to top
+                    if (currentBubble.y <= RADIUS) {
+                        snapBubble();
+                        return;
+                    }
+
+                    // Check collision with grid
+                    for (let r = 0; r < grid.length; r++) {
+                        for (let c = 0; c < grid[r].length; c++) {
+                            let b = grid[r][c];
+                            if (b && b.active && !b.popping) {
+                                let dist = Math.hypot(currentBubble.x - b.x, currentBubble.y - b.y);
+                                if (dist <= RADIUS * 2 - 2) { 
+                                    snapBubble();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            function snapBubble() {
+                let c = Math.floor(currentBubble.x / (RADIUS * 2));
+                let r = Math.floor(currentBubble.y / (RADIUS * 2));
+                
+                if (c < 0) c = 0;
+                if (c >= COLS) c = COLS - 1;
+                if (r < 0) r = 0;
+                
+                while (r >= grid.length) {
+                    grid.push(new Array(COLS).fill(null));
+                }
+
+                if (grid[r][c] && grid[r][c].active) {
+                    r++;
+                    while (r >= grid.length) {
+                        grid.push(new Array(COLS).fill(null));
+                    }
+                }
+
+                grid[r][c] = {
+                    x: c * (RADIUS * 2) + RADIUS,
+                    y: r * (RADIUS * 2) + RADIUS,
+                    color: currentBubble.color,
+                    active: true,
+                    popping: false,
+                    scale: 1
+                };
+
+                let matches = getMatches(r, c, currentBubble.color);
+                
+                if (matches.length >= 3) {
+                    matches.forEach(m => {
+                        let b = grid[m.r][m.c];
+                        b.popping = true; 
+                        score += 10;
+
+                        for(let i=0; i<8; i++) {
+                            particles.push({
+                                x: b.x, y: b.y,
+                                vx: (Math.random() - 0.5) * 12,
+                                vy: (Math.random() - 0.5) * 12,
+                                radius: Math.random() * 4 + 2,
+                                color: b.color, alpha: 1
+                            });
+                        }
+
+                        shockwaves.push({
+                            x: b.x, y: b.y,
+                            radius: RADIUS, color: b.color, alpha: 1
+                        });
+                    });
+                    scoreEl.innerText = score;
+                }
+
+                spawnBubble();
+            }
+
+            function getMatches(startR, startC, targetColor) {
+                let toCheck = [{r: startR, c: startC}];
+                let matched = [];
+                let checked = new Set();
+                const dirs = [[-1,0], [1,0], [0,-1], [0,1]];
+
+                while (toCheck.length > 0) {
+                    let current = toCheck.pop();
+                    let key = `${current.r},${current.c}`;
+                    
+                    if (checked.has(key)) continue;
+                    checked.add(key);
+
+                    if (current.r >= 0 && current.r < grid.length && 
+                        current.c >= 0 && current.c < COLS && 
+                        grid[current.r][current.c] && 
+                        grid[current.r][current.c].active && 
+                        !grid[current.r][current.c].popping && 
+                        grid[current.r][current.c].color === targetColor) {
+                        
+                        matched.push(current);
+
+                        for (let d of dirs) {
+                            toCheck.push({r: current.r + d[0], c: current.c + d[1]});
+                        }
+                    }
+                }
+                return matched;
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // DRAW THE DANGER LINE
+                ctx.beginPath();
+                ctx.moveTo(0, DANGER_LINE);
+                ctx.lineTo(canvas.width, DANGER_LINE);
+                ctx.strokeStyle = "rgba(239, 68, 68, 0.4)"; 
+                ctx.lineWidth = 2;
+                ctx.setLineDash([10, 10]); 
+                ctx.stroke();
+                ctx.setLineDash([]); 
+
+                // Draw Grid Bubbles
+                for (let r = 0; r < grid.length; r++) {
+                    for (let c = 0; c < grid[r].length; c++) {
+                        let b = grid[r][c];
+                        if (b && b.active && b.scale > 0) {
+                            let currentRadius = Math.max(0.1, (RADIUS - 1) * b.scale);
+                            
+                            ctx.beginPath();
+                            ctx.arc(b.x, b.y, currentRadius, 0, Math.PI * 2);
+                            ctx.fillStyle = b.color;
+                            ctx.fill();
+                            
+                            ctx.beginPath();
+                            ctx.arc(b.x - 3*b.scale, b.y - 3*b.scale, Math.max(0.1, (RADIUS/3) * b.scale), 0, Math.PI * 2);
+                            ctx.fillStyle = "rgba(255,255,255,0.3)";
+                            ctx.fill();
+                        }
+                    }
+                }
+
+                // Draw Shockwaves
+                shockwaves.forEach(s => {
+                    ctx.globalAlpha = s.alpha;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = s.color;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                });
+
+                // Draw Particles
+                particles.forEach(p => {
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+                ctx.globalAlpha = 1.0; 
+
+                // Draw Shooter Bubble (Only if game is active)
+                if (!isGameOver) {
+                    ctx.beginPath();
+                    ctx.arc(currentBubble.x, currentBubble.y, RADIUS - 1, 0, Math.PI * 2);
+                    ctx.fillStyle = currentBubble.color;
+                    ctx.fill();
+                    
+                    ctx.beginPath();
+                    ctx.arc(currentBubble.x - 4, currentBubble.y - 4, RADIUS/3, 0, Math.PI * 2);
+                    ctx.fillStyle = "rgba(255,255,255,0.3)";
+                    ctx.fill();
+
+                    if (!currentBubble.moving) {
+                        ctx.beginPath();
+                        ctx.moveTo(currentBubble.x, currentBubble.y);
+                        ctx.lineTo(mouseX, mouseY);
+                        ctx.strokeStyle = "rgba(14, 165, 233, 0.4)";
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([5, 10]);
+                        ctx.stroke();
+                        ctx.setLineDash([]); 
+                    }
+                }
+            }
+
+            function gameLoop() {
+                update();
+                draw();
+                requestAnimationFrame(gameLoop);
+            }
+
+            gameLoop();
+        }
+    </script>
+</body>
+</html>

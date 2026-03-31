@@ -2,34 +2,57 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeVogue OS | Desktop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CodeVogue OS | Mobile & Desktop</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <style>
+        /* DYNAMIC THEME VARIABLES */
+        body.theme-purple { --accent-glow: #BD52EB; --accent-glow-rgb: 189, 82, 235; }
+        body.theme-green { --accent-glow: #0f0; --accent-glow-rgb: 0, 255, 0; }
+        body.theme-blue { --accent-glow: #0ea5e9; --accent-glow-rgb: 14, 165, 233; }
+
+        .theme-btn {
+            width: 30px; height: 30px; border-radius: 50%; cursor: pointer;
+            border: 2px solid transparent; transition: all 0.2s ease;
+        }
+        .theme-btn.active { border-color: #fff !important; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        input[type=range] {
+            -webkit-appearance: none; background: #333; border-radius: 5px; height: 4px; outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 12px; height: 12px;
+            border-radius: 50%; background: var(--accent-glow); cursor: pointer; transition: background 0.5s ease;
+        }
+
+        /* OS CONTEXT MENU */
+        #osContextMenu {
+            position: fixed; background: rgba(5,5,7,0.95); border: 1px solid var(--accent-glow);
+            box-shadow: 0 0 15px rgba(var(--accent-glow-rgb), 0.3); backdrop-filter: blur(10px);
+            z-index: 20000; display: none; flex-direction: column; width: 220px;
+            font-family: 'Fira Code', monospace; border-radius: 4px; overflow: hidden;
+        }
+        .context-header { background: #111; padding: 8px 15px; font-size: 0.7rem; color: #888; border-bottom: 1px solid #333; user-select: none; }
+        .context-item {
+            padding: 10px 15px; color: #ddd; font-size: 0.85rem; cursor: pointer;
+            border-bottom: 1px solid #222; transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+        }
+        .context-item:last-child { border-bottom: none; }
+        .context-item:hover { background: rgba(var(--accent-glow-rgb), 0.2); color: var(--accent-glow); padding-left: 20px; }
+
         * { cursor: none !important; }
 
         .os-cursor {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--accent-glow);
-            border-radius: 50%;
-            pointer-events: none;
-            transform: translate(-50%, -50%);
-            z-index: 10000;
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            position: fixed; top: 0; left: 0; width: 20px; height: 20px;
+            border: 2px solid var(--accent-glow); border-radius: 50%; pointer-events: none;
+            transform: translate(-50%, -50%); z-index: 10000; transition: width 0.2s, height 0.2s, background-color 0.2s;
             mix-blend-mode: difference;
         }
-
-        .os-cursor.active {
-            width: 50px;
-            height: 50px;
-            background-color: rgba(189, 82, 235, 0.2);
-        }
+        .os-cursor.active { width: 50px; height: 50px; background-color: rgba(var(--accent-glow-rgb), 0.2); }
 
         .chat-container::-webkit-scrollbar { width: 5px; }
         .chat-container::-webkit-scrollbar-track { background: #111; }
@@ -45,82 +68,116 @@
         }
 
         .global-alert {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: rgba(220, 38, 38, 0.9);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 5px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.9rem;
-            z-index: 10001;
-            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
-            border: 1px solid #ff8888;
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 90%;
-            text-align: center;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px);
+            background: rgba(220, 38, 38, 0.9); color: white; padding: 15px 30px; border-radius: 5px;
+            font-family: 'Fira Code', monospace; font-size: 0.9rem; z-index: 10001;
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5); border: 1px solid #ff8888; transition: transform 0.5s; width: 90%; text-align: center;
         }
-
-        .global-alert.show {
-            transform: translateX(-50%) translateY(0);
-        }
+        .global-alert.show { transform: translateX(-50%) translateY(0); }
 
         .admin-mini-btn {
-            background: transparent;
-            border: 1px solid #0ea5e9;
-            color: #0ea5e9;
-            padding: 4px 8px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.7rem;
-            cursor: pointer;
+            background: transparent; border: 1px solid #0ea5e9; color: #0ea5e9;
+            padding: 4px 8px; font-family: 'Fira Code', monospace; font-size: 0.7rem; cursor: pointer;
         }
 
-        .admin-mini-btn:hover {
-            background: rgba(14, 165, 233, 0.08);
+        /* WIDGET STYLES */
+        .os-widget { position: fixed; display: none; z-index: 5; color: #fff; font-family: 'Fira Code', monospace; user-select: none; }
+        .widget-clock { font-size: 3.5rem; text-shadow: 0 0 20px var(--accent-glow); font-weight: bold; pointer-events: auto; }
+        .widget-note {
+            background: rgba(255, 255, 0, 0.1); border: 1px solid #eab308; width: 220px; height: 220px;
+            padding: 10px; box-shadow: 0 0 15px rgba(234, 179, 8, 0.2); pointer-events: auto; display: flex; flex-direction: column; backdrop-filter: blur(5px);
         }
+        .widget-note textarea { background: transparent; border: none; color: #eab308; resize: none; flex-grow: 1; font-family: inherit; outline: none; }
+        .widget-header { font-size: 0.7rem; color: #888; cursor: move; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 5px; padding-bottom: 2px; text-align: right; }
 
         /* =========================================
-           📱 MOBILE RESPONSIVENESS OVERRIDES
+           📱 RESPONSIVE & MOBILE OVERRIDES
            ========================================= */
-        @media (max-width: 768px) {
-            /* Disable custom cursor so normal tapping works */
-            * { cursor: auto !important; }
+        @media (max-width: 900px) {
+            * { cursor: auto !important; } /* Force native touch cursor */
             .os-cursor { display: none !important; }
 
-            /* Desktop icon grid stays flexible */
+            /* Desktop converts to an iPhone-style app grid */
             .desktop-grid {
                 flex-direction: row !important;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 30px;
+                flex-wrap: wrap !important;
+                justify-content: flex-start !important;
+                align-content: flex-start !important;
+                gap: 25px !important;
+                padding: 30px 15px !important;
+                height: auto !important;
             }
 
-            /* Make OS Windows full width and centered */
+            .os-icon { width: 80px; margin-bottom: 10px; }
+            .os-icon-img { font-size: 2.5rem; margin-bottom: 8px; }
+            .os-icon-text { font-size: 0.75rem; word-break: break-word; }
+
+            /* OS Windows snap to full screen mobile app mode */
             .os-window {
-                width: 95% !important;
-                left: 2.5% !important;
-                top: 5% !important;
-                max-height: 85vh;
-                transform: none !important; /* Removes lingering drag offsets */
+                width: 90vw !important;
+                left: 5vw !important;
+                top: 5vh !important;
+                max-height: 85vh !important;
+                transform: none !important; 
+                margin: 0 !important;
+                box-sizing: border-box;
             }
-
-            /* Stack grid layouts into single column on mobile */
-            .grid-container-mobile {
-                grid-template-columns: 1fr !important;
-            }
-
-            /* Adjust Pizza Tracker sizes for small screens */
-            .tracker-step-box { width: 25px !important; height: 25px !important; line-height: 25px !important; }
-            .tracker-step-text { font-size: 0.6rem !important; }
             
-            /* Give bottom taskbar room */
+            /* Admin Window Specific Mobile Tuning */
+            #adminWindow { width: 95vw !important; left: 2.5vw !important; }
+
+            /* Client Portal Grid stacking */
+            .grid-container-mobile { grid-template-columns: 1fr !important; }
+
+            /* Fix tracking steps text overlap on narrow phones */
+            .tracker-step-box { width: 25px !important; height: 25px !important; line-height: 25px !important; font-size: 0.8rem; }
+            .tracker-step-text { font-size: 0.55rem !important; display: block; margin-top: 5px; }
+
+            /* Music Player Mobile adjustments */
+            #musicCover { width: 90px !important; height: 90px !important; }
+            #musicTitle { font-size: 1rem !important; }
+
+            /* Ensure taskbar doesn't get covered */
             body { padding-bottom: 50px; }
+            .os-taskbar { padding: 0 10px; font-size: 0.8rem; }
+            .taskbar-left span:first-child { margin-right: 5px; }
+            
+            /* Lock widgets within screen bounds if opened on mobile */
+            .os-widget { 
+                max-width: 90vw; 
+            }
+            .widget-clock { font-size: 2.5rem; }
         }
     </style>
 </head>
-<body style="margin: 0; overflow: hidden; background: #050507; color: white; font-family: 'Space Grotesk', sans-serif;">
+<body class="theme-purple" style="margin: 0; overflow: hidden; background: #050507; color: white; font-family: 'Space Grotesk', sans-serif; transition: --accent-glow 0.5s ease;">
+
+    <!-- OS CUSTOM RIGHT-CLICK MENU -->
+    <div id="osContextMenu">
+        <div class="context-header">SYSTEM_ACTIONS</div>
+        <div class="context-item hover-target" onclick="openWindow('portalWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span>📁</span> Client Portal
+        </div>
+        <div class="context-item hover-target" onclick="openWindow('musicWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span>🎵</span> VogueAmp
+        </div>
+        <div class="context-item hover-target" onclick="openWindow('arcadeWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span style="color: #0ea5e9;">🎯</span> Nexus Shooter
+        </div>
+        <div class="context-item hover-target" onclick="openWindow('widgetWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span style="color: #eab308;">🧩</span> Widget Engine
+        </div>
+        <div class="context-item hover-target" onclick="openWindow('settingsWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span style="color: #0f0;">⚙️</span> Settings
+        </div>
+        <div class="context-header" style="border-top: 1px solid #333;">POWER</div>
+        <div class="context-item hover-target" onclick="window.location.reload();">
+            <span style="color: #0f0;">↻</span> Refresh Desktop
+        </div>
+        <div class="context-item hover-target" onclick="window.location.reload();">
+            <span style="color: #ef4444;">⏻</span> Reboot OS
+        </div>
+    </div>
 
     <div class="os-cursor" id="osCursor"></div>
 
@@ -129,54 +186,112 @@
     </div>
 
     <div id="osBootScreen" style="position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease;">
-        <h1 style="font-family: 'Syne', sans-serif; font-size: 4rem; margin: 0;">CODE<span style="color: var(--accent-glow);">&gt;</span>OS</h1>
-        <p id="bootText" style="font-family: 'Fira Code', monospace; color: #0ea5e9;">&gt; DECRYPTING USER SESSION...</p>
+        <h1 style="font-family: 'Syne', sans-serif; font-size: 4rem; margin: 0; text-align: center;">CODE<span style="color: var(--accent-glow);">&gt;</span>OS</h1>
+        <p id="bootText" style="font-family: 'Fira Code', monospace; color: #0ea5e9; text-align: center; font-size: 0.9rem; padding: 0 20px;">&gt; DECRYPTING USER SESSION...</p>
     </div>
 
     <canvas id="cyber-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; opacity: 0.3; pointer-events: none;"></canvas>
 
-    <div class="desktop-grid" style="position: relative; z-index: 1; padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: flex-start; height: calc(100vh - 45px);">
-        <div class="os-icon hover-target" ondblclick="openWindow('portalWindow')" onclick="if(window.innerWidth <= 768) openWindow('portalWindow')">
+    <!-- FLOATING DESKTOP WIDGETS -->
+    <div id="clockWidget" class="os-widget widget-clock" style="top: 80px; left: 60vw;">
+        <div class="widget-header hover-target" onmousedown="dragWidget(event, 'clockWidget')" ontouchstart="dragWidgetTouch(event, 'clockWidget')">::: DRAG</div>
+        <div id="widgetClockTime" style="color: var(--accent-glow);">00:00:00</div>
+    </div>
+
+    <div id="noteWidget" class="os-widget widget-note" style="top: 250px; left: 60vw;">
+        <div class="widget-header hover-target" onmousedown="dragWidget(event, 'noteWidget')" ontouchstart="dragWidgetTouch(event, 'noteWidget')">::: DRAG</div>
+        <textarea id="widgetNoteText" class="hover-target" placeholder="Type quick notes here..."></textarea>
+    </div>
+
+    <!-- DESKTOP GRID -->
+    <div class="desktop-grid" style="position: relative; z-index: 1; padding: 20px; display: flex; flex-direction: column; gap: 20px; align-items: flex-start; height: calc(100vh - 45px); overflow-y: auto; overflow-x: hidden;">
+        <!-- Using onclick for mobile tap compatibility alongside ondblclick for desktop -->
+        <div class="os-icon hover-target" ondblclick="openWindow('portalWindow')" onclick="if(window.innerWidth <= 900) openWindow('portalWindow')">
             <div class="os-icon-img">📁</div>
             <span class="os-icon-text">Client_Portal.exe</span>
         </div>
 
-        <div class="os-icon hover-target" ondblclick="openWindow('arcadeWindow')" onclick="if(window.innerWidth <= 768) openWindow('arcadeWindow')">
+        <div class="os-icon hover-target" ondblclick="openWindow('arcadeWindow')" onclick="if(window.innerWidth <= 900) openWindow('arcadeWindow')">
             <div class="os-icon-img" style="color: #0ea5e9;">🎯</div>
             <span class="os-icon-text">Nexus_Shooter.exe</span>
         </div>
 
-        <div class="os-icon hover-target" ondblclick="openWindow('settingsWindow')" onclick="if(window.innerWidth <= 768) openWindow('settingsWindow')">
+        <div class="os-icon hover-target" ondblclick="openWindow('widgetWindow')" onclick="if(window.innerWidth <= 900) openWindow('widgetWindow')">
+            <div class="os-icon-img" style="color: #eab308;">🧩</div>
+            <span class="os-icon-text">Widget_Engine</span>
+        </div>
+
+        <div class="os-icon hover-target" ondblclick="openWindow('settingsWindow')" onclick="if(window.innerWidth <= 900) openWindow('settingsWindow')">
             <div class="os-icon-img" style="color: #0f0;">⚙️</div>
             <span class="os-icon-text">Sys_Settings</span>
         </div>
 
-        <div class="os-icon hover-target" id="adminIcon" style="display: none;" ondblclick="openWindow('adminWindow')" onclick="if(window.innerWidth <= 768) openWindow('adminWindow')">
+        <div class="os-icon hover-target" ondblclick="openWindow('musicWindow')" onclick="if(window.innerWidth <= 900) openWindow('musicWindow')">
+            <div class="os-icon-img" style="color: var(--accent-glow); transition: color 0.5s ease; text-shadow: 0 0 10px rgba(var(--accent-glow-rgb), 0.5);">🎵</div>
+            <span class="os-icon-text">VogueAmp.exe</span>
+        </div>
+
+        <div class="os-icon hover-target" id="adminIcon" style="display: none;" ondblclick="openWindow('adminWindow')" onclick="if(window.innerWidth <= 900) openWindow('adminWindow')">
             <div class="os-icon-img admin-glitch" style="color: #ef4444;">💀</div>
             <span class="os-icon-text" style="color: #ef4444;">Admin_Terminal</span>
+        </div>
+    </div>
+
+    <!-- WIDGET ENGINE APP -->
+    <div class="os-window" id="widgetWindow" style="top: 150px; left: 350px; display: none; width: 350px;">
+        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'widgetWindow')" style="border-bottom-color: #eab308;">
+            <span class="os-window-title" style="color: #eab308;">Widget_Engine.exe</span>
+            <span class="os-window-close hover-target" onclick="closeWindow('widgetWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
+        </div>
+        <div class="os-window-body" style="background: #0a0a00;">
+            
+            <div id="widgetLockedState" style="text-align: center; padding: 15px 0;">
+                <h2 style="color: #ef4444; font-family: 'Syne', sans-serif; margin-top: 0; font-size: 1.5rem;">SYSTEM LOCKED</h2>
+                <p style="color: #888; font-size: 0.85rem;">Widgets require Level 2 clearance. Enter the override code.</p>
+                <div style="display: flex; gap: 5px; justify-content: center; margin-top: 20px;">
+                    <input type="password" id="bypassCodeInput" placeholder="Enter override..." style="flex-grow: 1; background: #000; border: 1px solid #ef4444; color: #ef4444; padding: 8px; font-family: 'Fira Code', monospace; outline: none; text-transform: uppercase;">
+                    <button id="btnBypass" class="cmd-submit hover-target" style="border-color: #ef4444; color: #ef4444; padding: 8px;">DECRYPT</button>
+                </div>
+                <p id="bypassError" style="color: #ef4444; font-size: 0.75rem; margin-top: 10px; display: none; font-family: 'Fira Code', monospace;">&gt; ERROR: INVALID CHECKSUM</p>
+            </div>
+
+            <div id="widgetUnlockedState" style="display: none;">
+                <h3 style="color: #eab308; margin-top: 0; font-family: 'Syne', sans-serif;">WIDGET DASHBOARD</h3>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; padding: 10px; background: rgba(255,255,255,0.02);">
+                        <span style="font-family: 'Fira Code', monospace; font-size: 0.9rem; color: #ddd;">Neon Clock</span>
+                        <button id="toggleClockBtn" class="cmd-submit hover-target" style="border-color: #333; color: #888;" onclick="toggleWidget('clockWidget')">OFF</button>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; padding: 10px; background: rgba(255,255,255,0.02);">
+                        <span style="font-family: 'Fira Code', monospace; font-size: 0.9rem; color: #ddd;">Sticky Note</span>
+                        <button id="toggleNoteBtn" class="cmd-submit hover-target" style="border-color: #333; color: #888;" onclick="toggleWidget('noteWidget')">OFF</button>
+                    </div>
+                </div>
+                <button id="btnSaveWidgets" class="cmd-submit hover-target" style="width: 100%; border-color: #0ea5e9; color: #0ea5e9; margin-top: 20px;">[ SAVE LAYOUT TO CLOUD ]</button>
+            </div>
         </div>
     </div>
 
     <!-- ADMIN WINDOW -->
     <div class="os-window" id="adminWindow" style="top: 80px; left: 250px; display: none; width: 620px; max-height: 85vh; overflow-y: auto; border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'adminWindow')" style="border-bottom-color: #ef4444; background: #220000;">
-            <span class="os-window-title" style="color: #ef4444;">root@codevogue: ~/SYSTEM_OVERRIDE</span>
+            <span class="os-window-title" style="color: #ef4444; font-size: 0.8rem;">~/SYSTEM_OVERRIDE</span>
             <span class="os-window-close hover-target" onclick="closeWindow('adminWindow')" style="color: #ef4444; cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
 
         <div class="os-window-body" style="background: #0a0000;">
-            <h2 class="admin-glitch" style="color: #ef4444; margin-top: 0; font-family: 'Fira Code', monospace; text-transform: uppercase;">&gt; GOD MODE ACTIVATED</h2>
+            <h2 class="admin-glitch" style="color: #ef4444; margin-top: 0; font-family: 'Fira Code', monospace; text-transform: uppercase; font-size: 1.2rem;">&gt; GOD MODE ACTIVATED</h2>
 
             <div style="background: #1a0000; border: 1px solid #ef4444; padding: 15px; margin-top: 20px;">
-                <h4 style="color: #ef4444; margin-top: 0; font-family: 'Fira Code', monospace;">&gt; OS GLOBAL BROADCAST</h4>
+                <h4 style="color: #ef4444; margin-top: 0; font-family: 'Fira Code', monospace; font-size: 0.9rem;">&gt; OS GLOBAL BROADCAST</h4>
                 <div style="display: flex; gap: 5px;">
-                    <input type="text" id="broadcastInput" placeholder="Type alert message..." style="flex-grow: 1; background: #000; border: 1px solid #ef4444; color: #ff8888; padding: 8px; font-family: 'Fira Code', monospace; outline: none; width: 100%;">
-                    <button id="sendBroadcastBtn" class="cmd-submit hover-target" style="border-color: #ef4444; color: #ef4444;">TRANSMIT</button>
+                    <input type="text" id="broadcastInput" placeholder="Alert message..." style="flex-grow: 1; background: #000; border: 1px solid #ef4444; color: #ff8888; padding: 8px; font-family: 'Fira Code', monospace; outline: none; width: 100%;">
+                    <button id="sendBroadcastBtn" class="cmd-submit hover-target" style="border-color: #ef4444; color: #ef4444; padding: 8px;">SEND</button>
                 </div>
             </div>
 
             <div style="background: #1a0000; border: 1px solid #0ea5e9; padding: 15px; margin-top: 20px;">
-                <h4 style="color: #0ea5e9; margin-top: 0; font-family: 'Fira Code', monospace; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <h4 style="color: #0ea5e9; margin-top: 0; font-family: 'Fira Code', monospace; font-size: 0.9rem; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
                     <span>&gt; INTERCEPTED COMMS</span>
                     <span style="display: flex; align-items: center; gap: 8px;">
                         <span id="adminChatStatus" style="font-size: 0.7rem; color: #888;">Idle</span>
@@ -193,8 +308,8 @@
                 </div>
 
                 <div style="display: flex; gap: 5px;">
-                    <input type="text" id="adminChatInput" placeholder="Type direct response..." style="flex-grow: 1; background: #000; border: 1px solid #0ea5e9; color: #fff; padding: 8px; font-family: 'Fira Code', monospace; outline: none; width: 100%;">
-                    <button id="adminSendChatBtn" class="cmd-submit hover-target" style="border-color: #0ea5e9; color: #0ea5e9;">SEND</button>
+                    <input type="text" id="adminChatInput" placeholder="Direct response..." style="flex-grow: 1; background: #000; border: 1px solid #0ea5e9; color: #fff; padding: 8px; font-family: 'Fira Code', monospace; outline: none; width: 100%;">
+                    <button id="adminSendChatBtn" class="cmd-submit hover-target" style="border-color: #0ea5e9; color: #0ea5e9; padding: 8px;">SEND</button>
                 </div>
             </div>
         </div>
@@ -202,60 +317,55 @@
 
     <!-- CLIENT PORTAL -->
     <div class="os-window" id="portalWindow" style="top: 50px; left: 50px; display: none; width: 700px; max-height: 85vh; overflow-y: auto; background: rgba(5,5,7,0.95); backdrop-filter: blur(10px);">
-        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'portalWindow')" style="border-bottom-color: #BD52EB;">
-            <span class="os-window-title">root@codevogue: ~/vip_client_dashboard</span>
+        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'portalWindow')" style="border-bottom-color: var(--accent-glow); transition: border-color 0.5s ease;">
+            <span class="os-window-title">~/vip_client_dashboard</span>
             <span class="os-window-close hover-target" onclick="closeWindow('portalWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
 
         <div class="os-window-body">
             <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <div>
-                    <h2 style="margin: 0; font-family: 'Syne', sans-serif; text-transform: uppercase; color: #fff; font-size: 1.5rem;">
-                        Welcome, <span id="portalClientName" style="color: #BD52EB; text-shadow: 0 0 10px rgba(189,82,235,0.5);">Client</span>
+                    <h2 style="margin: 0; font-family: 'Syne', sans-serif; text-transform: uppercase; color: #fff; font-size: 1.3rem;">
+                        Welcome, <span id="portalClientName" style="color: var(--accent-glow); text-shadow: 0 0 10px rgba(var(--accent-glow-rgb, 189, 82, 235),0.5); transition: all 0.5s ease;">Client</span>
                     </h2>
                     <p style="font-size: 0.8rem; color: #888; margin: 5px 0 0 0; font-family: 'Fira Code', monospace;">PROJECT_ID: <span id="portalProjectId" style="color: #0ea5e9;">LOADING...</span></p>
                 </div>
-                <button class="cmd-submit hover-target" style="border-color: #0ea5e9; color: #0ea5e9; padding: 10px 15px; box-shadow: 0 0 10px rgba(14,165,233,0.3);" onclick="window.open('https://github.com/TanishNandanwar', '_blank')">
-                    [ VIEW LIVE STAGING ]
+                <button class="cmd-submit hover-target" style="border-color: #0ea5e9; color: #0ea5e9; padding: 8px 12px; box-shadow: 0 0 10px rgba(14,165,233,0.3); font-size: 0.8rem;" onclick="window.open('https://github.com/TanishNandanwar', '_blank')">
+                    [ STAGING ]
                 </button>
             </div>
 
-            <h4 style="color: #fff; margin-bottom: 15px; font-family: 'Syne', sans-serif;">SYSTEM ARCHITECTURE PHASE</h4>
+            <h4 style="color: #fff; margin-bottom: 15px; font-family: 'Syne', sans-serif; font-size: 1rem;">SYSTEM ARCHITECTURE PHASE</h4>
             <div style="position: relative; margin-bottom: 30px; padding: 10px 0;">
-                <!-- Full width grey line -->
                 <div style="position: absolute; top: 25px; left: 5%; right: 5%; height: 2px; background: #333; z-index: 1;"></div>
-                <!-- 100% width purple glowing progress line -->
-                <div style="position: absolute; top: 25px; left: 5%; width: 90%; height: 2px; background: #BD52EB; z-index: 2; box-shadow: 0 0 10px rgba(189,82,235,0.8);"></div>
+                <div style="position: absolute; top: 25px; left: 5%; width: 90%; height: 2px; background: var(--accent-glow); z-index: 2; box-shadow: 0 0 10px rgba(var(--accent-glow-rgb, 189, 82, 235),0.8); transition: all 0.5s ease;"></div>
 
                 <div style="display: flex; justify-content: space-between; position: relative; z-index: 3;">
-                    <div style="text-align: center; background: #050507; padding: 0 10px;">
-                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: #BD52EB; color: #fff; line-height: 30px; margin: 0 auto 5px auto; border: 2px solid #BD52EB;">✓</div>
+                    <div style="text-align: center; background: #050507; padding: 0 5px;">
+                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: var(--accent-glow); color: #fff; line-height: 30px; margin: 0 auto 5px auto; border: 2px solid var(--accent-glow); transition: all 0.5s ease;">✓</div>
                         <span class="tracker-step-text" style="font-size: 0.7rem; color: #aaa; font-family: 'Fira Code', monospace;">CONCEPT</span>
                     </div>
-                    <div style="text-align: center; background: #050507; padding: 0 10px;">
-                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: #BD52EB; color: #fff; line-height: 30px; margin: 0 auto 5px auto; border: 2px solid #BD52EB;">✓</div>
+                    <div style="text-align: center; background: #050507; padding: 0 5px;">
+                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: var(--accent-glow); color: #fff; line-height: 30px; margin: 0 auto 5px auto; border: 2px solid var(--accent-glow); transition: all 0.5s ease;">✓</div>
                         <span class="tracker-step-text" style="font-size: 0.7rem; color: #aaa; font-family: 'Fira Code', monospace;">DESIGN</span>
                     </div>
-                    <!-- Coding is now checked off -->
-                    <div style="text-align: center; background: #050507; padding: 0 10px;">
-                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: #BD52EB; color: #fff; line-height: 30px; margin: 0 auto 5px auto; border: 2px solid #BD52EB;">✓</div>
+                    <div style="text-align: center; background: #050507; padding: 0 5px;">
+                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: var(--accent-glow); color: #fff; line-height: 30px; margin: 0 auto 5px auto; border: 2px solid var(--accent-glow); transition: all 0.5s ease;">✓</div>
                         <span class="tracker-step-text" style="font-size: 0.7rem; color: #aaa; font-family: 'Fira Code', monospace;">CODING</span>
                     </div>
-                    <!-- Launch is now the active glowing state -->
-                    <div style="text-align: center; background: #050507; padding: 0 10px;">
-                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: #050507; color: #BD52EB; line-height: 30px; margin: 0 auto 5px auto; border: 2px solid #BD52EB; box-shadow: 0 0 15px rgba(189,82,235,0.5);">🚀</div>
-                        <span class="tracker-step-text" style="font-size: 0.7rem; color: #BD52EB; font-weight: bold; font-family: 'Fira Code', monospace;">LAUNCHED</span>
+                    <div style="text-align: center; background: #050507; padding: 0 5px;">
+                        <div class="tracker-step-box" style="width: 30px; height: 30px; border-radius: 50%; background: #050507; color: var(--accent-glow); line-height: 30px; margin: 0 auto 5px auto; border: 2px solid var(--accent-glow); box-shadow: 0 0 15px rgba(var(--accent-glow-rgb, 189, 82, 235),0.5); transition: all 0.5s ease;">🚀</div>
+                        <span class="tracker-step-text" style="font-size: 0.7rem; color: var(--accent-glow); font-weight: bold; font-family: 'Fira Code', monospace; transition: color 0.5s ease;">LAUNCHED</span>
                     </div>
                 </div>
             </div>
 
-            <!-- grid-container-mobile class added -->
             <div class="grid-container-mobile" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div>
                     <div style="background: #111; border-left: 3px solid #eab308; padding: 15px; margin-bottom: 20px; height: 100%; box-sizing: border-box;">
                         <div style="color: #eab308; font-family: 'Fira Code', monospace; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold;">⚠️ ACTION REQUIRED</div>
-                        <p style="font-size: 0.85rem; color: #ccc; margin-top: 0;">Upload your company logo in high resolution (SVG or PNG) so we can map it to the navbar.</p>
-                        <button id="uploadAssetBtn" class="cmd-submit hover-target" style="border-color: #eab308; color: #eab308; font-size: 0.75rem; padding: 5px 10px;">[ UPLOAD_ASSET ]</button>
+                        <p style="font-size: 0.8rem; color: #ccc; margin-top: 0;">Upload your company logo in high resolution (SVG or PNG) so we can map it to the navbar.</p>
+                        <button id="uploadAssetBtn" class="cmd-submit hover-target" style="border-color: #eab308; color: #eab308; font-size: 0.75rem; padding: 5px 10px; margin-top: 10px;">[ UPLOAD_ASSET ]</button>
                     </div>
                 </div>
 
@@ -295,6 +405,47 @@
         </div>
     </div>
 
+    <!-- MUSIC PLAYER UPDATED -->
+    <div class="os-window" id="musicWindow" style="top: 100px; left: 60%; display: none; width: 320px; background: rgba(5,5,7,0.95); backdrop-filter: blur(10px);">
+        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'musicWindow')" style="border-bottom-color: var(--accent-glow); transition: border-color 0.5s ease;">
+            <span class="os-window-title">VogueAmp_v2.0.exe</span>
+            <span class="os-window-close hover-target" onclick="closeWindow('musicWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
+        </div>
+        <div class="os-window-body" style="text-align: center; padding: 20px;">
+            
+            <div style="display: flex; gap: 5px; margin-bottom: 20px;">
+                <input type="text" id="musicSearchInput" placeholder="Search any song..." style="flex-grow: 1; background: #000; border: 1px solid var(--accent-glow); color: #fff; padding: 8px; font-family: 'Fira Code', monospace; outline: none; transition: border-color 0.5s ease;">
+                <button id="btnSearchMusic" class="cmd-submit hover-target" style="border-color: var(--accent-glow); color: var(--accent-glow); padding: 8px;">🔍</button>
+            </div>
+
+            <div class="music-visualizer" id="musicCover" style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid var(--accent-glow); margin: 0 auto 15px auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(var(--accent-glow-rgb, 189,82,235), 0.4); transition: all 0.5s ease; animation: spin 4s linear infinite; animation-play-state: paused; overflow: hidden; background: #111;">
+                <img id="musicCoverImg" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                <span id="musicDefaultIcon" style="font-size: 3rem;">🎧</span>
+            </div>
+
+            <h3 id="musicTitle" style="margin: 0; color: #fff; font-family: 'Syne', sans-serif; font-size: 1.1rem; text-shadow: 0 0 5px rgba(255,255,255,0.2);">
+                Awaiting Input...
+            </h3>
+            <p id="musicArtist" style="margin: 5px 0 15px 0; color: var(--accent-glow); font-family: 'Fira Code', monospace; font-size: 0.8rem; transition: color 0.5s ease; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                Search any song
+            </p>
+
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                <span id="musicCurrentTime" style="font-family: 'Fira Code', monospace; font-size: 0.7rem; color: #aaa; width: 30px; text-align: right;">0:00</span>
+                <input type="range" id="musicProgress" value="0" min="0" max="100" style="flex-grow: 1;">
+                <span id="musicDuration" style="font-family: 'Fira Code', monospace; font-size: 0.7rem; color: #aaa; width: 30px; text-align: left;">0:00</span>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button class="cmd-submit hover-target" id="btnPrev" style="border-color: var(--accent-glow); color: var(--accent-glow); padding: 8px 15px; font-size: 1.2rem; transition: all 0.5s ease;">⏮</button>
+                <button class="cmd-submit hover-target" id="btnPlayPause" style="border-color: var(--accent-glow); color: var(--accent-glow); padding: 8px 20px; font-size: 1.2rem; transition: all 0.5s ease; box-shadow: 0 0 10px rgba(var(--accent-glow-rgb, 189,82,235), 0.3);">▶</button>
+                <button class="cmd-submit hover-target" id="btnNext" style="border-color: var(--accent-glow); color: var(--accent-glow); padding: 8px 15px; font-size: 1.2rem; transition: all 0.5s ease;">⏭</button>
+            </div>
+
+            <audio id="osAudioPlayer" style="display: none;"></audio>
+        </div>
+    </div>
+
     <!-- SETTINGS -->
     <div class="os-window" id="settingsWindow" style="top: 200px; left: 150px; display: none; width: 350px;">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'settingsWindow')" style="border-bottom-color: #0f0;">
@@ -302,17 +453,24 @@
             <span class="os-window-close hover-target" onclick="closeWindow('settingsWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
         <div class="os-window-body">
-            <p style="word-break: break-all;"><strong>USER ID:</strong> <span id="osUserId" style="color: #0ea5e9; font-family: 'Fira Code', monospace; font-size: 0.8rem;">Loading...</span></p>
-            <p><strong>ALIAS:</strong> <span id="osUserName" style="color: #0f0; font-family: 'Fira Code', monospace;">Loading...</span></p>
-            <p><strong>CLEARANCE:</strong> <span id="osUserRole" style="color: #BD52EB; font-family: 'Fira Code', monospace;">Loading...</span></p>
+            <p style="word-break: break-all; font-size: 0.8rem;"><strong>USER ID:</strong> <span id="osUserId" style="color: #0ea5e9; font-family: 'Fira Code', monospace;">Loading...</span></p>
+            <p style="font-size: 0.8rem;"><strong>ALIAS:</strong> <span id="osUserName" style="color: #0f0; font-family: 'Fira Code', monospace;">Loading...</span></p>
+            <p style="font-size: 0.8rem;"><strong>CLEARANCE:</strong> <span id="osUserRole" style="color: var(--accent-glow); font-family: 'Fira Code', monospace; transition: color 0.5s ease;">Loading...</span></p>
             <hr style="border-color: #333; margin: 20px 0;">
+            <h4 style="color: #fff; font-family: 'Fira Code', monospace; font-size: 0.8rem; margin-bottom: 10px;">> OS_THEME_MATRIX</h4>
+            <div style="display: flex; gap: 15px; margin-bottom: 25px; justify-content: center;">
+                <button onclick="changeTheme('theme-purple')" id="btn-theme-purple" class="theme-btn hover-target active" style="background: #BD52EB;"></button>
+                <button onclick="changeTheme('theme-green')" id="btn-theme-green" class="theme-btn hover-target" style="background: #0f0;"></button>
+                <button onclick="changeTheme('theme-blue')" id="btn-theme-blue" class="theme-btn hover-target" style="background: #0ea5e9;"></button>
+            </div>
+
             <button id="logoutBtn" class="cmd-submit hover-target" style="width: 100%; border-color: #ef4444; color: #ef4444;">[ TERMINATE CONNECTION ]</button>
         </div>
     </div>
 
     <div class="os-taskbar">
         <div class="taskbar-left">
-            <span style="font-weight: bold; color: var(--accent-glow); margin-right: 15px;">CODE&gt;OS</span>
+            <span style="font-weight: bold; color: var(--accent-glow); margin-right: 15px; transition: color 0.5s ease;">CODE&gt;OS</span>
             <span id="taskbarUser" style="color: #888; display: none;">user@network</span> 
         </div>
         <div class="taskbar-right">
@@ -323,8 +481,7 @@
     <script>
         const cursor = document.getElementById('osCursor');
 
-        // Only use custom cursor if screen is wider than 768px (Desktop)
-        if(window.innerWidth > 768) {
+        if(window.innerWidth > 900) {
             document.addEventListener('mousemove', (e) => {
                 cursor.style.left = e.clientX + 'px';
                 cursor.style.top = e.clientY + 'px';
@@ -343,32 +500,93 @@
                 hour: '2-digit',
                 minute: '2-digit'
             });
+            const wClock = document.getElementById('widgetClockTime');
+            if (wClock && document.getElementById('clockWidget').style.display === 'block') {
+                wClock.textContent = now.toLocaleTimeString('en-US', { hour12: false });
+            }
         }, 1000);
 
         let zIndexCounter = 10;
 
+        function loadWindowState() {
+            if (window.innerWidth <= 900) return;
+            const savedState = localStorage.getItem('codevogue_windows');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                for (const id in state) {
+                    const win = document.getElementById(id);
+                    if (win) {
+                        win.style.display = state[id].display || 'none';
+                        win.style.top = state[id].top || win.style.top;
+                        win.style.left = state[id].left || win.style.left;
+                        win.style.zIndex = state[id].zIndex || 10;
+                        if (state[id].zIndex > zIndexCounter) zIndexCounter = state[id].zIndex;
+                    }
+                }
+            }
+        }
+
+        function saveWindowState() {
+            if (window.innerWidth <= 900) return;
+            const windows = document.querySelectorAll('.os-window');
+            const state = {};
+            windows.forEach(win => {
+                state[win.id] = {
+                    display: win.style.display,
+                    top: win.style.top,
+                    left: win.style.left,
+                    zIndex: win.style.zIndex
+                };
+            });
+            localStorage.setItem('codevogue_windows', JSON.stringify(state));
+        }
+
+        loadWindowState();
+
+        window.osThemeColor = '#BD52EB';
+        window.osThemeRgb = '189, 82, 235';
+
+        window.applyTheme = function(themeName) {
+            document.body.classList.remove('theme-purple', 'theme-green', 'theme-blue');
+            document.body.classList.add(themeName);
+
+            document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById(`btn-${themeName}`);
+            if(activeBtn) activeBtn.classList.add('active');
+
+            if(themeName === 'theme-purple') { window.osThemeColor = '#BD52EB'; window.osThemeRgb = '189, 82, 235'; }
+            if(themeName === 'theme-green') { window.osThemeColor = '#0f0'; window.osThemeRgb = '0, 255, 0'; }
+            if(themeName === 'theme-blue') { window.osThemeColor = '#0ea5e9'; window.osThemeRgb = '14, 165, 233'; }
+
+            localStorage.setItem('codevogue_theme', themeName);
+        }
+
+        const savedTheme = localStorage.getItem('codevogue_theme');
+        if (savedTheme) applyTheme(savedTheme);
+
         window.openWindow = function(id) {
-            // Close other windows on mobile so it doesn't get messy
-            if(window.innerWidth <= 768) {
+            if(window.innerWidth <= 900) {
                 document.querySelectorAll('.os-window').forEach(win => win.style.display = 'none');
             }
             const win = document.getElementById(id);
             win.style.display = 'block';
             window.bringToFront(win);
+            saveWindowState();
         };
 
         window.closeWindow = function(id) {
             document.getElementById(id).style.display = 'none';
+            saveWindowState();
         };
 
         window.bringToFront = function(element) {
             zIndexCounter++;
             element.style.zIndex = zIndexCounter;
+            saveWindowState();
         };
 
         window.dragWindow = function(e, id) {
-            // Disable dragging on mobile devices completely
-            if(window.innerWidth <= 768) return;
+            if(window.innerWidth <= 900) return;
 
             const win = document.getElementById(id);
             window.bringToFront(win);
@@ -390,7 +608,6 @@
                 pos3 = e.clientX;
                 pos4 = e.clientY;
                 
-                // Keep the window from going completely off the top of the screen
                 let newTop = win.offsetTop - pos2;
                 if (newTop < 0) newTop = 0;
                 
@@ -401,17 +618,92 @@
             function closeDragElement() {
                 document.onmouseup = null;
                 document.onmousemove = null;
+                saveWindowState();
             }
         };
 
-        // Allow dragging by double-clicking the body of any window
         document.querySelectorAll('.os-window-body').forEach(body => {
             body.addEventListener('dblclick', function(e) {
-                // Find the parent window of this body
                 const win = this.parentElement;
                 window.dragWindow(e, win.id);
             });
         });
+
+        // 🧩 WIDGET DRAGGING LOGIC (Mouse & Touch)
+        window.dragWidget = function(e, id) {
+            if(window.innerWidth <= 900) return; // Restrict complex dragging on mobile
+            const widget = document.getElementById(id);
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            e = e || window.event;
+            e.preventDefault();
+            pos3 = e.clientX;
+            pos4 = e.clientY;
+            document.onmouseup = () => {
+                document.onmouseup = null;
+                document.onmousemove = null;
+            };
+            document.onmousemove = (e) => {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                widget.style.top = (widget.offsetTop - pos2) + "px";
+                widget.style.left = (widget.offsetLeft - pos1) + "px";
+            };
+        };
+
+        // Mobile touch drag for widgets
+        window.dragWidgetTouch = function(e, id) {
+            const widget = document.getElementById(id);
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            const touch = e.touches[0];
+            pos3 = touch.clientX;
+            pos4 = touch.clientY;
+            
+            document.ontouchend = () => {
+                document.ontouchend = null;
+                document.ontouchmove = null;
+            };
+            document.ontouchmove = (e) => {
+                const touchMove = e.touches[0];
+                pos1 = pos3 - touchMove.clientX;
+                pos2 = pos4 - touchMove.clientY;
+                pos3 = touchMove.clientX;
+                pos4 = touchMove.clientY;
+                
+                // Keep widget within screen bounds on mobile
+                let newTop = widget.offsetTop - pos2;
+                let newLeft = widget.offsetLeft - pos1;
+                if(newTop < 0) newTop = 0;
+                if(newLeft < 0) newLeft = 0;
+                
+                widget.style.top = newTop + "px";
+                widget.style.left = newLeft + "px";
+            };
+        };
+
+        window.toggleWidget = function(id) {
+            const widget = document.getElementById(id);
+            const btn = document.getElementById(id === 'clockWidget' ? 'toggleClockBtn' : 'toggleNoteBtn');
+            if (widget.style.display === 'none' || widget.style.display === '') {
+                widget.style.display = 'block';
+                btn.textContent = 'ON';
+                btn.style.borderColor = '#0f0';
+                btn.style.color = '#0f0';
+                // On mobile, spawn it in the middle of the screen to ensure it's visible
+                if(window.innerWidth <= 900) {
+                    widget.style.top = '10vh';
+                    widget.style.left = '5vw';
+                }
+            } else {
+                widget.style.display = 'none';
+                btn.textContent = 'OFF';
+                btn.style.borderColor = '#333';
+                btn.style.color = '#888';
+            }
+        };
 
         const canvas = document.getElementById('cyber-canvas');
         if (canvas) {
@@ -422,8 +714,7 @@
                 width = canvas.width = window.innerWidth;
                 height = canvas.height = window.innerHeight;
                 particles = [];
-                // Reduce particles on mobile for performance
-                const particleCount = window.innerWidth <= 768 ? 20 : 50;
+                const particleCount = window.innerWidth <= 900 ? 20 : 50;
                 for (let i = 0; i < particleCount; i++) {
                     particles.push({
                         x: Math.random() * width,
@@ -449,7 +740,7 @@
 
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = '#BD52EB';
+                    ctx.fillStyle = window.osThemeColor;
                     ctx.fill();
 
                     for (let j = i + 1; j < particles.length; j++) {
@@ -457,7 +748,7 @@
                         let dist = Math.sqrt(Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2));
                         if (dist < 100) {
                             ctx.beginPath();
-                            ctx.strokeStyle = `rgba(189, 82, 235, ${1 - dist / 100})`;
+                            ctx.strokeStyle = `rgba(${window.osThemeRgb}, ${1 - dist / 100})`;
                             ctx.lineWidth = 0.5;
                             ctx.moveTo(p.x, p.y);
                             ctx.lineTo(p2.x, p2.y);
@@ -471,8 +762,197 @@
             animate();
             window.addEventListener('resize', init);
         }
-    </script>
 
+        // =========================================
+        // 🎵 FULL SONG MUSIC PLAYER 
+        // =========================================
+        let currentPlaylist = [];
+        let currentTrackIndex = 0;
+        
+        const audio = document.getElementById('osAudioPlayer');
+        const playBtn = document.getElementById('btnPlayPause');
+        const cover = document.getElementById('musicCover');
+        const coverImg = document.getElementById('musicCoverImg');
+        const defaultIcon = document.getElementById('musicDefaultIcon');
+        const progress = document.getElementById('musicProgress');
+        const currentTimeEl = document.getElementById('musicCurrentTime');
+        const durationEl = document.getElementById('musicDuration');
+        const searchInput = document.getElementById('musicSearchInput');
+
+        function pickAudioUrl(track) {
+            const list = track?.downloadUrl || track?.download_links || [];
+            if (Array.isArray(list) && list.length > 0) {
+                const best = list.find(x => x.quality === '320kbps') || list.find(x => x.quality === '160kbps') || list[list.length - 1];
+                return best?.url || best?.link || null;
+            }
+            return null;
+        }
+
+        function pickImageUrl(track) {
+            const list = track?.image || track?.image_url || [];
+            if (Array.isArray(list) && list.length > 0) {
+                const best = list.find(x => x.quality === '500x500') || list[list.length - 1];
+                return best?.url || best?.link || null;
+            }
+            return typeof list === 'string' ? list : "";
+        }
+
+        async function searchAndPlayMusic(query) {
+            document.getElementById('musicTitle').textContent = "Bypassing Firewall...";
+            document.getElementById('musicArtist').textContent = "Extracting full audio...";
+            
+            const q = encodeURIComponent(query);
+            
+            const attempts = [
+                `https://saavn.dev/api/search/songs?query=${q}`,
+                `https://corsproxy.io/?${encodeURIComponent('https://saavn.dev/api/search/songs?query=' + query)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent('https://saavn.dev/api/search/songs?query=' + query)}`,
+                `https://jiosaavn-api-privatecvc2.vercel.app/search/songs?query=${q}`
+            ];
+
+            let data = null;
+
+            for (let url of attempts) {
+                try {
+                    const response = await fetch(url);
+                    if (response.ok) {
+                        const json = await response.json();
+                        const results = json?.data?.results || json?.results || json?.data || [];
+                        if (results.length > 0) {
+                            data = results;
+                            console.log("Successfully connected via:", url);
+                            break; 
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Node blocked, rerouting to next proxy...");
+                }
+            }
+
+            if (data && data.length > 0) {
+                currentPlaylist = data.map(track => {
+                    const doc = new DOMParser().parseFromString(track.name || track.title || "Unknown", "text/html");
+                    return {
+                        title: doc.documentElement.textContent,
+                        artist: track.artists?.primary?.[0]?.name || track.artist || "Unknown Artist",
+                        image: pickImageUrl(track),
+                        audio: pickAudioUrl(track)
+                    };
+                }).filter(track => track.audio !== null); 
+
+                if (currentPlaylist.length > 0) {
+                    currentTrackIndex = 0;
+                    loadTrack(0);
+                } else {
+                    document.getElementById('musicTitle').textContent = "AUDIO LOCKED";
+                    document.getElementById('musicArtist').textContent = "No MP3 links available";
+                    cover.style.animationPlayState = 'paused';
+                    playBtn.textContent = '▶';
+                }
+            } else {
+                document.getElementById('musicTitle').textContent = "CONNECTION FAILED";
+                document.getElementById('musicArtist').textContent = "All proxies blocked";
+                cover.style.animationPlayState = 'paused';
+                playBtn.textContent = '▶';
+            }
+        }
+
+        function loadTrack(index) {
+            const track = currentPlaylist[index];
+            if (!track || !track.audio) return;
+
+            audio.src = track.audio;
+            
+            let title = track.title;
+            if(title.length > 18) title = title.substring(0, 18) + "...";
+            document.getElementById('musicTitle').textContent = title;
+            document.getElementById('musicArtist').textContent = track.artist;
+            
+            if(track.image) {
+                coverImg.src = track.image;
+                coverImg.style.display = "block";
+                defaultIcon.style.display = "none";
+            } else {
+                coverImg.style.display = "none";
+                defaultIcon.style.display = "block";
+            }
+            
+            audio.load();
+            progress.value = 0;
+            currentTimeEl.textContent = "0:00";
+            
+            audio.play().then(() => {
+                playBtn.textContent = "⏸";
+                cover.style.animationPlayState = 'running';
+            }).catch(e => console.error("Auto-play blocked by browser:", e));
+        }
+
+        document.getElementById('btnSearchMusic').addEventListener('click', () => {
+            const query = searchInput.value.trim();
+            if(query) searchAndPlayMusic(query);
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter') {
+                const query = searchInput.value.trim();
+                // Close keyboard on mobile on enter
+                if(window.innerWidth <= 900) searchInput.blur();
+                if(query) searchAndPlayMusic(query);
+            }
+        });
+
+        function playPause() {
+            if (currentPlaylist.length === 0) return;
+            if (audio.paused) {
+                audio.play().then(() => {
+                    playBtn.textContent = "⏸";
+                    cover.style.animationPlayState = 'running';
+                });
+            } else {
+                audio.pause();
+                playBtn.textContent = "▶";
+                cover.style.animationPlayState = 'paused';
+            }
+        }
+
+        document.getElementById('btnPlayPause').addEventListener('click', playPause);
+
+        document.getElementById('btnNext').addEventListener('click', () => {
+            if (currentPlaylist.length === 0) return;
+            currentTrackIndex = (currentTrackIndex + 1) % currentPlaylist.length;
+            loadTrack(currentTrackIndex);
+        });
+
+        document.getElementById('btnPrev').addEventListener('click', () => {
+            if (currentPlaylist.length === 0) return;
+            currentTrackIndex = (currentTrackIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
+            loadTrack(currentTrackIndex);
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration && !Number.isNaN(audio.duration)) {
+                progress.value = (audio.currentTime / audio.duration) * 100;
+                
+                let currentMins = Math.floor(audio.currentTime / 60);
+                let currentSecs = Math.floor(audio.currentTime % 60).toString().padStart(2, '0');
+                currentTimeEl.textContent = `${currentMins}:${currentSecs}`;
+
+                let durMins = Math.floor(audio.duration / 60);
+                let durSecs = Math.floor(audio.duration % 60).toString().padStart(2, '0');
+                durationEl.textContent = `${durMins}:${durSecs}`;
+            }
+        });
+
+        progress.addEventListener('input', () => {
+            if (audio.duration && !Number.isNaN(audio.duration)) {
+                audio.currentTime = (progress.value / 100) * audio.duration;
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            document.getElementById('btnNext').click();
+        });
+    </script>
     <script type="module">
         import { auth, db } from "../js/firebase-config.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -487,6 +967,31 @@
             collection,
             getDocs
         } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const contextMenu = document.getElementById('osContextMenu');
+
+        document.addEventListener('contextmenu', (e) => {
+            if(window.innerWidth <= 900) return;
+            e.preventDefault();
+
+            let x = e.clientX;
+            let y = e.clientY;
+
+            contextMenu.style.display = 'flex';
+            const menuWidth = contextMenu.offsetWidth;
+            const menuHeight = contextMenu.offsetHeight;
+
+            if (x + menuWidth > window.innerWidth) x -= menuWidth;
+            if (y + menuHeight > window.innerHeight) y -= menuHeight;
+
+            contextMenu.style.left = `${x}px`;
+            contextMenu.style.top = `${y}px`;
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('#osContextMenu')) return;
+            contextMenu.style.display = 'none';
+        });
 
         let currentUserRef = null;
         let isUserAdmin = false;
@@ -508,6 +1013,95 @@
             }
         }, 1500);
 
+        window.changeTheme = async function(theme) {
+            window.applyTheme(theme);
+            if (currentUserRef) {
+                try {
+                    await updateDoc(currentUserRef, { theme: theme });
+                } catch (e) { console.error("Failed to save theme to DB", e); }
+            }
+        }
+
+        // =========================================
+        // 🔐 WIDGET DB LOGIC
+        // =========================================
+        document.getElementById('btnBypass').addEventListener('click', async () => {
+            const code = document.getElementById('bypassCodeInput').value.trim().toUpperCase();
+            if (code === 'VOID') {
+                document.getElementById('widgetLockedState').style.display = 'none';
+                document.getElementById('widgetUnlockedState').style.display = 'block';
+                if (currentUserRef) {
+                    await updateDoc(currentUserRef, { widgetsUnlocked: true });
+                }
+            } else {
+                document.getElementById('bypassError').style.display = 'block';
+                setTimeout(() => document.getElementById('bypassError').style.display = 'none', 3000);
+            }
+        });
+
+        window.saveWidgetState = async function() {
+            if (!currentUserRef) return;
+            const clock = document.getElementById('clockWidget');
+            const note = document.getElementById('noteWidget');
+            const noteText = document.getElementById('widgetNoteText').value;
+
+            const state = {
+                clock: {
+                    display: clock.style.display,
+                    top: clock.style.top,
+                    left: clock.style.left
+                },
+                note: {
+                    display: note.style.display,
+                    top: note.style.top,
+                    left: note.style.left,
+                    text: noteText
+                }
+            };
+
+            const btn = document.getElementById('btnSaveWidgets');
+            btn.textContent = "[ ENCRYPTING TO CLOUD... ]";
+            try {
+                await updateDoc(currentUserRef, { widgets: state });
+                btn.textContent = "[ SAVED SECURELY ]";
+                btn.style.borderColor = "#0f0";
+                btn.style.color = "#0f0";
+                setTimeout(() => {
+                    btn.textContent = "[ SAVE LAYOUT TO CLOUD ]";
+                    btn.style.borderColor = "#0ea5e9";
+                    btn.style.color = "#0ea5e9";
+                }, 2000);
+            } catch (e) {
+                console.error("Widget Save Error", e);
+            }
+        };
+
+        function applyWidgetState(state) {
+            if (state.clock) {
+                const clock = document.getElementById('clockWidget');
+                clock.style.display = state.clock.display;
+                clock.style.top = state.clock.top;
+                clock.style.left = state.clock.left;
+                if (state.clock.display === 'block') {
+                    document.getElementById('toggleClockBtn').textContent = 'ON';
+                    document.getElementById('toggleClockBtn').style.borderColor = '#0f0';
+                    document.getElementById('toggleClockBtn').style.color = '#0f0';
+                }
+            }
+            if (state.note) {
+                const note = document.getElementById('noteWidget');
+                note.style.display = state.note.display;
+                note.style.top = state.note.top;
+                note.style.left = state.note.left;
+                document.getElementById('widgetNoteText').value = state.note.text || "";
+                if (state.note.display === 'block') {
+                    document.getElementById('toggleNoteBtn').textContent = 'ON';
+                    document.getElementById('toggleNoteBtn').style.borderColor = '#0f0';
+                    document.getElementById('toggleNoteBtn').style.color = '#0f0';
+                }
+            }
+        }
+
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
                 window.location.href = "login.html";
@@ -516,8 +1110,7 @@
 
             currentUserId = user.uid;
 
-            // Hide taskbar email on very small screens to avoid clipping
-            if(window.innerWidth > 768) {
+            if(window.innerWidth > 900) {
                 document.getElementById('taskbarUser').style.display = 'inline';
                 document.getElementById('taskbarUser').textContent = user.email;
             }
@@ -530,7 +1123,7 @@
             try {
                 currentUserRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(currentUserRef);
-
+                
                 let userData = {
                     uid: user.uid,
                     name: fallbackName,
@@ -542,9 +1135,20 @@
                 if (userSnap.exists()) {
                     userData = { ...userData, ...userSnap.data() };
                     if (!Array.isArray(userData.messages)) userData.messages = [];
+                    if (userData.theme) window.applyTheme(userData.theme);
+                    
+                    if (userData.widgetsUnlocked) {
+                        document.getElementById('widgetLockedState').style.display = 'none';
+                        document.getElementById('widgetUnlockedState').style.display = 'block';
+                    }
+                    if (userData.widgets) {
+                        applyWidgetState(userData.widgets);
+                    }
+
                 } else {
                     await setDoc(currentUserRef, {
                         ...userData,
+                        theme: 'theme-purple',
                         createdAt: serverTimestamp()
                     });
                 }
@@ -588,16 +1192,16 @@
             }
         });
 
+        // ---------------------------
+        // ADMIN FUNCTIONS
+        // ---------------------------
         async function loadAdminClientList() {
             if (!isUserAdmin) return;
-
             adminStatusEl.textContent = "Scanning...";
             adminSelectEl.innerHTML = '<option value="">-- LOAD CLIENT NODE --</option>';
-
             try {
                 const usersSnap = await getDocs(collection(db, "users"));
                 let count = 0;
-
                 usersSnap.forEach((docSnap) => {
                     const data = docSnap.data();
                     if (data.role !== 'admin') {
@@ -608,7 +1212,6 @@
                         adminSelectEl.appendChild(opt);
                     }
                 });
-
                 if (count === 0) {
                     const opt = document.createElement('option');
                     opt.value = "";
@@ -619,7 +1222,6 @@
                 } else {
                     adminStatusEl.textContent = `${count} Node${count > 1 ? 's' : ''}`;
                 }
-
             } catch (e) {
                 console.error("Error loading users", e);
                 adminStatusEl.textContent = "Access Denied";
@@ -636,16 +1238,12 @@
 
         adminSelectEl.addEventListener('change', (e) => {
             if (adminCurrentClientUnsubscribe) adminCurrentClientUnsubscribe();
-
             adminSelectedUserId = e.target.value;
-
             if (!adminSelectedUserId) {
                 adminChatHistoryEl.innerHTML = '<div style="text-align: center; color: #555; margin-top: 20px;">[ Awaiting Target Selection ]</div>';
                 return;
             }
-
             adminChatHistoryEl.innerHTML = '<div style="text-align: center; color: #0ea5e9; margin-top: 20px;">[ Loading Node Data... ]</div>';
-
             const clientRef = doc(db, "users", adminSelectedUserId);
             adminCurrentClientUnsubscribe = onSnapshot(clientRef, (docSnap) => {
                 if (docSnap.exists()) {
@@ -662,238 +1260,229 @@
                 alert("Please select a client node first.");
                 return;
             }
-
-            const inputField = document.getElementById('adminChatInput');
-            const messageText = inputField.value.trim();
-            if (!messageText) return;
-
-            inputField.value = '';
-            adminStatusEl.textContent = "Sending...";
-
+            const input = document.getElementById('adminChatInput');
+            const text = input.value.trim();
+            if (!text) return;
             try {
+                input.value = "Sending...";
+                input.disabled = true;
                 const clientRef = doc(db, "users", adminSelectedUserId);
-                const clientSnap = await getDoc(clientRef);
-
-                if (!clientSnap.exists()) {
-                    adminStatusEl.textContent = "Node Missing";
-                    return;
-                }
-
-                if (!Array.isArray(clientSnap.data().messages)) {
-                    await setDoc(clientRef, { messages: [] }, { merge: true });
-                }
-
                 await updateDoc(clientRef, {
                     messages: arrayUnion({
-                        sender: 'Dev',
-                        text: messageText,
-                        timestamp: new Date().toISOString()
+                        senderId: currentUserId,
+                        senderRole: "admin",
+                        text: text,
+                        timestamp: Date.now()
                     })
                 });
+                input.value = "";
+            } catch (e) {
+                console.error("Send error", e);
+                alert("Failed to send message");
+            } finally {
+                input.disabled = false;
+                input.focus();
+            }
+        });
 
-                adminStatusEl.textContent = "Sent ✓";
-                setTimeout(() => adminStatusEl.textContent = "Idle", 2000);
-
-            } catch (error) {
-                console.error(error);
-                adminStatusEl.textContent = "Error";
+        document.getElementById('adminChatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                // Close keyboard on mobile
+                if(window.innerWidth <= 900) document.getElementById('adminChatInput').blur();
+                document.getElementById('adminSendChatBtn').click();
             }
         });
 
         document.getElementById('sendBroadcastBtn').addEventListener('click', async () => {
             if (!isUserAdmin) return;
-
-            const inputField = document.getElementById('broadcastInput');
-            const message = inputField.value.trim();
-            if (!message) return;
-
+            const input = document.getElementById('broadcastInput');
+            const text = input.value.trim();
+            if (!text) return;
             try {
+                input.value = "TRANSMITTING...";
                 const sysRef = doc(db, "system", "broadcast");
                 await setDoc(sysRef, {
-                    message: message,
-                    timestamp: serverTimestamp()
+                    message: text,
+                    timestamp: serverTimestamp(),
+                    senderId: currentUserId
                 });
-                inputField.value = '';
-            } catch (e) {
-                alert("Failed to send broadcast.");
+                input.value = "";
+                input.placeholder = "Broadcast Sent!";
+                setTimeout(() => input.placeholder = "Alert message...", 2000);
+            } catch(e) {
+                console.error("Broadcast failed", e);
+                input.value = "ERROR";
             }
         });
 
-        function showGlobalAlert(msg) {
+        // ---------------------------
+        // CLIENT FUNCTIONS
+        // ---------------------------
+        document.getElementById('sendChatBtn').addEventListener('click', async () => {
+            if (isUserAdmin) {
+                alert("Admins must use the Admin Terminal to chat with specific clients.");
+                return;
+            }
+            const input = document.getElementById('chatInput');
+            const text = input.value.trim();
+            if (!text || !currentUserRef) return;
+            try {
+                input.value = "Encrypting...";
+                input.disabled = true;
+                await updateDoc(currentUserRef, {
+                    messages: arrayUnion({
+                        senderId: currentUserId,
+                        senderRole: "client",
+                        text: text,
+                        timestamp: Date.now()
+                    })
+                });
+                input.value = "";
+            } catch (e) {
+                console.error("Failed to send message", e);
+                alert("Failed to send message.");
+            } finally {
+                input.disabled = false;
+                input.focus();
+            }
+        });
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if(window.innerWidth <= 900) document.getElementById('chatInput').blur();
+                document.getElementById('sendChatBtn').click();
+            }
+        });
+
+        function renderChatHistory(containerId, messages) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = "";
+            if (!messages || messages.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #555; margin-top: 20px;">[ No transmission history ]</div>';
+                return;
+            }
+            messages.forEach(msg => {
+                const isSystem = msg.senderRole === "system";
+                const isAdmin = msg.senderRole === "admin";
+                const div = document.createElement("div");
+                div.style.marginBottom = "8px";
+                div.style.padding = "6px 8px";
+                div.style.borderLeft = isSystem ? "2px solid #eab308" : (isAdmin ? "2px solid #ef4444" : "2px solid #0ea5e9");
+                div.style.background = "rgba(255,255,255,0.02)";
+                div.style.borderRadius = "0 4px 4px 0";
+
+                let timeStr = "";
+                if (msg.timestamp) {
+                    const d = new Date(msg.timestamp);
+                    timeStr = `[${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}] `;
+                }
+
+                let color = isSystem ? "#eab308" : (isAdmin ? "#ef4444" : "#0ea5e9");
+                let senderName = isSystem ? "SYSTEM" : (isAdmin ? "ADMIN" : "CLIENT");
+
+                if (msg.text.includes("http") && msg.text.includes("Uploaded Asset")) {
+                    const linkMatch = msg.text.match(/http[^\s]+/);
+                    const link = linkMatch ? linkMatch[0] : '#';
+                    div.innerHTML = `<span style="color: #666; font-size: 0.7rem;">${timeStr}</span><strong style="color: ${color};">${senderName}:</strong> <a href="${link}" target="_blank" style="color: #0f0; text-decoration: underline;">[View Uploaded Asset]</a>`;
+                } else {
+                    div.innerHTML = `<span style="color: #666; font-size: 0.7rem;">${timeStr}</span><strong style="color: ${color};">${senderName}:</strong> <span style="color: #ddd;">${msg.text}</span>`;
+                }
+                container.appendChild(div);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function showGlobalAlert(message) {
             const alertBox = document.getElementById('globalAlert');
-            document.getElementById('globalAlertText').textContent = msg;
+            document.getElementById('globalAlertText').textContent = message;
             alertBox.classList.add('show');
             setTimeout(() => {
                 alertBox.classList.remove('show');
             }, 5000);
         }
 
-        function renderChatHistory(containerId, messages) {
-            const chatBox = document.getElementById(containerId);
-            if (!chatBox) return;
-
-            if (!messages || messages.length === 0) {
-                chatBox.innerHTML = `<div style="text-align: center; color: #555; font-family: 'Fira Code', monospace; font-size: 0.7rem; margin-top: 20px;">[ NO TRANSMISSIONS FOUND ]</div>`;
-                return;
-            }
-
-            chatBox.innerHTML = '';
-
-            messages.forEach(msg => {
-                const isDev = msg.sender === 'Dev';
-                const borderColor = isDev ? '#BD52EB' : '#0ea5e9';
-                const nameColor = isDev ? '#BD52EB' : '#0ea5e9';
-                const senderName = isDev ? 'Tanish (Dev)' : 'Client';
-
-                const msgDiv = document.createElement('div');
-                msgDiv.style.cssText = `
-                    background: #111;
-                    padding: 8px;
-                    border-radius: 5px;
-                    border-left: 2px solid ${borderColor};
-                    margin-bottom: 5px;
-                    color: #fff;
-                    font-family: 'Space Grotesk', sans-serif;
-                `;
-                
-                // MAKE CLOUDINARY LINKS CLICKABLE
-                let formattedText = msg.text;
-                if(formattedText.includes("http")) {
-                    formattedText = formattedText.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #eab308; text-decoration: underline;">[View File]</a>');
-                }
-
-                msgDiv.innerHTML = `<span style="color: ${nameColor}; font-weight: bold; font-family: 'Fira Code', monospace;">${senderName}:</span> <span style="word-break: break-all;">${formattedText}</span>`;
-                chatBox.appendChild(msgDiv);
-            });
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-
-        document.getElementById('sendChatBtn').addEventListener('click', async () => {
-            const inputField = document.getElementById('chatInput');
-            const messageText = inputField.value.trim();
-            if (!messageText || !currentUserRef) return;
-
-            inputField.value = '';
-            document.getElementById('chatStatus').textContent = "Sending...";
-
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
             try {
-                const snap = await getDoc(currentUserRef);
-                if (!snap.exists()) {
-                    await setDoc(currentUserRef, {
-                        messages: [],
-                        createdAt: serverTimestamp()
-                    }, { merge: true });
-                } else if (!Array.isArray(snap.data().messages)) {
-                    await setDoc(currentUserRef, { messages: [] }, { merge: true });
-                }
-
-                await updateDoc(currentUserRef, {
-                    messages: arrayUnion({
-                        sender: 'Client',
-                        text: messageText,
-                        timestamp: new Date().toISOString()
-                    })
-                });
-
-                document.getElementById('chatStatus').textContent = "Connected";
-
+                await signOut(auth);
             } catch (error) {
-                console.error(error);
-                document.getElementById('chatStatus').textContent = "Error";
+                console.error("Logout Error", error);
             }
         });
 
-        document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') document.getElementById('sendChatBtn').click();
-        });
+        // ---------------------------
+        // CLOUDINARY UPLOAD
+        // ---------------------------
+        const CLOUD_NAME = "drpkadqfo";
+        const UPLOAD_PRESET = "codevogue";
 
-        document.getElementById('adminChatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') document.getElementById('adminSendChatBtn').click();
-        });
+        document.getElementById("uploadAssetBtn").addEventListener("click", () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/png, image/jpeg, image/svg+xml, application/pdf";
 
+            input.onchange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
 
-        // ==========================================
-        // FILE UPLOAD SYSTEM (CLOUDINARY)
-        // ==========================================
-        
-        // YOUR CLOUDINARY CONFIG
-        const CLOUDINARY_CLOUD_NAME = "drpkadqfo"; 
-        const CLOUDINARY_UPLOAD_PRESET = "codevogue_uploads";
+                const btn = document.getElementById("uploadAssetBtn");
+                btn.textContent = "[ UPLOADING... ]";
+                btn.style.color = "#fff";
+                btn.disabled = true;
 
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.style.display = 'none';
-        document.body.appendChild(fileInput);
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", UPLOAD_PRESET);
 
-        const uploadBtn = document.getElementById('uploadAssetBtn');
-        if(uploadBtn) {
-            uploadBtn.addEventListener('click', () => {
-                fileInput.click(); 
-            });
-        }
-
-        fileInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file || !currentUserId) return;
-
-            const originalText = uploadBtn.textContent;
-            uploadBtn.textContent = "[ UPLOADING... ]";
-            uploadBtn.style.color = "#0ea5e9";
-            uploadBtn.style.borderColor = "#0ea5e9";
-
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.secure_url) {
-                    const downloadURL = data.secure_url;
-
-                    const messageText = `System: Uploaded Asset - ${file.name} -> ${downloadURL}`;
-                    
-                    const snap = await getDoc(currentUserRef);
-                    if (!snap.exists() || !Array.isArray(snap.data().messages)) {
-                        await setDoc(currentUserRef, { messages: [] }, { merge: true });
-                    }
-
-                    await updateDoc(currentUserRef, {
-                        messages: arrayUnion({ sender: 'Client', text: messageText, timestamp: new Date().toISOString() })
+                try {
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`, {
+                        method: "POST",
+                        body: formData
                     });
+                    
+                    const data = await res.json();
 
-                    uploadBtn.textContent = "[ SUCCESS ]";
-                    uploadBtn.style.color = "#0f0";
-                    uploadBtn.style.borderColor = "#0f0";
-                } else {
-                    throw new Error("Upload failed");
+                    if (data.secure_url) {
+                        btn.textContent = "[ UPLOAD_SUCCESS ]";
+                        btn.style.borderColor = "#0f0";
+                        btn.style.color = "#0f0";
+
+                        if (currentUserRef) {
+                            await updateDoc(currentUserRef, {
+                                messages: arrayUnion({
+                                    senderId: "system",
+                                    senderRole: "system",
+                                    text: `New Asset Uploaded: ${data.secure_url}`,
+                                    timestamp: Date.now()
+                                })
+                            });
+                        }
+                        
+                        setTimeout(() => {
+                            btn.textContent = "[ UPLOAD_ASSET ]";
+                            btn.style.borderColor = "#eab308";
+                            btn.style.color = "#eab308";
+                            btn.disabled = false;
+                        }, 3000);
+                    } else {
+                        throw new Error("No secure URL returned");
+                    }
+                } catch (err) {
+                    console.error("Upload failed", err);
+                    btn.textContent = "[ UPLOAD_FAILED ]";
+                    btn.style.borderColor = "#ef4444";
+                    btn.style.color = "#ef4444";
+                    
+                    setTimeout(() => {
+                        btn.textContent = "[ UPLOAD_ASSET ]";
+                        btn.style.borderColor = "#eab308";
+                        btn.style.color = "#eab308";
+                        btn.disabled = false;
+                    }, 3000);
                 }
-
-            } catch (error) {
-                console.error("Upload error:", error);
-                uploadBtn.textContent = "[ FAILED ]";
-                uploadBtn.style.color = "#ef4444";
-                uploadBtn.style.borderColor = "#ef4444";
-            }
-            
-            setTimeout(() => {
-                uploadBtn.textContent = originalText;
-                uploadBtn.style.color = "#eab308";
-                uploadBtn.style.borderColor = "#eab308";
-            }, 3000);
-            
-            fileInput.value = '';
+            };
+            input.click();
         });
 
-        document.getElementById("logoutBtn").addEventListener("click", async () => {
-            await signOut(auth);
-        });
     </script>
 </body>
 </html>

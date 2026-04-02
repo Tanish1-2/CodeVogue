@@ -2,15 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Work | CodeVogue</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
-        <!-- PASTE THIS EXACT LINE HERE -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
     
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Responsive internal spacing overrides */
+        .page-header-spacing {
+            padding-top: clamp(120px, 15vh, 220px);
+            padding-bottom: clamp(60px, 10vh, 100px);
+        }
+    </style>
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -20,7 +27,7 @@
         <div class="logo magnetic hover-target">CODE<span>VOGUE</span></div>
         <ul class="nav-links" id="navLinks">
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
-            <li><a href="projects.html" class="magnetic hover-target" style="color: var(--accent-glow);">Work</a></li>
+            <li><a href="projects.html" class="magnetic hover-target" style="color: var(--accent-glow, #BD52EB);">Work</a></li>
             <li><a href="lab.html" class="magnetic hover-target">Lab</a></li>
             <li><a href="insights.html" class="magnetic hover-target">Insights</a></li>
             <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
@@ -30,9 +37,9 @@
         </button>
     </nav>
 
-    <main class="container" style="padding-top: 220px; padding-bottom: 100px;">
+    <main class="container page-header-spacing">
         <p class="hero-sub reveal text-target">SELECTED PORTFOLIO</p>
-        <h1 class="reveal text-target" style="font-size: clamp(3.5rem, 8vw, 8rem); margin-bottom: 2rem; line-height: 0.9;">OUR IMPACT</h1>
+        <h1 class="reveal text-target" style="font-size: clamp(3rem, 10vw, 8rem); margin-bottom: 2rem; line-height: 0.9;">OUR IMPACT</h1>
         <p class="hero-desc reveal text-target" style="margin-top: 0;">Driving digital transformation for local education and modern brands.</p>
 
         <div class="project-list">
@@ -54,7 +61,7 @@
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
-                <h2>CODE<span>VOGUE</span></h2>
+                <h2>CODE<span style="color: var(--accent-glow, #BD52EB);">VOGUE</span></h2>
                 <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
             <div class="footer-links">

@@ -2,51 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shinobi Showdown | CodeVogue Lab</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background-color: #0a0000; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; padding: 10px; }
-        .back-btn { position: absolute; top: 20px; left: 20px; color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 1rem; transition: color 0.3s; z-index: 100;}
+        body { background-color: #0a0000; color: #f4f4f5; font-family: 'Space Grotesk', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100dvh; overflow: hidden; padding: 10px; }
+        
+        .back-btn { position: absolute; top: clamp(15px, 4vh, 30px); left: clamp(15px, 4vw, 30px); color: #fff; text-decoration: none; font-family: 'Syne', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: clamp(0.8rem, 2vw, 1rem); transition: color 0.3s; z-index: 100;}
         .back-btn:hover { color: #ef4444; }
         
-        .header { text-align: center; margin-bottom: 15px; margin-top: 30px; }
-        .title { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(239, 68, 68, 0.4); margin-bottom: 5px; line-height: 1;}
-        .score-board { font-size: 1.2rem; letter-spacing: 2px; color: #8a8a93; }
-        #scoreValue { color: #ef4444; font-weight: 700; font-size: 1.5rem; }
+        .header { text-align: center; margin-bottom: clamp(10px, 2vh, 15px); margin-top: clamp(20px, 4vh, 30px); }
+        .title { font-family: 'Syne', sans-serif; font-size: clamp(1.5rem, 6vw, 3rem); text-transform: uppercase; letter-spacing: 4px; color: #fff; text-shadow: 0 0 20px rgba(239, 68, 68, 0.4); margin-bottom: 5px; line-height: 1;}
+        .score-board { font-size: clamp(1rem, 3vw, 1.2rem); letter-spacing: 2px; color: #8a8a93; }
+        #scoreValue { color: #ef4444; font-weight: 700; font-size: clamp(1.2rem, 4vw, 1.5rem); }
         
-        .game-wrapper { position: relative; display: flex; justify-content: center; align-items: center; }
-        /* FIXED: Height-based scaling prevents it from cutting off the bottom of the screen */
+        /* Intelligent Scaling for Vertical Games */
+        .game-wrapper { 
+            position: relative; 
+            height: min(65dvh, 600px); 
+            width: min(calc(65dvh * 5 / 6), 500px, 95vw); 
+            margin: 0 auto; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+        
         canvas { 
+            width: 100%; 
+            height: 100%; 
             background: radial-gradient(circle at center, #2e0505, #000); 
             border: 2px solid rgba(239, 68, 68, 0.3); 
             border-radius: 12px; 
             box-shadow: 0 0 40px rgba(239, 68, 68, 0.15); 
-            height: 60vh; 
-            min-height: 300px;
-            max-height: 600px;
-            aspect-ratio: 5/6; 
             touch-action: none; 
+            display: block;
         }
 
-        .controls { margin-top: 15px; color: #8a8a93; font-size: 0.85rem; letter-spacing: 1px; text-align: center; }
+        .controls { margin-top: clamp(10px, 2vh, 15px); color: #8a8a93; font-size: clamp(0.75rem, 2.5vw, 0.85rem); letter-spacing: 1px; text-align: center; }
         .key { background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 4px; color: #fff; font-family: monospace; border: 1px solid rgba(255,255,255,0.2); }
 
         /* OVERLAY SCREENS */
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 5, 5, 0.95); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; border: 1px solid rgba(239, 68, 68, 0.5); z-index: 10; backdrop-filter: blur(5px); }
-        .overlay h2 { color: #ef4444; font-family: 'Syne', sans-serif; font-size: clamp(1.8rem, 5vw, 2.5rem); margin-bottom: 10px; }
-        .overlay p { color: #ccc; margin-bottom: 20px; line-height: 1.5; font-size: 0.9rem; }
-        .action-btn { background: transparent; color: #fff; border: 1px solid #ef4444; padding: 12px 25px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.3s; letter-spacing: 2px; font-size: 0.9rem; }
+        .overlay h2 { color: #ef4444; font-family: 'Syne', sans-serif; font-size: clamp(1.5rem, 5vw, 2.5rem); margin-bottom: clamp(10px, 2vh, 15px); line-height: 1.1; }
+        .overlay p { color: #ccc; margin-bottom: clamp(15px, 3vh, 20px); line-height: 1.5; font-size: clamp(0.8rem, 2.5vw, 0.9rem); }
+        .action-btn { background: transparent; color: #fff; border: 1px solid #ef4444; padding: clamp(10px, 2vh, 12px) clamp(20px, 4vw, 25px); font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; border-radius: 8px; transition: all 0.3s; letter-spacing: 2px; font-size: clamp(0.8rem, 2.5vw, 0.9rem); }
         .action-btn:hover { background: #ef4444; color: #000; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
         
         #gameOverScreen { display: none; }
     </style>
-        <!-- PASTE THIS EXACT LINE HERE -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <a href="lab.html" class="back-btn">← BACK</a>
@@ -138,8 +145,20 @@
 
         document.addEventListener("keydown", (e) => { if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true; if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = true; });
         document.addEventListener("keyup", (e) => { if(e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false; if(e.code === "ArrowRight" || e.code === "KeyD") keys.right = false; });
-        canvas.addEventListener("touchstart", (e) => { e.preventDefault(); const rect = canvas.getBoundingClientRect(); const touchX = e.touches[0].clientX - rect.left; if(touchX < rect.width / 2) { keys.left = true; keys.right = false; } else { keys.right = true; keys.left = false; } });
-        canvas.addEventListener("touchend", (e) => { e.preventDefault(); keys.left = false; keys.right = false; });
+        
+        // Touch events explicitly preventing default scaling issues
+        canvas.addEventListener("touchstart", (e) => { 
+            e.preventDefault(); 
+            const rect = canvas.getBoundingClientRect(); 
+            const touchX = e.touches[0].clientX - rect.left; 
+            if(touchX < rect.width / 2) { keys.left = true; keys.right = false; } 
+            else { keys.right = true; keys.left = false; } 
+        }, { passive: false });
+        
+        canvas.addEventListener("touchend", (e) => { 
+            e.preventDefault(); 
+            keys.left = false; keys.right = false; 
+        }, { passive: false });
     </script>
 </body>
 </html>

@@ -2,17 +2,26 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>The Lab | CodeVogue</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+
     <style>
-        .lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 40px; margin-top: 4rem; }
+        .page-header-spacing { padding-top: clamp(120px, 15vh, 220px); padding-bottom: clamp(60px, 10vh, 100px); }
+        
+        /* Changed minmax to 280px to prevent overflow on small phones */
+        .lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px; margin-top: 4rem; }
         .game-card { background: rgba(10, 10, 15, 0.6); border: 1px solid var(--border-color); border-radius: 20px; padding: 30px; position: relative; overflow: hidden; transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
         .game-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%); opacity: 0; transition: opacity 0.5s ease; pointer-events: none; z-index: 0; }
         .game-card:hover { transform: translateY(-10px) scale(1.02); border-color: rgba(255, 255, 255, 0.2); box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6); }
         .game-card:hover::before { opacity: 1; }
         .game-thumb { width: 100%; height: 180px; border-radius: 12px; margin-bottom: 25px; position: relative; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1); z-index: 1; }
+        
         .thumb-jumper { background: linear-gradient(to bottom, #020617, #082f49); }
         .thumb-jumper::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(14, 165, 233, 0.2) 20px, rgba(14, 165, 233, 0.2) 21px), repeating-linear-gradient(0deg, transparent, transparent 10px, rgba(14, 165, 233, 0.2) 10px, rgba(14, 165, 233, 0.2) 11px); transform: perspective(200px) rotateX(60deg); }
         .jumper-cube { position: absolute; bottom: 30%; left: 20%; width: 20px; height: 20px; background: #0ea5e9; box-shadow: 0 0 15px #0ea5e9; border-radius: 4px; }
@@ -21,20 +30,25 @@
         .thumb-snake { background: #000; background-image: radial-gradient(rgba(34, 197, 94, 0.15) 1px, transparent 1px); background-size: 15px 15px; }
         .snake-body { position: absolute; top: 40%; left: 30%; width: 60px; height: 12px; background: #22c55e; box-shadow: 0 0 15px #22c55e; border-radius: 6px; }
         .snake-apple { position: absolute; top: 40%; right: 25%; width: 12px; height: 12px; background: #ef4444; box-shadow: 0 0 15px #ef4444; border-radius: 50%; }
+        
         .game-title { font-size: 2.2rem; margin-bottom: 10px; font-family: 'Syne', sans-serif; color: #fff; position: relative; z-index: 1; }
         .game-desc { color: var(--text-muted); line-height: 1.6; margin-bottom: 25px; font-size: 0.95rem; flex-grow: 1; position: relative; z-index: 1; }
         .tech-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 30px; position: relative; z-index: 1; }
         .tech-tags span { background: rgba(255, 255, 255, 0.05); padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; letter-spacing: 1px; color: #ccc; text-transform: uppercase; }
         .play-btn { background: transparent; color: var(--text-main); border: 1px solid rgba(255, 255, 255, 0.2); padding: 15px; text-align: center; font-family: 'Space Grotesk', sans-serif; font-weight: 600; letter-spacing: 3px; text-decoration: none; border-radius: 8px; transition: all 0.3s ease; cursor: pointer; position: relative; z-index: 10; }
+        
         .btn-jumper:hover { background: #0ea5e9; color: #000; border-color: #0ea5e9; box-shadow: 0 0 20px rgba(14, 165, 233, 0.4); }
         .btn-shinobi:hover { background: #ef4444; color: #000; border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.4); }
         .btn-snake:hover { background: #22c55e; color: #000; border-color: #22c55e; box-shadow: 0 0 20px rgba(34, 197, 94, 0.4); }
+
+        /* Mobile specific adjustments for the Lab cards */
+        @media screen and (max-width: 768px) {
+            .lab-grid { gap: 20px; margin-top: 2rem; }
+            .game-card { padding: 20px; }
+            .game-thumb { height: 140px; }
+            .game-title { font-size: 1.8rem; }
+        }
     </style>
-        <!-- PASTE THIS EXACT LINE HERE -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -45,7 +59,7 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
-            <li><a href="lab.html" class="magnetic hover-target" style="color: var(--accent-glow);">Lab</a></li>
+            <li><a href="lab.html" class="magnetic hover-target" style="color: var(--accent-glow, #BD52EB);">Lab</a></li>
             <li><a href="insights.html" class="magnetic hover-target">Insights</a></li>
             <li><a href="contact.html" class="magnetic hover-target">Contact</a></li>
         </ul>
@@ -54,9 +68,9 @@
         </button>
     </nav>
 
-    <main class="container" style="padding-top: 220px; padding-bottom: 100px;">
+    <main class="container page-header-spacing">
         <p class="hero-sub reveal text-target">PLAYGROUND & LOGIC</p>
-        <h1 class="reveal text-target" style="font-size: clamp(3.5rem, 8vw, 8rem); margin-bottom: 1rem; line-height: 0.9;">MINI GAMES</h1>
+        <h1 class="reveal text-target" style="font-size: clamp(3rem, 10vw, 8rem); margin-bottom: 1rem; line-height: 0.9;">MINI GAMES</h1>
         <p class="hero-desc reveal text-target" style="margin-top: 0;">Exploring HTML5 Canvas, physics engines, and advanced DOM manipulation through interactive browser games.</p>
 
         <div class="lab-grid">
@@ -89,7 +103,7 @@
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
-                <h2>CODE<span>VOGUE</span></h2>
+                <h2>CODE<span style="color: var(--accent-glow, #BD52EB);">VOGUE</span></h2>
                 <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
             <div class="footer-links">

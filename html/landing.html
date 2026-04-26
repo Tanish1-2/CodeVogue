@@ -215,8 +215,11 @@
         <div class="context-item hover-target" onclick="openWindow('musicWindow'); document.getElementById('osContextMenu').style.display='none';">
             <span>🎵</span> VogueAmp
         </div>
-        <div class="context-item hover-target" onclick="openWindow('arcadeWindow'); document.getElementById('osContextMenu').style.display='none';">
-            <span style="color: #0ea5e9;">🎯</span> Nexus Shooter
+        <div class="context-item hover-target" onclick="openWindow('assetVaultWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span style="color: #eab308;">📦</span> Asset Vault
+        </div>
+        <div class="context-item hover-target" onclick="openWindow('siteRadarWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span style="color: #0f0;">🛰️</span> SiteRadar
         </div>
         <div class="context-item hover-target" onclick="openWindow('settingsWindow'); document.getElementById('osContextMenu').style.display='none';">
             <span style="color: #0f0;">⚙️</span> Settings
@@ -249,9 +252,14 @@
             <span class="os-icon-text">Client_Portal.exe</span>
         </div>
 
-        <div class="os-icon hover-target" ondblclick="openWindow('arcadeWindow')" onclick="if(window.innerWidth <= 768) openWindow('arcadeWindow')">
-            <div class="os-icon-img" style="color: #0ea5e9;">🎯</div>
-            <span class="os-icon-text">Nexus_Shooter.exe</span>
+        <div class="os-icon hover-target" ondblclick="openWindow('assetVaultWindow')" onclick="if(window.innerWidth <= 768) openWindow('assetVaultWindow')">
+            <div class="os-icon-img" style="color: #eab308;">📦</div>
+            <span class="os-icon-text">AssetVault.exe</span>
+        </div>
+
+        <div class="os-icon hover-target" ondblclick="openWindow('siteRadarWindow')" onclick="if(window.innerWidth <= 768) openWindow('siteRadarWindow')">
+            <div class="os-icon-img" style="color: #0f0;">🛰️</div>
+            <span class="os-icon-text">SiteRadar.exe</span>
         </div>
 
         <div class="os-icon hover-target" ondblclick="openWindow('settingsWindow')" onclick="if(window.innerWidth <= 768) openWindow('settingsWindow')">
@@ -394,16 +402,164 @@
             </div>
         </div>
     </div>
-        <!-- NEXUS -->
-    <div class="os-window" id="arcadeWindow" style="top: 150px; left: 400px; display: none; width: 350px;">
-        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'arcadeWindow')" style="border-bottom-color: #0ea5e9;">
-            <span class="os-window-title">Nexus_Shooter.exe</span>
-            <span class="os-window-close hover-target" onclick="closeWindow('arcadeWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
+    <!-- ASSET VAULT -->
+    <div class="os-window" id="assetVaultWindow" style="top: 80px; left: 420px; display: none; width: 680px; max-height: 85vh; overflow-y: auto;">
+        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'assetVaultWindow')" style="border-bottom-color: #eab308;">
+            <span class="os-window-title" style="color: #eab308;">AssetVault.exe — Premium Library</span>
+            <span class="os-window-close hover-target" onclick="closeWindow('assetVaultWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
-        <div class="os-window-body" style="text-align: center; background: #050507;">
-            <h2 style="color: #0ea5e9; margin-top: 0; font-family: 'Syne', sans-serif;">NEXUS SHOOTER</h2>
-            <p style="color: #888; font-size: 0.9rem;">Clear the data nodes before they breach the firewall. Level 2 Clearance Required.</p>
-            <button class="cmd-submit magnetic hover-target" style="border-color: #0ea5e9; color: #0ea5e9; margin-top: 15px; width: 100%;" onclick="window.location.href='nexus-shooter.html'">[ LAUNCH GAME ]</button>
+        <div class="os-window-body">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h3 style="margin: 0; font-family: 'Syne', sans-serif; color: #eab308; font-size: 1.1rem; text-transform: uppercase;">&gt; VIP Design Asset Library</h3>
+                    <p style="margin: 4px 0 0 0; font-family: 'Fira Code', monospace; font-size: 0.75rem; color: #555;">CLEARANCE_LEVEL: CLIENT &nbsp;|&nbsp; ASSETS: UNLOCKED</p>
+                </div>
+                <span style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: #eab308; border: 1px solid #eab308; padding: 4px 10px;">● VAULT ONLINE</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;" class="grid-container-mobile">
+
+                <div style="background: #111; border: 1px solid #222; border-top: 2px solid #eab308; padding: 15px;">
+                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🎨</div>
+                    <div style="font-family: 'Fira Code', monospace; color: #eab308; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">SVG ICON PACKS</div>
+                    <p style="font-size: 0.8rem; color: #888; margin: 0 0 12px 0;">500+ premium outline &amp; solid icons for UI, tech, and branding.</p>
+                    <a href="https://www.svgrepo.com/collections/" target="_blank" style="text-decoration: none;">
+                        <button class="cmd-submit hover-target" style="border-color: #eab308; color: #eab308; font-size: 0.75rem; padding: 6px 12px; width: 100%;">[ BROWSE &amp; DOWNLOAD ]</button>
+                    </a>
+                </div>
+
+                <div style="background: #111; border: 1px solid #222; border-top: 2px solid var(--accent-glow); padding: 15px;">
+                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🖥️</div>
+                    <div style="font-family: 'Fira Code', monospace; color: var(--accent-glow); font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">UI COMPONENT KITS</div>
+                    <p style="font-size: 0.8rem; color: #888; margin: 0 0 12px 0;">Figma &amp; HTML component systems — buttons, cards, navbars, modals.</p>
+                    <a href="https://uiverse.io/elements" target="_blank" style="text-decoration: none;">
+                        <button class="cmd-submit hover-target" style="border-color: var(--accent-glow); color: var(--accent-glow); font-size: 0.75rem; padding: 6px 12px; width: 100%;">[ BROWSE &amp; DOWNLOAD ]</button>
+                    </a>
+                </div>
+
+                <div style="background: #111; border: 1px solid #222; border-top: 2px solid #0ea5e9; padding: 15px;">
+                    <div style="font-size: 1.8rem; margin-bottom: 8px;">📐</div>
+                    <div style="font-family: 'Fira Code', monospace; color: #0ea5e9; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">WIREFRAME TEMPLATES</div>
+                    <p style="font-size: 0.8rem; color: #888; margin: 0 0 12px 0;">Ready-to-use page layouts — landing pages, dashboards, portfolios.</p>
+                    <a href="https://www.figma.com/community/tag/wireframe" target="_blank" style="text-decoration: none;">
+                        <button class="cmd-submit hover-target" style="border-color: #0ea5e9; color: #0ea5e9; font-size: 0.75rem; padding: 6px 12px; width: 100%;">[ BROWSE &amp; DOWNLOAD ]</button>
+                    </a>
+                </div>
+
+                <div style="background: #111; border: 1px solid #222; border-top: 2px solid #0f0; padding: 15px;">
+                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🔤</div>
+                    <div style="font-family: 'Fira Code', monospace; color: #0f0; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">FONT PAIRINGS</div>
+                    <p style="font-size: 0.8rem; color: #888; margin: 0 0 12px 0;">Curated Google Fonts combos — headlines, body text, and code fonts.</p>
+                    <a href="https://www.fontpair.co/" target="_blank" style="text-decoration: none;">
+                        <button class="cmd-submit hover-target" style="border-color: #0f0; color: #0f0; font-size: 0.75rem; padding: 6px 12px; width: 100%;">[ BROWSE &amp; DOWNLOAD ]</button>
+                    </a>
+                </div>
+
+                <div style="background: #111; border: 1px solid #222; border-top: 2px solid #ef4444; padding: 15px;">
+                    <div style="font-size: 1.8rem; margin-bottom: 8px;">📱</div>
+                    <div style="font-family: 'Fira Code', monospace; color: #ef4444; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">DEVICE MOCKUPS</div>
+                    <p style="font-size: 0.8rem; color: #888; margin: 0 0 12px 0;">iPhone, MacBook &amp; browser frame mockups — free PSD &amp; PNG sets.</p>
+                    <a href="https://www.mockupworld.co/" target="_blank" style="text-decoration: none;">
+                        <button class="cmd-submit hover-target" style="border-color: #ef4444; color: #ef4444; font-size: 0.75rem; padding: 6px 12px; width: 100%;">[ BROWSE &amp; DOWNLOAD ]</button>
+                    </a>
+                </div>
+
+                <div style="background: #111; border: 1px solid #222; border-top: 2px solid #a855f7; padding: 15px;">
+                    <div style="font-size: 1.8rem; margin-bottom: 8px;">🖼️</div>
+                    <div style="font-family: 'Fira Code', monospace; color: #a855f7; font-size: 0.8rem; font-weight: bold; margin-bottom: 6px;">LOGO INSPIRATION</div>
+                    <p style="font-size: 0.8rem; color: #888; margin: 0 0 12px 0;">Curated logo references and brand identity systems for client projects.</p>
+                    <a href="https://www.logolounge.com/" target="_blank" style="text-decoration: none;">
+                        <button class="cmd-submit hover-target" style="border-color: #a855f7; color: #a855f7; font-size: 0.75rem; padding: 6px 12px; width: 100%;">[ BROWSE &amp; DOWNLOAD ]</button>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SITERADAR -->
+    <div class="os-window" id="siteRadarWindow" style="top: 100px; left: 100px; display: none; width: 600px; max-height: 85vh; overflow-y: auto;">
+        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'siteRadarWindow')" style="border-bottom-color: #0f0;">
+            <span class="os-window-title" style="color: #0f0;">SiteRadar.exe — SEO &amp; Performance Scanner</span>
+            <span class="os-window-close hover-target" onclick="closeWindow('siteRadarWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
+        </div>
+        <div class="os-window-body" style="background: #050507;">
+
+            <div style="font-family: 'Fira Code', monospace; color: #0f0; font-size: 0.8rem; margin-bottom: 15px;">
+                &gt; SITERADAR v1.0 — WEBSITE DIAGNOSTICS SUITE<br>
+                <span style="color: #555;">&gt; Powered by Google PageSpeed Insights API</span>
+            </div>
+
+            <!-- API KEY SLOT -->
+            <div id="siteRadarKeySlot" style="background: #0a0a0a; border: 1px solid #333; border-left: 3px solid #eab308; padding: 12px; margin-bottom: 15px;">
+                <div style="font-family: 'Fira Code', monospace; color: #eab308; font-size: 0.75rem; margin-bottom: 8px;">
+                    ⚙ API KEY REQUIRED &nbsp;·&nbsp; <a href="https://developers.google.com/speed/docs/insights/v5/get-started" target="_blank" style="color: #0ea5e9; text-decoration: none;">Get your free key →</a>
+                </div>
+                <div style="font-family: 'Fira Code', monospace; font-size: 0.7rem; color: #555; margin-bottom: 10px;">
+                    1. Go to <span style="color: #aaa;">console.cloud.google.com</span> → Create Project<br>
+                    2. Enable <span style="color: #aaa;">PageSpeed Insights API</span><br>
+                    3. Credentials → Create API Key → paste below<br>
+                    <span style="color: #333;">Free tier: 25,000 scans/day</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="siteRadarApiKey" placeholder="Paste your API key here..." style="flex-grow: 1; background: #000; border: 1px solid #eab308; color: #eab308; padding: 8px; font-family: 'Fira Code', monospace; outline: none; font-size: 0.8rem;">
+                    <button id="siteRadarSaveKeyBtn" class="cmd-submit hover-target" style="border-color: #eab308; color: #eab308; padding: 8px 12px; font-family: 'Fira Code', monospace; font-size: 0.75rem;">[ SAVE ]</button>
+                </div>
+                <div id="siteRadarKeyStatus" style="font-family: 'Fira Code', monospace; font-size: 0.7rem; color: #555; margin-top: 6px;"></div>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                <input type="text" id="siteRadarInput" placeholder="https://yourwebsite.com" style="flex-grow: 1; background: #000; border: 1px solid #0f0; color: #0f0; padding: 10px; font-family: 'Fira Code', monospace; outline: none; font-size: 0.85rem;">
+                <button id="siteRadarScanBtn" class="cmd-submit hover-target" style="border-color: #0f0; color: #0f0; padding: 10px 15px; font-family: 'Fira Code', monospace;">[ RUN SCAN ]</button>
+            </div>
+
+            <div id="siteRadarStatus" style="font-family: 'Fira Code', monospace; font-size: 0.75rem; color: #555; margin-bottom: 15px; min-height: 18px;"></div>
+
+            <div id="siteRadarResults" style="display: none;">
+                <div style="background: #000; border: 1px solid #1a1a1a; padding: 15px; font-family: 'Fira Code', monospace; font-size: 0.8rem;">
+                    <div style="color: #0f0; margin-bottom: 12px; font-size: 0.85rem;">&gt; SCAN COMPLETE — DIAGNOSTIC REPORT</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;" class="grid-container-mobile">
+                        <div id="sr-perf" style="background: #0a0a0a; border-left: 3px solid #0f0; padding: 10px;">
+                            <div style="color: #555; font-size: 0.7rem; margin-bottom: 4px;">PERFORMANCE</div>
+                            <div id="sr-perf-val" style="font-size: 1.4rem; color: #0f0;">--</div>
+                            <div id="sr-perf-bar" style="height: 3px; background: #111; margin-top: 6px;"><div id="sr-perf-fill" style="height: 100%; background: #0f0; width: 0%; transition: width 1s ease;"></div></div>
+                        </div>
+                        <div id="sr-seo" style="background: #0a0a0a; border-left: 3px solid #0ea5e9; padding: 10px;">
+                            <div style="color: #555; font-size: 0.7rem; margin-bottom: 4px;">SEO SCORE</div>
+                            <div id="sr-seo-val" style="font-size: 1.4rem; color: #0ea5e9;">--</div>
+                            <div style="height: 3px; background: #111; margin-top: 6px;"><div id="sr-seo-fill" style="height: 100%; background: #0ea5e9; width: 0%; transition: width 1s ease;"></div></div>
+                        </div>
+                        <div style="background: #0a0a0a; border-left: 3px solid var(--accent-glow); padding: 10px;">
+                            <div style="color: #555; font-size: 0.7rem; margin-bottom: 4px;">ACCESSIBILITY</div>
+                            <div id="sr-a11y-val" style="font-size: 1.4rem; color: var(--accent-glow);">--</div>
+                            <div style="height: 3px; background: #111; margin-top: 6px;"><div id="sr-a11y-fill" style="height: 100%; background: var(--accent-glow); width: 0%; transition: width 1s ease;"></div></div>
+                        </div>
+                        <div style="background: #0a0a0a; border-left: 3px solid #eab308; padding: 10px;">
+                            <div style="color: #555; font-size: 0.7rem; margin-bottom: 4px;">BEST PRACTICES</div>
+                            <div id="sr-bp-val" style="font-size: 1.4rem; color: #eab308;">--</div>
+                            <div style="height: 3px; background: #111; margin-top: 6px;"><div id="sr-bp-fill" style="height: 100%; background: #eab308; width: 0%; transition: width 1s ease;"></div></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px; border-top: 1px solid #1a1a1a; padding-top: 12px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;" class="grid-container-mobile">
+                        <div>
+                            <span style="color: #555; font-size: 0.7rem;">SPEED INDEX</span><br>
+                            <span id="sr-speed" style="color: #fff;">—</span>
+                        </div>
+                        <div>
+                            <span style="color: #555; font-size: 0.7rem;">MOBILE READY</span><br>
+                            <span id="sr-mobile" style="color: #0f0;">—</span>
+                        </div>
+                        <div>
+                            <span style="color: #555; font-size: 0.7rem;">LCP</span><br>
+                            <span id="sr-lcp" style="color: #fff;">—</span>
+                        </div>
+                    </div>
+
+                    <div id="sr-log" style="margin-top: 15px; border-top: 1px solid #1a1a1a; padding-top: 10px; color: #555; font-size: 0.72rem; line-height: 1.7;"></div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -888,6 +1044,160 @@
 
         audio.addEventListener('ended', () => {
             document.getElementById('btnNext').click();
+        });
+
+
+        // =========================================
+        // 🛰️ SITERADAR — SEO & PERFORMANCE SCANNER
+        // =========================================
+
+        // Load saved API key on window open
+        (function() {
+            const saved = localStorage.getItem('siteradar_api_key');
+            if (saved) {
+                document.getElementById('siteRadarApiKey').value = saved;
+                document.getElementById('siteRadarKeyStatus').textContent = '✓ KEY LOADED FROM MEMORY';
+                document.getElementById('siteRadarKeyStatus').style.color = '#0f0';
+            }
+        })();
+
+        document.getElementById('siteRadarSaveKeyBtn').addEventListener('click', () => {
+            const key = document.getElementById('siteRadarApiKey').value.trim();
+            if (!key) return;
+            localStorage.setItem('siteradar_api_key', key);
+            const statusEl = document.getElementById('siteRadarKeyStatus');
+            statusEl.textContent = '✓ KEY SAVED TO SECURE STORAGE';
+            statusEl.style.color = '#0f0';
+        });
+
+        document.getElementById('siteRadarScanBtn').addEventListener('click', async () => {
+            const input = document.getElementById('siteRadarInput');
+            let url = input.value.trim();
+            if (!url) return;
+            if (!url.startsWith('http')) url = 'https://' + url;
+
+            const apiKey = localStorage.getItem('siteradar_api_key') || document.getElementById('siteRadarApiKey').value.trim();
+            if (!apiKey) {
+                document.getElementById('siteRadarStatus').textContent = '> ERROR: No API key found. Save your key above first.';
+                document.getElementById('siteRadarStatus').style.color = '#ef4444';
+                return;
+            }
+
+            const statusEl = document.getElementById('siteRadarStatus');
+            const resultsEl = document.getElementById('siteRadarResults');
+            const btn = document.getElementById('siteRadarScanBtn');
+
+            statusEl.style.color = '#0f0';
+            resultsEl.style.display = 'none';
+            btn.textContent = '[ SCANNING... ]';
+            btn.disabled = true;
+
+            const messages = [
+                '> INITIALIZING PROBE SEQUENCE...',
+                '> PINGING TARGET SERVER...',
+                '> ANALYZING DOM STRUCTURE...',
+                '> RUNNING LIGHTHOUSE AUDIT...',
+                '> DECRYPTING RESPONSE PAYLOAD...'
+            ];
+            let msgIdx = 0;
+            statusEl.textContent = messages[0];
+            const msgInterval = setInterval(() => {
+                msgIdx = (msgIdx + 1) % messages.length;
+                statusEl.textContent = messages[msgIdx];
+            }, 900);
+
+            try {
+                const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices&key=${apiKey}`;
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+
+                clearInterval(msgInterval);
+
+                if (data.error) {
+                    const msg = data.error.message || '';
+                    if (msg.includes('Quota') || msg.includes('quota') || msg.includes('API key')) {
+                        statusEl.style.color = '#ef4444';
+                        statusEl.textContent = '> ERROR: ' + msg;
+                        document.getElementById('siteRadarKeyStatus').textContent = '⚠ Key may be invalid or quota exceeded. Check console.cloud.google.com.';
+                        document.getElementById('siteRadarKeyStatus').style.color = '#ef4444';
+                    } else {
+                        statusEl.style.color = '#ef4444';
+                        statusEl.textContent = '> ERROR: ' + msg;
+                    }
+                    btn.textContent = '[ RUN SCAN ]';
+                    btn.disabled = false;
+                    return;
+                }
+
+                const cats = data.lighthouseResult?.categories || {};
+                const audits = data.lighthouseResult?.audits || {};
+
+                const perf  = Math.round((cats.performance?.score  || 0) * 100);
+                const seo   = Math.round((cats.seo?.score          || 0) * 100);
+                const a11y  = Math.round((cats.accessibility?.score || 0) * 100);
+                const bp    = Math.round((cats['best-practices']?.score || 0) * 100);
+
+                const scoreColor = s => s >= 90 ? '#0f0' : s >= 50 ? '#eab308' : '#ef4444';
+
+                document.getElementById('sr-perf-val').textContent  = perf  + '/100';
+                document.getElementById('sr-seo-val').textContent   = seo   + '/100';
+                document.getElementById('sr-a11y-val').textContent  = a11y  + '/100';
+                document.getElementById('sr-bp-val').textContent    = bp    + '/100';
+
+                document.getElementById('sr-perf-val').style.color  = scoreColor(perf);
+                document.getElementById('sr-seo-val').style.color   = scoreColor(seo);
+                document.getElementById('sr-a11y-val').style.color  = scoreColor(a11y);
+                document.getElementById('sr-bp-val').style.color    = scoreColor(bp);
+
+                setTimeout(() => {
+                    document.getElementById('sr-perf-fill').style.width = perf + '%';
+                    document.getElementById('sr-seo-fill').style.width  = seo  + '%';
+                    document.getElementById('sr-a11y-fill').style.width = a11y + '%';
+                    document.getElementById('sr-bp-fill').style.width   = bp   + '%';
+                    document.getElementById('sr-perf-fill').style.background = scoreColor(perf);
+                    document.getElementById('sr-seo-fill').style.background  = scoreColor(seo);
+                    document.getElementById('sr-a11y-fill').style.background = scoreColor(a11y);
+                    document.getElementById('sr-bp-fill').style.background   = scoreColor(bp);
+                }, 100);
+
+                const speedIndex = audits['speed-index']?.displayValue || '—';
+                const lcp        = audits['largest-contentful-paint']?.displayValue || '—';
+                const mobile     = perf >= 50 ? 'TRUE ✓' : 'NEEDS WORK ⚠';
+
+                document.getElementById('sr-speed').textContent  = speedIndex;
+                document.getElementById('sr-lcp').textContent    = lcp;
+                document.getElementById('sr-mobile').textContent = mobile;
+                document.getElementById('sr-mobile').style.color = perf >= 50 ? '#0f0' : '#eab308';
+
+                const logLines = [
+                    `> TARGET: ${url}`,
+                    `> STRATEGY: MOBILE`,
+                    `> Performance: ${perf}/100 — ${perf>=90?'EXCELLENT':perf>=50?'NEEDS IMPROVEMENT':'POOR'}`,
+                    `> SEO: ${seo}/100 — ${seo>=90?'EXCELLENT':seo>=50?'NEEDS IMPROVEMENT':'POOR'}`,
+                    `> Accessibility: ${a11y}/100`,
+                    `> Best Practices: ${bp}/100`,
+                    `> Speed Index: ${speedIndex}`,
+                    `> LCP: ${lcp}`,
+                    `> Mobile Ready: ${mobile}`,
+                    `> SCAN COMPLETE.`
+                ];
+                document.getElementById('sr-log').innerHTML = logLines.join('<br>');
+
+                resultsEl.style.display = 'block';
+                statusEl.textContent = '> ANALYSIS COMPLETE — ' + new Date().toLocaleTimeString();
+
+            } catch (err) {
+                clearInterval(msgInterval);
+                statusEl.textContent = '> CONNECTION FAILED. Try again or check the URL.';
+                console.error('SiteRadar error:', err);
+            }
+
+            btn.textContent = '[ RUN SCAN ]';
+            btn.disabled = false;
+        });
+
+        document.getElementById('siteRadarInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('siteRadarScanBtn').click();
         });
 
     </script>

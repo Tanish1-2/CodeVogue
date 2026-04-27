@@ -175,6 +175,9 @@
 
             /* Desktop icon grid stays flexible */
             .desktop-grid {
+            flex-wrap: wrap;
+            align-content: flex-start;
+            max-height: calc(100vh - 100px);
                 flex-direction: row !important;
                 flex-wrap: wrap;
                 justify-content: center;
@@ -214,6 +217,30 @@
         .chip { background: #111; border: 1px solid #333; color: #888; padding: 4px 10px; font-family: 'Fira Code', monospace; font-size: 0.65rem; cursor: pointer; border-radius: 20px; transition: all 0.2s; }
         .chip:hover { border-color: #0ea5e9; color: #0ea5e9; }
         .typing-indicator { display: none; background: transparent; font-family: 'Fira Code', monospace; color: #555; font-size: 0.75rem; padding: 5px 0; }
+
+    
+        .taskbar-app {
+            display: inline-flex;
+            align-items: center;
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 3px;
+            padding: 4px 10px;
+            margin-right: 5px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: #aaa;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .taskbar-app:hover {
+            background: #222;
+        }
+        .taskbar-app.active {
+            background: rgba(var(--accent-glow-rgb), 0.2);
+            border-color: var(--accent-glow);
+            color: #fff;
+        }
 
     </style>
 </head>
@@ -309,6 +336,7 @@
     <div class="os-window" id="adminWindow" style="top: 80px; left: 250px; display: none; width: 620px; max-height: 85vh; overflow-y: auto; border-color: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'adminWindow')" style="border-bottom-color: #ef4444; background: #220000;">
             <span class="os-window-title" style="color: #ef4444;">root@codevogue: ~/SYSTEM_OVERRIDE</span>
+            <span class="os-window-minimize hover-target" onclick="minimizeWindow('adminWindow')" style="cursor: pointer; padding: 0 5px; color: #fff; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">[-]</span>
             <span class="os-window-close hover-target" onclick="closeWindow('adminWindow')" style="color: #ef4444; cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
 
@@ -352,6 +380,7 @@
     <div class="os-window" id="portalWindow" style="top: 50px; left: 50px; display: none; width: 700px; max-height: 85vh; overflow-y: auto; background: rgba(5,5,7,0.95); backdrop-filter: blur(10px);">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'portalWindow')" style="border-bottom-color: var(--accent-glow); transition: border-color 0.5s ease;">
             <span class="os-window-title">root@codevogue: ~/vip_client_dashboard</span>
+            <span class="os-window-minimize hover-target" onclick="minimizeWindow('portalWindow')" style="cursor: pointer; padding: 0 5px; color: #fff; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">[-]</span>
             <span class="os-window-close hover-target" onclick="closeWindow('portalWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
 
@@ -433,6 +462,7 @@
     <div class="os-window" id="assetVaultWindow" style="top: 80px; left: 420px; display: none; width: 680px; max-height: 85vh; overflow-y: auto;">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'assetVaultWindow')" style="border-bottom-color: #eab308;">
             <span class="os-window-title" style="color: #eab308;">AssetVault.exe — Premium Library</span>
+            <span class="os-window-minimize hover-target" onclick="minimizeWindow('assetVaultWindow')" style="cursor: pointer; padding: 0 5px; color: #fff; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">[-]</span>
             <span class="os-window-close hover-target" onclick="closeWindow('assetVaultWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
         <div class="os-window-body">
@@ -508,6 +538,7 @@
     <div class="os-window" id="siteRadarWindow" style="top: 100px; left: 100px; display: none; width: 600px; max-height: 85vh; overflow-y: auto;">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'siteRadarWindow')" style="border-bottom-color: #0f0;">
             <span class="os-window-title" style="color: #0f0;">SiteRadar.exe — SEO &amp; Performance Scanner</span>
+            <span class="os-window-minimize hover-target" onclick="minimizeWindow('siteRadarWindow')" style="cursor: pointer; padding: 0 5px; color: #fff; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">[-]</span>
             <span class="os-window-close hover-target" onclick="closeWindow('siteRadarWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
         <div class="os-window-body" style="background: #050507;">
@@ -594,6 +625,7 @@
     <div class="os-window" id="musicWindow" style="top: 100px; left: 750px; display: none; width: 320px; background: rgba(5,5,7,0.95); backdrop-filter: blur(10px);">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'musicWindow')" style="border-bottom-color: var(--accent-glow); transition: border-color 0.5s ease;">
             <span class="os-window-title">VogueAmp_v2.0.exe</span>
+            <span class="os-window-minimize hover-target" onclick="minimizeWindow('musicWindow')" style="cursor: pointer; padding: 0 5px; color: #fff; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">[-]</span>
             <span class="os-window-close hover-target" onclick="closeWindow('musicWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
         <div class="os-window-body" style="text-align: center; padding: 20px;">
@@ -641,6 +673,7 @@
     <div class="os-window" id="autopilotWindow" style="top: 60px; left: 350px; display: none; width: 450px; height: 500px; flex-direction: column;">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'autopilotWindow')" style="border-bottom-color: #0ea5e9;">
             <span class="os-window-title" style="color: #0ea5e9;"><div class="pulse"></div> AutoPilot.ai_v2.0</span>
+            <span class="os-window-minimize hover-target" onclick="minimizeWindow('autopilotWindow')" style="cursor: pointer; padding: 0 5px; color: #fff; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">[-]</span>
             <span class="os-window-close hover-target" onclick="closeWindow('autopilotWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
         <div class="os-window-body" style="background: #050507; flex-grow: 1; display: flex; flex-direction: column; padding: 0; overflow: hidden; height: 455px;">
@@ -671,6 +704,7 @@
     <div class="os-window" id="settingsWindow" style="top: 200px; left: 150px; display: none; width: 350px;">
         <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'settingsWindow')" style="border-bottom-color: #0f0;">
             <span class="os-window-title">Sys_Settings.ini</span>
+            <span class="os-window-minimize hover-target" onclick="minimizeWindow('settingsWindow')" style="cursor: pointer; padding: 0 5px; color: #fff; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">[-]</span>
             <span class="os-window-close hover-target" onclick="closeWindow('settingsWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
         </div>
         <div class="os-window-body">
@@ -690,7 +724,7 @@
     </div>
 
     <div class="os-taskbar">
-        <div class="taskbar-left">
+        <div class="taskbar-left" id="taskbarAppsContainer">
             <span style="font-weight: bold; color: var(--accent-glow); margin-right: 15px; transition: color 0.5s ease;">CODE&gt;OS</span>
             <span id="taskbarUser" style="color: #888; display: none;">user@network</span> 
         </div>
@@ -761,6 +795,111 @@
         }
 
         loadWindowState();
+
+        
+        // ==========================================
+        // WINDOW MINIMIZE & TASKBAR LOGIC
+        // ==========================================
+        const taskbarContainer = document.getElementById('taskbarAppsContainer');
+        const openApps = new Map(); // Tracks open apps and their titles
+
+        function getWindowTitle(id) {
+            const win = document.getElementById(id);
+            if (!win) return id;
+            const titleEl = win.querySelector('.os-window-title');
+            if (titleEl) {
+                // Strip out any HTML tags (like the pulse dot) to just get text
+                let text = titleEl.innerText.trim();
+                // Clean up any extra newlines or weird spacing
+                return text.replace(/\n/g, '').trim() || id; 
+            }
+            return id;
+        }
+
+        function renderTaskbar() {
+            // Keep the CODE>OS and User network elements
+            let html = `
+                <span style="font-weight: bold; color: var(--accent-glow); margin-right: 15px; transition: color 0.5s ease;">CODE&gt;OS</span>
+                <span id="taskbarUser" style="color: #888; display: none;">user@network</span> 
+                <span style="margin-left: 10px; border-left: 1px solid #333; padding-left: 15px; margin-right: 15px;"></span>
+            `;
+
+            // Add a button for each open app
+            openApps.forEach((title, id) => {
+                const win = document.getElementById(id);
+                const isMinimized = win.style.display === 'none';
+                // Active means it's visible and likely on top (we'll just style based on visibility for now)
+                const activeClass = isMinimized ? '' : 'active';
+
+                html += `<div class="taskbar-app ${activeClass} hover-target" onclick="toggleWindow('${id}')">${title}</div>`;
+            });
+
+            taskbarContainer.innerHTML = html;
+        }
+
+        window.toggleWindow = function(id) {
+            const win = document.getElementById(id);
+            if (win.style.display === 'none') {
+                // It's minimized, restore it
+                win.style.display = 'flex'; // Or block, depending on the window
+                if(id !== 'autopilotWindow') win.style.display = 'block'; // Fallback
+                window.bringToFront(win);
+            } else {
+                // It's open, minimize it
+                window.minimizeWindow(id);
+            }
+            renderTaskbar();
+        };
+
+        window.minimizeWindow = function(id) {
+            document.getElementById(id).style.display = 'none';
+            // Do not delete from openApps map, just hide it
+            renderTaskbar();
+            saveWindowState();
+        };
+
+        // Override openWindow to track open apps
+        const originalOpenWindow = window.openWindow;
+        window.openWindow = function(id) {
+            originalOpenWindow(id);
+            if (!openApps.has(id)) {
+                openApps.set(id, getWindowTitle(id));
+            }
+            renderTaskbar();
+        };
+
+        // Override closeWindow to remove from taskbar
+        const originalCloseWindow = window.closeWindow;
+        window.closeWindow = function(id) {
+            originalCloseWindow(id);
+            openApps.delete(id);
+            renderTaskbar();
+        };
+
+        // When loading state on boot, we need to populate the taskbar if apps were left open
+        const originalLoadState = window.loadWindowState;
+        window.loadWindowState = function() {
+            originalLoadState();
+            // Check all windows. If they have state in localStorage, add to taskbar
+            const savedState = localStorage.getItem('codevoguewindows');
+            if (savedState) {
+                const state = JSON.parse(savedState);
+                for (const id in state) {
+                    if (state[id].display !== 'none') {
+                         openApps.set(id, getWindowTitle(id));
+                    }
+                }
+                renderTaskbar();
+            }
+        };
+        // Trigger it once manually to catch any already open windows in the HTML
+        document.querySelectorAll('.os-window').forEach(win => {
+            if(win.style.display !== 'none') {
+                 openApps.set(win.id, getWindowTitle(win.id));
+            }
+        });
+        renderTaskbar();
+
 
         // Theme Globals
         window.osThemeColor = '#BD52EB';

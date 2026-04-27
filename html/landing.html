@@ -202,6 +202,19 @@
             /* Give bottom taskbar room */
             body { padding-bottom: 50px; }
         }
+    
+        /* AUTOPILOT WINDOW STYLES */
+        .pulse { width: 8px; height: 8px; background: #0f0; border-radius: 50%; box-shadow: 0 0 10px #0f0; animation: blink 2s infinite; display: inline-block; margin-right: 5px; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .message { max-width: 85%; padding: 10px 14px; border-radius: 4px; font-size: 0.85rem; line-height: 1.4; margin-bottom: 10px; font-family: 'Space Grotesk', sans-serif; }
+        .msg-ai { align-self: flex-start; background: #111; border-left: 2px solid #0ea5e9; color: #ccc; }
+        .msg-ai .sender { font-family: 'Fira Code', monospace; font-size: 0.65rem; color: #0ea5e9; margin-bottom: 5px; display: block; }
+        .msg-user { align-self: flex-end; background: rgba(14, 165, 233, 0.1); border-right: 2px solid #fff; color: #fff; margin-left: auto; }
+        .suggestions { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
+        .chip { background: #111; border: 1px solid #333; color: #888; padding: 4px 10px; font-family: 'Fira Code', monospace; font-size: 0.65rem; cursor: pointer; border-radius: 20px; transition: all 0.2s; }
+        .chip:hover { border-color: #0ea5e9; color: #0ea5e9; }
+        .typing-indicator { display: none; background: transparent; font-family: 'Fira Code', monospace; color: #555; font-size: 0.75rem; padding: 5px 0; }
+
     </style>
 </head>
 <body class="theme-purple" style="margin: 0; overflow: hidden; background: #050507; color: white; font-family: 'Space Grotesk', sans-serif; transition: --accent-glow 0.5s ease;">
@@ -224,6 +237,11 @@
         <div class="context-item hover-target" onclick="openWindow('settingsWindow'); document.getElementById('osContextMenu').style.display='none';">
             <span style="color: #0f0;">⚙️</span> Settings
         </div>
+        
+        <div class="context-item hover-target" onclick="openWindow('autopilotWindow'); document.getElementById('osContextMenu').style.display='none';">
+            <span style="color: #0ea5e9;">🤖 AutoPilot.ai</span>
+        </div>
+
         <div class="context-header" style="border-top: 1px solid #333;">POWER</div>
         <div class="context-item hover-target" onclick="window.location.reload();">
             <span style="color: #0f0;">↻</span> Refresh Desktop
@@ -270,6 +288,15 @@
         <div class="os-icon hover-target" ondblclick="openWindow('musicWindow')" onclick="if(window.innerWidth <= 768) openWindow('musicWindow')">
             <div class="os-icon-img" style="color: var(--accent-glow); transition: color 0.5s ease; text-shadow: 0 0 10px rgba(var(--accent-glow-rgb), 0.5);">🎵</div>
             <span class="os-icon-text">VogueAmp.exe</span>
+        </div>
+
+        
+        <div class="os-icon hover-target" ondblclick="openWindow('autopilotWindow')" onclick="if(window.innerWidth <= 768) openWindow('autopilotWindow')">
+            <div class="os-icon-img" style="color: #0ea5e9;">
+                <div style="width: 6px; height: 6px; background: #0f0; border-radius: 50%; box-shadow: 0 0 10px #0f0; margin: 0 auto; margin-bottom: 5px; animation: blink 2s infinite;"></div>
+                🤖
+            </div>
+            <span class="os-icon-text" style="color: #0ea5e9;">AutoPilot.ai</span>
         </div>
 
         <div class="os-icon hover-target" id="adminIcon" style="display: none;" ondblclick="openWindow('adminWindow')" onclick="if(window.innerWidth <= 768) openWindow('adminWindow')">
@@ -606,6 +633,37 @@
 
             <!-- Hidden Audio Element -->
             <audio id="osAudioPlayer" style="display: none;"></audio>
+        </div>
+    </div>
+
+    
+    <!-- AUTOPILOT WINDOW -->
+    <div class="os-window" id="autopilotWindow" style="top: 60px; left: 350px; display: none; width: 450px; height: 500px; flex-direction: column;">
+        <div class="os-window-header hover-target" onmousedown="dragWindow(event, 'autopilotWindow')" style="border-bottom-color: #0ea5e9;">
+            <span class="os-window-title" style="color: #0ea5e9;"><div class="pulse"></div> AutoPilot.ai_v2.0</span>
+            <span class="os-window-close hover-target" onclick="closeWindow('autopilotWindow')" style="cursor: pointer; padding: 0 5px;">[X]</span>
+        </div>
+        <div class="os-window-body" style="background: #050507; flex-grow: 1; display: flex; flex-direction: column; padding: 0; overflow: hidden; height: 455px;">
+
+            <div id="apChatArea" class="chat-container" style="flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column;">
+                <div class="message msg-ai">
+                    <span class="sender">CODEVOGUE_AI</span>
+                    Welcome to the VIP terminal. Tanish is currently offline, but I am his dedicated digital clone. How can I assist you today?
+                </div>
+
+                <div class="suggestions" id="apSuggestionsBox">
+                    <div class="chip" onclick="sendApChip('What tech stack do you use?')">Tech Stack?</div>
+                    <div class="chip" onclick="sendApChip('How much for a new page?')">Pricing?</div>
+                    <div class="chip" onclick="sendApChip('SEO Timeline?')">SEO Timeline?</div>
+                </div>
+
+                <div class="typing-indicator" id="apTypingIndicator">> AI is synthesizing response...</div>
+            </div>
+
+            <div style="padding: 15px; background: #000; border-top: 1px solid #111; display: flex; gap: 8px;">
+                <input type="text" id="apUserInput" placeholder="Ask the digital founder anything..." autocomplete="off" style="flex-grow: 1; background: #111; border: 1px solid #333; color: #fff; padding: 8px 12px; font-family: 'Fira Code', monospace; font-size: 0.8rem; border-radius: 4px; outline: none;">
+                <button id="apSendBtn" class="cmd-submit hover-target" style="border-color: #0ea5e9; color: #0ea5e9; padding: 8px 15px;">SEND</button>
+            </div>
         </div>
     </div>
 
@@ -1358,7 +1416,90 @@
             }
         });
 
-        // ---------------------------
+        
+// ==========================================
+// AUTOPILOT AI LOGIC
+// ==========================================
+const apChatArea = document.getElementById('apChatArea');
+const apUserInput = document.getElementById('apUserInput');
+const apSendBtn = document.getElementById('apSendBtn');
+const apTypingIndicator = document.getElementById('apTypingIndicator');
+const apSuggestionsBox = document.getElementById('apSuggestionsBox');
+
+const aiKnowledgeBase = [
+    { keywords: ["tech", "stack", "code", "language", "framework", "build"], response: "CodeVogue builds high-performance systems using modern web standards (HTML5, CSS3, ES6 JavaScript) and advanced frameworks like React. For the backend, we rely on Google's Firebase for lightning-fast, secure databases. We don't use slow WordPress templates." },
+    { keywords: ["price", "cost", "money", "pay", "new page", "how much"], response: "As a VIP client, standard text/image updates are included in your retainer. If you need a completely new custom-coded page, our VIP rate is typically $150-$300 depending on complexity." },
+    { keywords: ["seo", "rank", "google", "search", "traffic"], response: "CodeVogue implements technical SEO from day one. However, climbing Google ranks organically takes about 3-6 months of consistent content and traffic. We build the rocket, but time provides the fuel." },
+    { keywords: ["emergency", "down", "broken", "hack", "error"], response: "I have flagged this message with high priority. If your website is down, Tanish will receive an SMS alert immediately. Please type the exact error." },
+    { keywords: ["tanish", "founder", "human", "talk to", "call"], response: "Tanish is currently offline. He reviews all AutoPilot chat logs daily. I will leave this transcript for him, and he will follow up with you directly." },
+    { keywords: ["hi", "hello", "hey", "morning", "night"], response: "Greetings. I am the CodeVogue AutoPilot. Systems are fully operational. What intelligence do you require?" }
+];
+
+const defaultResponses = [
+    "I have logged that into our system. Tanish will review it shortly.",
+    "That's a complex architectural question. I'll defer to the human founder.",
+    "Understood. CodeVogue operates on precision, so we'll get that sorted for you."
+];
+
+function findBestResponse(text) {
+    const lowerText = text.toLowerCase();
+    for (let item of aiKnowledgeBase) {
+        for (let keyword of item.keywords) {
+            if (lowerText.includes(keyword)) return item.response;
+        }
+    }
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+}
+
+function processApInput(text) {
+    if (!text.trim()) return;
+
+    if (apSuggestionsBox && apSuggestionsBox.style.display !== 'none') {
+        apSuggestionsBox.style.display = 'none';
+    }
+
+    const userDiv = document.createElement('div');
+    userDiv.className = 'message msg-user';
+    userDiv.textContent = text;
+    apChatArea.insertBefore(userDiv, apTypingIndicator);
+
+    apUserInput.value = '';
+    apUserInput.disabled = true;
+    apSendBtn.disabled = true;
+    apTypingIndicator.style.display = 'block';
+    apChatArea.scrollTop = apChatArea.scrollHeight;
+
+    const response = findBestResponse(text);
+    const thinkingTime = Math.max(1000, Math.random() * 2000);
+
+    setTimeout(() => {
+        apTypingIndicator.style.display = 'none';
+
+        const aiDiv = document.createElement('div');
+        aiDiv.className = 'message msg-ai';
+        aiDiv.innerHTML = `<span class="sender">CODEVOGUE_AI</span>${response}`;
+        apChatArea.appendChild(aiDiv);
+
+        apUserInput.disabled = false;
+        apSendBtn.disabled = false;
+        apUserInput.focus();
+        apChatArea.scrollTop = apChatArea.scrollHeight;
+    }, thinkingTime);
+}
+
+window.sendApChip = function(text) { processApInput(text); };
+
+// Ensure elements exist before adding listeners to avoid breaking main script
+if(apSendBtn) {
+    apSendBtn.addEventListener('click', () => processApInput(apUserInput.value));
+}
+if(apUserInput) {
+    apUserInput.addEventListener('keypress', (e) => { 
+        if (e.key === 'Enter') processApInput(apUserInput.value); 
+    });
+}
+
+// ---------------------------
         // ADMIN FUNCTIONS
         // ---------------------------
 

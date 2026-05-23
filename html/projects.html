@@ -17,6 +17,129 @@
             padding-top: clamp(120px, 15vh, 220px);
             padding-bottom: clamp(60px, 10vh, 100px);
         }
+
+        /* Upgraded Project Grid Layout */
+        .project-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent-glow, #BD52EB);
+            background: rgba(189, 82, 235, 0.05);
+            transform: translateY(-4px);
+        }
+
+        .project-card.in-development {
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .project-card.in-development:hover {
+            border-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.02);
+            transform: none;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .project-title {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            margin: 0;
+            line-height: 1.1;
+        }
+
+        .project-client {
+            font-family: 'Space Grotesk', sans-serif;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .project-client strong {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .badge {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            padding: 0.4em 0.8em;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .badge.accent {
+            background: var(--accent-glow, #BD52EB);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .badge.warning {
+            background: #eab308;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .project-desc {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            max-width: 65ch;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tech-item {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        @media (min-width: 768px) {
+            .project-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .project-card:first-child {
+                grid-column: 1 / -1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -39,30 +162,89 @@
 
     <main class="container page-header-spacing">
         <p class="hero-sub reveal text-target">SELECTED PORTFOLIO</p>
-        <h1 class="reveal text-target" style="font-size: clamp(3rem, 10vw, 8rem); margin-bottom: 2rem; line-height: 0.9;">OUR IMPACT</h1>
-        <p class="hero-desc reveal text-target" style="margin-top: 0;">Driving digital transformation for local education and modern brands.</p>
+        <h1 class="reveal text-target" style="font-size: clamp(3rem, 10vw, 8rem); margin-bottom: 1.5rem; line-height: 0.9;">OUR IMPACT</h1>
+        <p class="hero-desc reveal text-target" style="margin-top: 0; max-width: 600px;">Driving digital transformation for elite academic institutions and modern brands through high-performance web platforms.</p>
 
-        <div class="project-list">
-            <a href="#" class="project-row reveal">
-                <h2 class="project-title">Vocational Education website</h2>
-                <div class="project-meta"><span>WEB PLATFORM</span><p>for PM SHRI KV No.1 Sagar</p></div>
+        <section class="project-grid">
+            <!-- Project 1: KV 4 Portal -->
+            <a href="https://vocationaleducationkv4.netlify.app/" target="_blank" rel="noopener noreferrer" class="project-card reveal hover-target">
+                <div class="project-header">
+                    <div>
+                        <h2 class="project-title">Vocational Education Portal</h2>
+                        <div class="project-client">KV No. 4 DHSGVV Sagar<br>Lead Educator: <strong>Mr. Khemraj Nandanwar</strong></div>
+                    </div>
+                    <span class="badge accent">Since Apr '26</span>
+                </div>
+                <p class="project-desc">Nestled within the prestigious Dr. Hari Singh Gour University campus, KV No. 4 stands as a beacon of academic excellence and modern learning. Under the visionary guidance of Mr. Khemraj Nandanwar, we are engineering a state-of-the-art digital portal to revolutionize how their elite vocational curriculum is delivered to the next generation of students.</p>
+                <div class="tech-stack">
+                    <span class="tech-item">HTML/CSS</span>
+                    <span class="tech-item">•</span>
+                    <span class="tech-item">JavaScript</span>
+                    <span class="tech-item">•</span>
+                    <span class="tech-item">UI/UX Design</span>
+                </div>
             </a>
-            <a href="https://vocationaleducationkv4.netlify.app/" class="project-row reveal">
-                <h2 class="project-title">Vocational Education Portal</h2>
-                <div class="project-meta"><span>WEB PLATFORM</span><p>For KV 4 DHSGVV Sagar</p></div>
+
+            <!-- Project 2: KV 1 Website -->
+            <a href="#" class="project-card reveal hover-target">
+                <div class="project-header">
+                    <div>
+                        <h2 class="project-title">Vocational Ed Digital Hub</h2>
+                        <div class="project-client">PM SHRI KV No. 1 Sagar Cantt<br>Guided by: <strong>Mr. Alok Tiwari & Mr. Trivendra Sen</strong></div>
+                    </div>
+                    <span class="badge accent">Since Mar '26</span>
+                </div>
+                <p class="project-desc">Recognized as one of the most historic and distinguished educational landmarks in the Cantonment region. Collaborating closely with esteemed educators Mr. Alok Tiwari and Mr. Trivendra Sen, we are architecting a highly robust, premium web experience that mirrors the institution's prestigious legacy and empowers their forward-thinking training initiatives.</p>
+                <div class="tech-stack">
+                    <span class="tech-item">Frontend Development</span>
+                    <span class="tech-item">•</span>
+                    <span class="tech-item">Web Architecture</span>
+                </div>
             </a>
-            <div class="project-row reveal" style="opacity: 0.4; cursor: default;">
-                <h2 class="project-title">Next Innovation</h2>
-                <div class="project-meta"><span style="background: var(--text-muted); color: #fff;">IN DEVELOPMENT</span><p>CodeVogue Lab</p></div>
+
+            <!-- Project 3: CodeVogue Official Converter -->
+            <a href="https://codevogueofficial.netlify.app/" target="_blank" rel="noopener noreferrer" class="project-card reveal hover-target">
+                <div class="project-header">
+                    <div>
+                        <h2 class="project-title">Media Extraction Engine</h2>
+                        <div class="project-client">CodeVogue Core Utility<br>Co-Architected with: <strong>Velocity</strong></div>
+                    </div>
+                    <span class="badge warning">BETA (May '26)</span>
+                </div>
+                <p class="project-desc">An ultra-efficient, minimalist utility engine designed to seamlessly parse and convert YouTube media into high-fidelity video and MP3 formats. Spearheaded in collaboration with our co-founder Velocity, this platform cuts through the noise to deliver a blazing-fast extraction experience without the clutter.</p>
+                <div class="tech-stack">
+                    <span class="tech-item">API Integration</span>
+                    <span class="tech-item">•</span>
+                    <span class="tech-item">Backend Logic</span>
+                    <span class="tech-item">•</span>
+                    <span class="tech-item">JavaScript</span>
+                </div>
+            </a>
+
+            <!-- Project 4: Next Innovation -->
+            <div class="project-card in-development reveal">
+                <div class="project-header">
+                    <div>
+                        <h2 class="project-title">Next Innovation</h2>
+                        <div class="project-client">CodeVogue Lab</div>
+                    </div>
+                    <span class="badge">In Development</span>
+                </div>
+                <p class="project-desc">An experimental internal project focused on pushing the boundaries of interface design, advanced logic, and fluid web animations for our future client offerings.</p>
+                <div class="tech-stack">
+                    <span class="tech-item">Full-Stack</span>
+                    <span class="tech-item">•</span>
+                    <span class="tech-item">Firebase</span>
+                </div>
             </div>
-        </div>
+        </section>
     </main>
 
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
                 <h2>CODE<span style="color: var(--accent-glow, #BD52EB);">VOGUE</span></h2>
-                <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
+                <p>A  digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
             <div class="footer-links">
                 <h4>EXPLORE</h4>

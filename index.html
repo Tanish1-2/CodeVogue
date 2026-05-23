@@ -17,7 +17,7 @@
         /* Base fallback for structural integrity */
         * { box-sizing: border-box; }
         html { overflow-x: hidden; width: 100vw; }
-        body { overflow-x: hidden; width: 100vw; }
+        body { overflow-x: hidden; width: 100vw; line-height: 1.6; }
         
         nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; position: relative; z-index: 1000; width: 100%; }
         .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
@@ -26,15 +26,99 @@
         
         /* Layout Grids */
         .container { padding: 0 5%; max-width: 1400px; margin: 0 auto; width: 100%; }
-        .bento-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 2rem; }
-        .bento-main { grid-column: span 2; grid-row: span 2; }
-        .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        
+        /* =========================================
+           EXACT BLUEPRINT BENTO GRID CSS
+           ========================================= */
+        .bento-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            /* 3 equal rows so the right-side blocks stack perfectly */
+            grid-auto-rows: minmax(140px, auto); 
+            gap: 24px; 
+            margin-top: 3rem; 
+        }
+
+        /* 1. Pure Performance (Left side, spans 2 cols wide, 2 rows tall) */
+        .bento-main { 
+            grid-column: span 2; 
+            grid-row: span 2;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            text-align: center;
+        }
+
+        /* 2. Explore Work (Left side, under Performance, spans 2 cols wide, 1 row tall) */
+        .bento-cta {
+            grid-column: span 2;
+            grid-row: span 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3. Tanish (Right side, top) */
+        .bento-founder-1 {
+            grid-column: 3;
+            grid-row: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* 4. Aditya (Right side, middle) */
+        .bento-founder-2 {
+            grid-column: 3;
+            grid-row: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* 5. Clock (Right side, bottom) */
+        .bento-clock {
+            grid-column: 3;
+            grid-row: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .bento-box { 
+            padding: 2.5rem 2rem; 
+            border-radius: 24px; /* Matches your sketch curves */
+            background: rgba(255, 255, 255, 0.02); 
+            border: 2px solid rgba(255, 255, 255, 0.08); 
+            transition: transform 0.3s ease, background 0.3s ease; 
+            height: 100%; 
+        }
+        
+        .bento-box:hover { 
+            background: rgba(189, 82, 235, 0.05); 
+            border-color: rgba(189, 82, 235, 0.3); 
+            transform: translateY(-3px); 
+        }
+        
+        /* Capabilities and Footer Grid */
+        .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 3rem; }
+        .cap-card { padding: 2.5rem 2rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; transition: all 0.3s ease; }
+        .cap-card:hover { border-color: rgba(189, 82, 235, 0.3); transform: translateY(-3px); }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; padding: 4rem 5%; }
         .footer-bottom-bar { display: flex; justify-content: space-between; padding: 2rem 5%; border-top: 1px solid rgba(255,255,255,0.1); }
 
         /* Typography Fluidity */
-        .hero h1 { font-size: clamp(3rem, 10vw, 8rem); line-height: 1; margin: 1rem 0; }
+        .hero { padding: 6rem 0 4rem; text-align: left; }
+        .hero h1 { font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; margin: 1rem 0; letter-spacing: -0.02em; }
+        .hero-desc { font-size: clamp(1.1rem, 2vw, 1.3rem); max-width: 700px; color: rgba(255, 255, 255, 0.7); }
         .footer-cta { font-size: clamp(2.5rem, 10vw, 8rem); line-height: 1; word-break: break-word; }
+        .bento-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; line-height: 1.2; text-transform: uppercase; }
 
         /* ====== TABLET MEDIA QUERY (Max Width: 1024px) ====== */
         @media screen and (max-width: 1024px) {
@@ -44,7 +128,9 @@
             /* Bento Grid becomes 2x2 */
             .bento-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .bento-main { grid-column: span 2; grid-row: span 1; }
-            .bento-cta { grid-column: span 2; }
+            .bento-cta { grid-column: span 2; grid-row: auto; }
+            .bento-founder-1, .bento-founder-2 { grid-column: span 1; grid-row: auto; }
+            .bento-clock { grid-column: span 2; grid-row: auto; }
             
             /* Capabilities Grid becomes 2 columns */
             .cap-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
@@ -59,7 +145,7 @@
             .hamburger-btn.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
             
             .nav-links {
-                position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; /* dvh fixes iOS bottom bar */
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
                 background: rgba(5, 5, 7, 0.98); backdrop-filter: blur(15px);
                 flex-direction: column; justify-content: center; align-items: center;
                 gap: 2.5rem; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
@@ -69,19 +155,22 @@
 
             /* Hero Section */
             .hero { padding: 4rem 0 2rem; text-align: center; }
-            .hero h1 { font-size: clamp(2.5rem, 13vw, 5rem); } /* Ultra scalable for tiny phones */
+            .hero h1 { font-size: clamp(2.5rem, 13vw, 5rem); } 
             .hero-sub { justify-content: center; }
-            .hero-sub::before { display: none; } /* Remove line on mobile for center alignment */
-            .hero-desc { font-size: 1rem; padding: 0; margin: 2rem auto; text-align: center; }
+            .hero-sub::before { display: none; } 
+            .hero-desc { font-size: 1.05rem; padding: 0; margin: 2rem auto; text-align: center; }
 
             /* Bento Grid - Full Stack */
-            .bento-grid { grid-template-columns: 1fr; }
-            .bento-main, .bento-cta { grid-column: span 1; }
-            .bento-box { padding: 1.5rem; border-radius: 16px; }
+            .bento-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 2rem; }
+            .bento-main, .bento-clock, .bento-founder-1, .bento-founder-2, .bento-cta { 
+                grid-column: span 1; 
+                grid-row: auto; 
+            }
+            .bento-box { padding: 1.75rem; border-radius: 16px; }
 
             /* Capabilities Grid - Full Stack */
-            .cap-grid { grid-template-columns: 1fr; }
-            .cap-card { padding: 1.5rem; text-align: left; }
+            .cap-grid { grid-template-columns: 1fr; gap: 16px; }
+            .cap-card { padding: 2rem 1.5rem; text-align: left; }
 
             /* Footer */
             .footer-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; padding: 3rem 5%; }
@@ -90,15 +179,10 @@
             /* Developer Terminal Adjustments */
             #dev-terminal { max-width: 95vw; }
             #dev-terminal.active { 
-                width: 95vw; 
-                left: 2.5vw; 
-                transform: none; 
-                top: 5dvh; 
-                height: 80dvh; 
-                font-size: 0.8rem; 
+                width: 95vw; left: 2.5vw; transform: none; top: 5dvh; height: 80dvh; font-size: 0.8rem; 
             }
             .terminal-input-line { flex-wrap: wrap; }
-            .terminal-input { width: calc(100% - 20px); font-size: 1rem; } /* larger font prevents iOS auto-zoom */
+            .terminal-input { width: calc(100% - 20px); font-size: 1rem; } 
         }
     </style>
 </head>
@@ -157,7 +241,7 @@
             <p class="hero-desc text-target">We engineer high-performance, minimalist digital experiences. Stripping away the noise to build powerful software from Sagar, MP.</p>
         </section>
 
-        <!-- ♾️ NEW INFINITE MARQUEE -->
+        <!-- ♾️ INFINITE MARQUEE -->
         <div class="marquee-container reveal">
             <div class="marquee-content">
                 <span>✦ HTML5</span><span>✦ CSS3</span><span>✦ VANILLA JS</span><span>✦ FIREBASE</span><span>✦ FIGMA</span><span>✦ NETLIFY</span><span>✦ CANVAS API</span><span>✦ UI/UX</span>
@@ -165,34 +249,40 @@
             </div>
         </div>
 
-        <!-- 🍱 NEW BENTO BOX GRID -->
+        <!-- 🍱 EXACT SKETCH BENTO BOX GRID -->
         <section class="reveal">
             <p class="section-label text-target" style="text-align: center;">THE VISION</p>
             <div class="bento-grid">
                 
+                <!-- HUGE LEFT BOX (Pure Performance) -->
                 <div class="bento-box bento-main">
-                    <h3 class="bento-title">Pure Performance.</h3>
-                    <p class="bento-desc" style="font-size: 1.1rem;">Delivering pure, powerful, and aesthetically flawless software for brands that refuse to blend in. We do not just write code; we engineer digital architecture that feels magnetic.</p>
+                    <h3 class="bento-title" style="text-align: center;">Pure Performance</h3>
+                    <p class="bento-desc" style="font-size: 1.1rem; line-height: 1.7; margin-top: 10px; text-align: center;">Delivering pure, powerful, and aesthetically flawless software for brands that refuse to blend in. We do not just write code; we engineer digital architecture that feels magnetic.</p>
                 </div>
 
+                <!-- RIGHT TOP BOX (Tanish N.) -->
+                <div class="bento-box bento-founder-1">
+                    <h3 class="bento-title" style="font-size: 1.2rem; text-transform: none;">Tanish N.</h3>
+                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 5px;">(Developer)</div>
+                </div>
+
+                <!-- RIGHT MIDDLE BOX (Aditya Kashyap) -->
+                <div class="bento-box bento-founder-2">
+                    <h3 class="bento-title" style="font-size: 1.2rem; text-transform: none;">Aditya Kashyap</h3>
+                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 5px;">(Velocity)</div>
+                </div>
+
+                <!-- BOTTOM LEFT WIDE BOX (Explore Work) -->
+                <div class="bento-box bento-cta hover-target magnetic" style="cursor: pointer;" onclick="window.location.href='html/projects.html'">
+                    <h3 class="bento-title" style="margin: 0; font-size: 1.5rem;">Explore Our Work</h3>
+                </div>
+
+                <!-- RIGHT BOTTOM BOX (Clock) -->
                 <div class="bento-box bento-clock">
                     <div>
-                        <div id="live-clock">00:00:00</div>
-                        <div class="clock-label">LOCAL TIME (IST)</div>
+                        <div id="live-clock" style="font-family: 'Space Grotesk', monospace; font-size: 1.8rem; font-weight: 600; color: #fff;">00:00:00</div>
+                        <div class="clock-label" style="font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; margin-top: 5px;">LOCAL TIME (IST)</div>
                     </div>
-                </div>
-
-                <div class="bento-box bento-founder">
-                    <h3 class="bento-title">Tanish N.</h3>
-                    <p class="bento-desc">Founder & Lead Engineer</p>
-                    <div style="margin-top: 15px; font-size: 0.8rem; color: var(--accent-glow, #BD52EB);">[ SYSTEM ADMIN ]</div>
-                </div>
-
-                <div class="bento-box bento-cta hover-target magnetic" style="cursor: pointer;" onclick="window.location.href='html/projects.html'">
-                    <h3 class="bento-title" style="margin: 0; display: flex; justify-content: space-between; align-items: center;">
-                        Explore Our Work 
-                        <span style="color: var(--accent-glow, #BD52EB);">↗</span>
-                    </h3>
                 </div>
 
             </div>
@@ -204,26 +294,26 @@
             <h2 class="text-target" style="font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 2rem;">WHAT WE DO</h2>
             <div class="cap-grid">
                 <div class="cap-card hover-target">
-                    <div class="cap-icon">{/}</div>
-                    <h3 class="cap-title">Frontend Engineering</h3>
-                    <p class="cap-desc">Crafting highly optimized, blazingly fast user interfaces using modern DOM manipulation, semantic HTML, and advanced CSS architectures.</p>
+                    <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">{/}</div>
+                    <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Frontend Engineering</h3>
+                    <p class="cap-desc" style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">Crafting highly optimized, blazingly fast user interfaces using modern DOM manipulation, semantic HTML, and advanced CSS architectures.</p>
                 </div>
                 <div class="cap-card hover-target">
-                    <div class="cap-icon">✦</div>
-                    <h3 class="cap-title">Interface Design</h3>
-                    <p class="cap-desc">Designing minimalist, cyberpunk-inspired visual systems with a focus on typography, layout precision, and magnetic micro-interactions.</p>
+                    <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">✦</div>
+                    <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Interface Design</h3>
+                    <p class="cap-desc" style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">Designing minimalist, cyberpunk-inspired visual systems with a focus on typography, layout precision, and magnetic micro-interactions.</p>
                 </div>
                 <div class="cap-card hover-target">
-                    <div class="cap-icon">⚙</div>
-                    <h3 class="cap-title">Web Architecture</h3>
-                    <p class="cap-desc">Deploying serverless infrastructure, managing state logic, and integrating advanced web APIs for scalable, interactive web applications.</p>
+                    <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">⚙</div>
+                    <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Web Architecture</h3>
+                    <p class="cap-desc" style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">Deploying serverless infrastructure, managing state logic, and integrating advanced web APIs for scalable, interactive web applications.</p>
                 </div>
             </div>
         </section>
 
         <section style="padding: 100px 0; text-align: center;">
             <p class="section-label reveal text-target" style="margin-bottom: 30px;">READY TO BUILD?</p>
-            <a href="html/contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none;">LET'S TALK</a>
+            <a href="html/contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none; color: #fff;">LET'S TALK</a>
         </section>
     </main>
 
@@ -231,28 +321,28 @@
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
-                <h2>CODE<span style="color: var(--accent-glow, #BD52EB);">&gt;</span>OGUE</h2>
-                <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
+                <h2 style="font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 1rem;">CODE<span style="color: var(--accent-glow, #BD52EB);">&gt;</span>OGUE</h2>
+                <p style="color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 400px;">A digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
             <div class="footer-links">
-                <h4>EXPLORE</h4>
-                <ul>
-                    <li><a href="html/projects.html" class="hover-target">Our Work</a></li>
-                    <li><a href="html/lab.html" class="hover-target">The Lab</a></li>
-                    <li><a href="html/insights.html" class="hover-target">Insights Journal</a></li>
-                    <li><a href="html/updates.html" class="hover-target">Update Log</a></li>
+                <h4 style="color: #fff; margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">EXPLORE</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
+                    <li><a href="html/projects.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Our Work</a></li>
+                    <li><a href="html/lab.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">The Lab</a></li>
+                    <li><a href="html/insights.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Insights Journal</a></li>
+                    <li><a href="html/updates.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Update Log</a></li>
                 </ul>
             </div>
             <div class="footer-links">
-                <h4>CONNECT</h4>
-                <ul>
-                    <li><a href="html/contact.html" class="hover-target">Contact Us</a></li>
-                    <li><a href="html/apply.html" class="hover-target" style="color: var(--accent-glow, #BD52EB);">Join the Lab</a></li>
-                    <li><a href="html/terms.html" class="hover-target">Terms & Policy</a></li>
+                <h4 style="color: #fff; margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">CONNECT</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
+                    <li><a href="html/contact.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Contact Us</a></li>
+                    <li><a href="html/apply.html" class="hover-target" style="color: var(--accent-glow, #BD52EB); text-decoration: none; font-weight: 600;">Join the Lab</a></li>
+                    <li><a href="html/terms.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Terms & Policy</a></li>
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom-bar reveal">
+        <div class="footer-bottom-bar reveal" style="color: rgba(255,255,255,0.4); font-size: 0.9rem;">
             <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
             <div class="location">Sagar, Madhya Pradesh, IN</div>
         </div>
@@ -295,7 +385,7 @@
                 width = cyberCanvas.width = window.innerWidth;
                 height = cyberCanvas.height = window.innerHeight;
                 particles = [];
-                const particleCount = window.innerWidth < 768 ? 35 : 70; // Even lighter on mobile CPU
+                const particleCount = window.innerWidth < 768 ? 35 : 70; 
                 for (let i = 0; i < particleCount; i++) {
                     particles.push({
                         x: Math.random() * width,

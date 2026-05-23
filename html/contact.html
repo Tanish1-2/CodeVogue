@@ -6,8 +6,211 @@
     <title>Contact | CodeVogue</title>
     <!-- Glowing Purple Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        /* Responsive internal spacing overrides */
+        .page-header-spacing {
+            padding-top: clamp(120px, 15vh, 220px);
+            padding-bottom: clamp(60px, 10vh, 100px);
+        }
+
+        /* ✉️ Premium Contact Layout */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 4rem;
+            margin-top: 3rem;
+            max-width: 1100px;
+        }
+
+        @media (min-width: 850px) {
+            .contact-grid {
+                grid-template-columns: 1fr 1.5fr;
+                gap: 6rem;
+            }
+        }
+
+        /* Left Side: Info */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .info-block h3 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-block p, .info-block a.text-link {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.5rem;
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .info-block a.text-link:hover {
+            color: var(--accent-glow, #BD52EB);
+        }
+
+        /* 🌐 Social Icons Grid */
+        .social-icons-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.8rem;
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .social-icon svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            transition: transform 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: rgba(189, 82, 235, 0.1);
+            border-color: var(--accent-glow, #BD52EB);
+            color: #fff;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(189, 82, 235, 0.25);
+        }
+
+        .social-icon:hover svg {
+            transform: scale(1.1);
+        }
+
+        /* Right Side: Elegant Form */
+        .premium-form {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 0;
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            resize: none;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-bottom-color: var(--accent-glow, #BD52EB);
+            background: rgba(189, 82, 235, 0.03);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .submit-btn {
+            background: #fff;
+            color: #050507;
+            border: none;
+            padding: 1.2rem 2rem;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 99px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-glow, #BD52EB);
+            color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(189, 82, 235, 0.2);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Success Message Styling */
+        .status-message {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .status-message.success {
+            display: block;
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-message.error {
+            display: block;
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .premium-form {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="ambient-glow"></div>
@@ -15,13 +218,13 @@
 
     <!-- RESPONSIVE NAVBAR -->
     <nav>
-        <div class="logo magnetic hover-target">CODE<span style="color: var(--accent-glow); font-weight: 800;">&gt;</span>OGUE</div>
+        <div class="logo magnetic hover-target">CODE<span style="color: var(--accent-glow, #BD52EB); font-weight: 800;">&gt;</span>OGUE</div>
         <ul class="nav-links" id="navLinks">
             <li><a href="../index.html" class="magnetic hover-target">Home</a></li>
             <li><a href="projects.html" class="magnetic hover-target">Work</a></li>
             <li><a href="lab.html" class="magnetic hover-target">Lab</a></li>
             <li><a href="insights.html" class="magnetic hover-target">Insights</a></li>
-            <li><a href="contact.html" class="magnetic hover-target" style="color: var(--accent-glow);">Contact</a></li>
+            <li><a href="contact.html" class="magnetic hover-target" style="color: var(--accent-glow, #BD52EB);">Contact</a></li>
         </ul>
         <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
             <span></span><span></span><span></span>
@@ -29,51 +232,90 @@
     </nav>
 
     <!-- RESPONSIVE MAIN CONTAINER -->
-    <main class="container contact-main">
+    <main class="container page-header-spacing">
         <p class="hero-sub reveal text-target">START A CONVERSATION</p>
-        <h1 class="reveal text-target" style="font-size: clamp(2.5rem, 7vw, 6rem); margin-bottom: clamp(1.5rem, 4vw, 3rem);">LET'S TALK</h1>
+        <h1 class="reveal text-target" style="font-size: clamp(3rem, 8vw, 6rem); margin-bottom: 1rem; line-height: 1;">LET'S TALK</h1>
+        <p class="hero-desc reveal text-target" style="max-width: 600px; margin-top: 0;">Have a project in mind? We engineer high-performance web platforms for brands that refuse to blend in.</p>
         
-        <div class="terminal-container reveal">
-            <!-- TERMINAL HEADER -->
-            <div class="terminal-header-bar">
-                <span class="term-title">root@codevogue:~/secure-comms</span>
-                <span class="term-controls">[_] [🗖] [X]</span>
-            </div>
+        <div class="contact-grid reveal">
             
-            <!-- TERMINAL BODY -->
-            <div class="terminal-body-box">
-                <p class="term-init">> INITIALIZING SECURE CONNECTION... <span style="color:#0f0;">[OK]</span><br>> WAITING FOR USER INPUT_</p>
-
-                <form id="contactForm" action="https://formspree.io/f/xdkjjvoe" method="POST" class="hacker-form">
+            <!-- Left Side: Direct Contact Info -->
+            <div class="contact-info">
+                <div class="info-block">
+                    <h3>Email Us</h3>
+                    <a href="mailto:hello@codevogue.com" class="text-link hover-target">hello@codevogue.com</a>
+                </div>
+                <div class="info-block">
+                    <h3>Location</h3>
+                    <p>Sagar, Madhya Pradesh<br>India</p>
+                </div>
+                <div class="info-block">
+                    <h3>Our Network</h3>
                     
-                    <div class="cmd-line">
-                        <span class="cmd-prompt">NAME_</span>
-                        <input type="text" name="name" required placeholder="// Type your full name here..." class="cmd-input hover-target" autocomplete="off" spellcheck="false">
+                    <!-- NEW SVG SOCIAL ICONS GRID -->
+                    <div class="social-icons-wrapper">
+                        <!-- LinkedIn -->
+                        <a href="https://www.linkedin.com/in/codevogue-developer-43b199411/" target="_blank" rel="noopener noreferrer" class="social-icon hover-target" aria-label="LinkedIn">
+                            <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                        
+                        <!-- GitHub -->
+                        <a href="https://github.com/Tanish1-2" target="_blank" rel="noopener noreferrer" class="social-icon hover-target" aria-label="GitHub">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.022A9.606 9.606 0 0112 6.82c.85.004 1.705.114 2.504.336 1.909-1.29 2.747-1.022 2.747-1.022.546 1.379.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+                        </a>
+
+                        <!-- X / Twitter -->
+                        <a href="https://x.com/CodeVogueDev" target="_blank" rel="noopener noreferrer" class="social-icon hover-target" aria-label="X (Twitter)">
+                            <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.005 4.15H5.059z"/></svg>
+                        </a>
+
+                        <!-- YouTube -->
+                        <a href="https://www.youtube.com/@CodeVogue-Official" target="_blank" rel="noopener noreferrer" class="social-icon hover-target" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        </a>
+
+                        <!-- Discord -->
+                        <a href="https://discord.gg/VHBsQqj3YD" target="_blank" rel="noopener noreferrer" class="social-icon hover-target" aria-label="Discord">
+                            <svg viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+                        </a>
                     </div>
 
-                    <div class="cmd-line">
-                        <span class="cmd-prompt">EMAIL_</span>
-                        <input type="email" name="email" required placeholder="// Type your email address here..." class="cmd-input hover-target" autocomplete="off" spellcheck="false">
-                    </div>
-
-                    <div class="cmd-line message-line">
-                        <span class="cmd-prompt">MESSAGE_</span>
-                        <textarea name="message" rows="5" required placeholder="// What would you like to build? Type your message here..." class="cmd-input hover-target" autocomplete="off" spellcheck="false"></textarea>
-                    </div>
-
-                    <div class="terminal-status" id="terminalStatus"></div>
-
-                    <button type="submit" class="cmd-submit magnetic hover-target">[ INITIALIZE TRANSMISSION ]</button>
-                </form>
+                </div>
             </div>
+
+            <!-- Right Side: Elegant Form -->
+            <form id="contactForm" action="https://formspree.io/f/xdkjjvoe" method="POST" class="premium-form">
+                
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" required placeholder="John Doe" class="form-input hover-target" autocomplete="off" spellcheck="false">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" required placeholder="john@example.com" class="form-input hover-target" autocomplete="off" spellcheck="false">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Project Details</label>
+                    <textarea name="message" rows="4" required placeholder="Tell us about your vision..." class="form-input hover-target" autocomplete="off" spellcheck="false"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn hover-target magnetic" id="submitBtn">
+                    Send Message <span>→</span>
+                </button>
+
+                <div id="formStatus" class="status-message"></div>
+            </form>
+
         </div>
     </main>
     
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
-                <h2>CODE<span style="color: var(--accent-glow);">&gt;</span>OGUE</h2>
-                <p>A non-profit digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
+                <h2>CODE<span style="color: var(--accent-glow, #BD52EB);">&gt;</span>OGUE</h2>
+                <p>A digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
             <div class="footer-links">
                 <h4>EXPLORE</h4>
@@ -86,7 +328,8 @@
             <div class="footer-links">
                 <h4>CONNECT</h4>
                 <ul>
-                    <li><a href="contact.html" class="hover-target">Contact Us</a></li>
+                    <li><a href="contact.html" class="hover-target" style="color: var(--accent-glow, #BD52EB);">Contact Us</a></li>
+                    <li><a href="apply.html" class="hover-target">Join the Lab</a></li>
                     <li><a href="terms.html" class="hover-target">Terms & Policy</a></li>
                 </ul>
             </div>
@@ -115,52 +358,41 @@
             });
         }
 
-        // Hacker Form Logic
+        // Clean, Professional Form Submission Logic
         document.getElementById("contactForm").addEventListener("submit", function(event) {
             event.preventDefault(); 
             var form = event.target;
             var data = new FormData(form);
-            var btn = form.querySelector('.cmd-submit');
-            var statusBox = document.getElementById('terminalStatus');
+            var btn = document.getElementById('submitBtn');
+            var statusBox = document.getElementById('formStatus');
             
-            btn.style.display = 'none'; 
+            // Visual feedback during sending
+            btn.disabled = true;
+            btn.innerHTML = "Sending... <span>↻</span>";
+            statusBox.className = "status-message"; // Reset classes
             
-            let statusText = [
-                "> Encrypting payload with AES-256...",
-                "> Bypassing local firewall...",
-                "> Establishing secure tunnel to Formspree...",
-                "> Transmitting data packages..."
-            ];
-            
-            let i = 0;
-            statusBox.innerHTML = statusText[0];
-            statusBox.style.color = "#0ea5e9";
-            
-            let hackerInterval = setInterval(() => {
-                i++;
-                if (i < statusText.length) {
-                    statusBox.innerHTML += "<br>" + statusText[i];
+            fetch(form.action, {
+                method: form.method,
+                body: data,
+                headers: { 'Accept': 'application/json' }
+            }).then(response => {
+                if (response.ok) {
+                    statusBox.innerHTML = "Message sent successfully. We'll be in touch soon.";
+                    statusBox.className = "status-message success";
+                    form.reset();
+                    btn.innerHTML = "Sent <span>✓</span>";
                 } else {
-                    clearInterval(hackerInterval);
-                    
-                    fetch(form.action, {
-                        method: form.method,
-                        body: data,
-                        headers: { 'Accept': 'application/json' }
-                    }).then(response => {
-                        if (response.ok) {
-                            statusBox.innerHTML += "<br>> <span style='color:#0f0;'>[SUCCESS] Payload delivered. Ending session.</span>";
-                            setTimeout(() => { window.location.href = "../index.html"; }, 2000);
-                        } else {
-                            statusBox.innerHTML += "<br>> <span style='color:#f00;'>[ERROR] Connection refused. Try again.</span>";
-                            btn.style.display = 'block';
-                        }
-                    }).catch(error => { 
-                        statusBox.innerHTML += "<br>> <span style='color:#f00;'>[FATAL ERROR] System offline.</span>";
-                        btn.style.display = 'block';
-                    });
+                    statusBox.innerHTML = "Oops! There was a problem submitting your form.";
+                    statusBox.className = "status-message error";
+                    btn.disabled = false;
+                    btn.innerHTML = "Send Message <span>→</span>";
                 }
-            }, 600);
+            }).catch(error => { 
+                statusBox.innerHTML = "Network error. Please try again later.";
+                statusBox.className = "status-message error";
+                btn.disabled = false;
+                btn.innerHTML = "Send Message <span>→</span>";
+            });
         });
     </script>
 </body>

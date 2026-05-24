@@ -224,7 +224,6 @@
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html" class="magnetic hover-target" style="color: var(--accent-glow, #BD52EB);">Home</a></li>
             <li><a href="html/projects.html" class="magnetic hover-target">Work</a></li>
-            <li><a href="html/lab.html" class="magnetic hover-target">Lab</a></li>
             <li><a href="html/insights.html" class="magnetic hover-target">Insights</a></li>
             <li><a href="html/contact.html" class="magnetic hover-target">Contact</a></li>
             <li><a href="html/landing.html" class="magnetic hover-target">CodeVOS</a></li>
@@ -328,7 +327,6 @@
                 <h4 style="color: #fff; margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">EXPLORE</h4>
                 <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
                     <li><a href="html/projects.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Our Work</a></li>
-                    <li><a href="html/lab.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">The Lab</a></li>
                     <li><a href="html/insights.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Insights Journal</a></li>
                     <li><a href="html/updates.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Update Log</a></li>
                 </ul>
@@ -504,11 +502,6 @@
                     - contact<br>
                     - clear<br>
                     <br>
-                    <span style="color:#0ea5e9;">ARCADE MODULES:</span><br>
-                    - play snake<br>
-                    - play shinobi<br>
-                    - play jumper<br>
-                    <br>
                     <span style="color:#ef4444;">[SUDO] SECRET COMMANDS:</span><br>
                     - matrix (Injects HTML5 Canvas Overlay)<br>
                     - party (Injects Hue-Rotate Keyframes)<br>
@@ -519,10 +512,6 @@
                 } 
                 else if (cmd === 'whoami') { printLine("USER: Tanish Nandanwar. CLEARANCE: SYSTEM ADMIN. ASPIRING MED STUDENT. FULL-STACK GOD."); } 
                 else if (cmd === 'contact') { printLine("REDIRECTING TO SECURE COMMS..."); setTimeout(() => window.location.href = "html/contact.html", 1000); } 
-                else if (cmd === 'play snake') { printLine("INITIALIZING VOID SNAKE..."); setTimeout(() => window.location.href = "html/void-snake.html", 800); }
-                else if (cmd === 'play shinobi') { printLine("INITIALIZING SHINOBI SHOWDOWN..."); setTimeout(() => window.location.href = "html/shinobi-showdown.html", 800); }
-                else if (cmd === 'play jumper') { printLine("INITIALIZING NEON JUMPER..."); setTimeout(() => window.location.href = "html/neon-jumper.html", 800); }
-                
                 else if (cmd === 'hack') {
                     printLine("Initiating bypass protocol...");
                     setTimeout(() => printLine("Bypassing mainframe firewall... [OK]"), 1000);

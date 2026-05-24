@@ -106,6 +106,233 @@
             transform: translateY(-3px); 
         }
         
+        /* Interactive command console showcase */
+        .showcase-section { margin-top: 5rem; padding: 4rem 0 1rem; }
+        .showcase-panel {
+            position: relative;
+            max-width: 1140px;
+            margin: 0 auto;
+            border-radius: 44px;
+            overflow: hidden;
+            background: rgba(8,11,24,0.95);
+            border: 1px solid rgba(156,163,175,0.18);
+            box-shadow: 0 40px 110px rgba(0,0,0,0.3);
+            backdrop-filter: blur(26px);
+        }
+        .showcase-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top left, rgba(79,70,229,0.15), transparent 20%), radial-gradient(circle at bottom right, rgba(16,185,129,0.16), transparent 25%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .console-split {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 1.5rem;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        .console-terminal, .console-preview {
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+        }
+        .console-terminal {
+            background: #0f172a;
+            border: 1px solid rgba(148,163,184,0.16);
+        }
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1.1rem 1.25rem;
+            background: rgba(30,41,59,0.94);
+            border-bottom: 1px solid rgba(148,163,184,0.12);
+        }
+        .terminal-circle {
+            width: 12px;
+            height: 12px;
+            border-radius: 999px;
+            background: #f97316;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+        }
+        .terminal-circle:nth-child(2) { background: #facc15; }
+        .terminal-circle:nth-child(3) { background: #22c55e; }
+        .terminal-title {
+            color: #e2e8f0;
+            font-size: 0.9rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            opacity: 0.8;
+            flex: 1;
+        }
+        .terminal-body {
+            padding: 1.6rem 1.4rem 1.5rem;
+            display: grid;
+            gap: 0.95rem;
+        }
+        .terminal-line {
+            position: relative;
+            color: #e2e8f0;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.97rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .terminal-line span {
+            color: #38bdf8;
+        }
+        .terminal-line.typed {
+            max-width: 100%;
+            overflow: hidden;
+            border-right: 2px solid rgba(255,255,255,0.8);
+            animation: typing 3s steps(40,end) 0.4s 1 forwards, blink-caret 0.75s step-end infinite;
+            white-space: nowrap;
+        }
+        .terminal-line::before {
+            content: '$ ';
+            color: #94a3b8;
+            margin-right: 0.45rem;
+        }
+        .terminal-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            padding: 1rem 1.4rem 1.4rem;
+            border-top: 1px solid rgba(148,163,184,0.14);
+            background: rgba(15,23,42,0.9);
+        }
+        .terminal-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.65rem 0.95rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.06);
+            color: #cbd5e1;
+            font-size: 0.82rem;
+            letter-spacing: 0.02em;
+        }
+        .console-preview {
+            background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(30,41,59,0.93));
+            border: 1px solid rgba(148,163,184,0.12);
+            padding: 1.5rem;
+            display: grid;
+            gap: 1rem;
+        }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(255,255,255,0.06);
+            border-radius: 28px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .preview-title {
+            color: #f8fafc;
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+        .preview-box {
+            position: relative;
+            padding: 1.5rem;
+            border-radius: 32px;
+            background: rgba(255,255,255,0.06);
+            border: 1px dashed rgba(148,163,184,0.18);
+            min-height: 320px;
+            display: grid;
+            gap: 1rem;
+        }
+        .preview-block {
+            border-radius: 24px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+        .preview-block.large { height: 180px; grid-column: span 2; }
+        .preview-block.small { height: 90px; }
+        .preview-block-inline { height: 46px; width: 100%; }
+        .preview-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            color: #cbd5e1;
+            font-size: 0.88rem;
+        }
+        .preview-meta span {
+            display: inline-flex;
+            gap: 0.4rem;
+            align-items: center;
+        }
+        .preview-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 64px;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            color: #e2e8f0;
+            font-size: 0.78rem;
+        }
+        .preview-decor {
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: rgba(79,70,229,0.2);
+            filter: blur(20px);
+            top: -30px;
+            right: -40px;
+        }
+        .preview-decor:nth-child(2) {
+            background: rgba(16,185,129,0.18);
+            top: 140px;
+            right: -20px;
+            width: 70px;
+            height: 70px;
+        }
+        .showcase-caption {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1.5rem;
+            align-items: center;
+            padding: 2rem 2.5rem 2.5rem;
+            background: rgba(15,23,42,0.96);
+            backdrop-filter: blur(20px);
+        }
+        .showcase-label { margin: 0; font-size: clamp(2rem, 2.2vw, 2.5rem); font-weight: 800; letter-spacing: -0.04em; color: #f8fafc; }
+        .showcase-description { margin: 0.6rem 0 0; color: #cbd5e1; font-size: 1rem; line-height: 1.8; max-width: 580px; }
+        .showcase-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 1.8rem;
+            border-radius: 999px;
+            background: #8b5cf6;
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+        .showcase-button:hover { transform: translateY(-2px); filter: brightness(1.06); }
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        @keyframes blink-caret {
+            50% { border-color: transparent; }
+        }
+
         /* Capabilities and Footer Grid */
         .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 3rem; }
         .cap-card { padding: 2.5rem 2rem; background: var(--surface); border: 1px solid var(--border-color); border-radius: 20px; transition: all 0.3s ease; }
@@ -238,6 +465,78 @@
             <p class="hero-sub text-target">Digital Excellence Lab</p>
             <h1 class="text-target">CODE<br>VOGUE</h1>
             <p class="hero-desc text-target">We engineer high-performance, minimalist digital experiences. Stripping away the noise to build powerful software from Sagar, MP.</p>
+        </section>
+
+        <section class="story-section reveal">
+            <p class="section-label text-target">OUR JOURNEY</p>
+            <div class="story-bubble">
+                <div class="story-bubble-header">
+                    <span class="story-bubble-tag">FOUNDERS’ ORIGIN</span>
+                    <span class="story-bubble-date">March 28, 2026</span>
+                </div>
+                <div class="story-bubble-badge">Built by Tanish + Aditya — Sagar to Katni</div>
+                <div class="story-content">
+                    <p>CodeVogue is the result of a long-running obsession with code and design. I first fell in love with programming in fifth grade, and two years ago I met Aditya at a hackathon. He comes from Katni, I come from Sagar — both from MP — and we discovered a shared taste for clean interfaces and fast, modern execution. Our spark became momentum when a team from Sagar took second place in the national KVS Vidyasetu AI Hackathon first edition hosted by IIT Delhi, beating nearly 950 KV schools. That moment supercharged our mission, and on 28th March 2026 we launched CodeVogue as a lean studio for premium, high-performance web experiences.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 🌟 INTERACTIVE COMMAND CONSOLE -->
+        <section class="showcase-section reveal">
+            <div class="showcase-panel">
+                <div class="showcase-overlay"></div>
+                <div class="console-split">
+                    <div class="console-terminal">
+                        <div class="terminal-header">
+                            <span class="terminal-circle"></span>
+                            <span class="terminal-circle"></span>
+                            <span class="terminal-circle"></span>
+                            <div class="terminal-title">code-vogue / staging</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="terminal-line"><span>Initializing</span> project assets…</div>
+                            <div class="terminal-line"><span>Loading</span> UI system modules</div>
+                            <div class="terminal-line typed">deploy --theme=neon-lab --live-preview</div>
+                            <div class="terminal-line"><span>Watching</span> file changes in <em>src/</em></div>
+                            <div class="terminal-line"><span>Build</span> ready — 120ms</div>
+                        </div>
+                        <div class="terminal-tags">
+                            <span class="terminal-tag">HTML</span>
+                            <span class="terminal-tag">CSS</span>
+                            <span class="terminal-tag">JS</span>
+                            <span class="terminal-tag">Figma</span>
+                            <span class="terminal-tag">Netlify</span>
+                        </div>
+                    </div>
+                    <div class="console-preview">
+                        <div class="preview-header">
+                            <div class="preview-title">Live preview</div>
+                            <div class="preview-chip">Project UI</div>
+                        </div>
+                        <div class="preview-box">
+                            <div class="preview-decor"></div>
+                            <div class="preview-decor"></div>
+                            <div class="preview-block large"></div>
+                            <div class="preview-block small"></div>
+                            <div class="preview-block small"></div>
+                            <div class="preview-block preview-block-inline"></div>
+                            <div class="preview-block preview-block-inline"></div>
+                        </div>
+                        <div class="preview-meta">
+                            <span>Live booking flow</span>
+                            <span>Interactive menu grid</span>
+                            <span>Animated product states</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-caption">
+                    <div>
+                        <p class="showcase-label">Interactive developer story</p>
+                        <p class="showcase-description">See the build process through a command console split view, blending code commands and a blurred live preview of the product experience.</p>
+                    </div>
+                    <a href="html/projects.html" class="showcase-button hover-target">Explore the project</a>
+                </div>
+            </div>
         </section>
 
         <!-- ♾️ INFINITE MARQUEE -->

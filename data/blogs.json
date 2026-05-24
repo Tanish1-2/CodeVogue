@@ -2,10 +2,52 @@
   "posts": [
     {
       "link": "https://vocationaleducationkv4.netlify.app/",
-      "description": "First official launched project",
-      "title": "Vocational Education site for KV No.4 DHSGVV Sagar",
+      "description": "First official launched project for vocational education at KV No.4 DHSGVV Sagar.",
+      "title": "Vocational Education Site for KV No.4 DHSGVV Sagar",
       "date": "27th March 2026",
       "category": "Website"
+    },
+    {
+      "link": "https://codevogueofficial.netlify.app/",
+      "description": "A fast, minimalist media extraction utility designed for clean UX and privacy-first conversions.",
+      "title": "Building a Minimal Media Extraction Engine",
+      "date": "22nd April 2026",
+      "category": "Product"
+    },
+    {
+      "link": "https://vocationaleducationkv4.netlify.app/",
+      "description": "How modular UI components and responsive grids improved accessibility for campus users.",
+      "title": "Designing Responsive Interfaces for Education",
+      "date": "5th May 2026",
+      "category": "Design"
+    },
+    {
+      "link": "https://codevogueofficial.netlify.app/",
+      "description": "A case study in performance tuning, lazy loading, and interactive micro-animations.",
+      "title": "Performance Tuning for High-Impact Web Experiences",
+      "date": "11th May 2026",
+      "category": "Engineering"
+    },
+    {
+      "link": "https://vocationaleducationkv4.netlify.app/",
+      "description": "A breakdown of the frontend stack, JavaScript patterns, and reusable animation systems.",
+      "title": "Frontend Architecture for Modern Portals",
+      "date": "16th May 2026",
+      "category": "Development"
+    },
+    {
+      "link": "https://codevogueofficial.netlify.app/",
+      "description": "How we balanced bold aesthetics with clean usability in a cyberpunk-inspired brand site.",
+      "title": "Styling a Cyberpunk Brand Without Sacrificing Usability",
+      "date": "20th May 2026",
+      "category": "UI/UX"
+    },
+    {
+      "link": "https://vocationaleducationkv4.netlify.app/",
+      "description": "An approach to content strategy, client storytelling, and portfolio presentation for elite schools.",
+      "title": "Content Strategy for Institutional Websites",
+      "date": "24th May 2026",
+      "category": "Strategy"
     }
   ]
 }

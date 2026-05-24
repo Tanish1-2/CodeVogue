@@ -34,7 +34,18 @@
         <h1 class="reveal text-target" style="font-size: clamp(3.5rem, 8vw, 8rem); margin-bottom: 2rem; line-height: 0.9;">INSIGHTS</h1>
         <p class="hero-desc reveal text-target" style="margin-top: 0;">Thoughts on design, engineering, and the future of digital experiences.</p>
 
+        <div class="blog-toolbar reveal">
+            <div class="blog-search">
+                <label for="blog-search">Search insights</label>
+                <input id="blog-search" type="search" placeholder="Search by topic, case, or technology" class="search-input" autocomplete="off">
+            </div>
+            <div id="blog-results" class="blog-results">
+                <span class="result-count">Loading insights...</span>
+            </div>
+        </div>
+
         <div id="blog-container" class="insights-grid"></div>
+        <div id="blog-pagination" class="blog-pagination reveal"></div>
     </main>
 
     <footer class="main-footer">

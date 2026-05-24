@@ -19,8 +19,8 @@
         html { overflow-x: hidden; width: 100vw; }
         body { overflow-x: hidden; width: 100vw; line-height: 1.6; }
         
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; position: relative; z-index: 1000; width: 100%; }
-        .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; }
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; width: 100%; }
+        .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; margin-left: auto; }
         .hamburger-btn { display: none; background: transparent; border: none; cursor: pointer; flex-direction: column; gap: 6px; z-index: 1001; padding: 10px; min-width: 44px; min-height: 44px; justify-content: center; }
         .hamburger-btn span { display: block; width: 30px; height: 2px; background-color: var(--accent-glow, #BD52EB); transition: all 0.3s ease-in-out; }
         
@@ -94,8 +94,8 @@
         .bento-box { 
             padding: 2.5rem 2rem; 
             border-radius: 24px; /* Matches your sketch curves */
-            background: rgba(255, 255, 255, 0.02); 
-            border: 2px solid rgba(255, 255, 255, 0.08); 
+            background: var(--surface);
+            border: 2px solid var(--border-color); 
             transition: transform 0.3s ease, background 0.3s ease; 
             height: 100%; 
         }
@@ -108,7 +108,7 @@
         
         /* Capabilities and Footer Grid */
         .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 3rem; }
-        .cap-card { padding: 2.5rem 2rem; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 20px; transition: all 0.3s ease; }
+        .cap-card { padding: 2.5rem 2rem; background: var(--surface); border: 1px solid var(--border-color); border-radius: 20px; transition: all 0.3s ease; }
         .cap-card:hover { border-color: rgba(189, 82, 235, 0.3); transform: translateY(-3px); }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; padding: 4rem 5%; }
         .footer-bottom-bar { display: flex; justify-content: space-between; padding: 2rem 5%; border-top: 1px solid rgba(255,255,255,0.1); }
@@ -116,9 +116,9 @@
         /* Typography Fluidity */
         .hero { padding: 6rem 0 4rem; text-align: left; }
         .hero h1 { font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; margin: 1rem 0; letter-spacing: -0.02em; }
-        .hero-desc { font-size: clamp(1.1rem, 2vw, 1.3rem); max-width: 700px; color: rgba(255, 255, 255, 0.7); }
-        .footer-cta { font-size: clamp(2.5rem, 10vw, 8rem); line-height: 1; word-break: break-word; }
-        .bento-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; line-height: 1.2; text-transform: uppercase; }
+        .hero-desc { font-size: clamp(1.1rem, 2vw, 1.3rem); max-width: 700px; color: var(--text-muted); }
+        .footer-cta { font-size: clamp(2.5rem, 10vw, 8rem); line-height: 1; word-break: break-word; color: var(--text-main); }
+        .bento-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; line-height: 1.2; text-transform: uppercase; color: var(--text-main); }
 
         /* ====== TABLET MEDIA QUERY (Max Width: 1024px) ====== */
         @media screen and (max-width: 1024px) {
@@ -233,7 +233,7 @@
         </button>
     </nav>
 
-    <main class="container">
+    <main class="container" style="padding-top: 100px;">
         <section class="hero reveal">
             <p class="hero-sub text-target">Digital Excellence Lab</p>
             <h1 class="text-target">CODE<br>VOGUE</h1>
@@ -262,13 +262,13 @@
                 <!-- RIGHT TOP BOX (Tanish N.) -->
                 <div class="bento-box bento-founder-1">
                     <h3 class="bento-title" style="font-size: 1.2rem; text-transform: none;">Tanish N.</h3>
-                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 5px;">(Developer)</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">(Developer)</div>
                 </div>
 
                 <!-- RIGHT MIDDLE BOX (Aditya Kashyap) -->
                 <div class="bento-box bento-founder-2">
                     <h3 class="bento-title" style="font-size: 1.2rem; text-transform: none;">Aditya Kashyap</h3>
-                    <div style="font-size: 0.85rem; color: rgba(255,255,255,0.7); margin-top: 5px;">(Velocity)</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">(Velocity)</div>
                 </div>
 
                 <!-- BOTTOM LEFT WIDE BOX (Explore Work) -->
@@ -279,8 +279,8 @@
                 <!-- RIGHT BOTTOM BOX (Clock) -->
                 <div class="bento-box bento-clock">
                     <div>
-                        <div id="live-clock" style="font-family: 'Space Grotesk', monospace; font-size: 1.8rem; font-weight: 600; color: #fff;">00:00:00</div>
-                        <div class="clock-label" style="font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; margin-top: 5px;">LOCAL TIME (IST)</div>
+                        <div id="live-clock" style="font-family: 'Space Grotesk', monospace; font-size: 1.8rem; font-weight: 600; color: var(--text-main);">00:00:00</div>
+                        <div class="clock-label" style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; margin-top: 5px;">LOCAL TIME (IST)</div>
                     </div>
                 </div>
 
@@ -295,24 +295,24 @@
                 <div class="cap-card hover-target">
                     <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">{/}</div>
                     <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Frontend Engineering</h3>
-                    <p class="cap-desc" style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">Crafting highly optimized, blazingly fast user interfaces using modern DOM manipulation, semantic HTML, and advanced CSS architectures.</p>
+                    <p class="cap-desc" style="color: var(--text-muted); font-size: 0.95rem;">Crafting highly optimized, blazingly fast user interfaces using modern DOM manipulation, semantic HTML, and advanced CSS architectures.</p>
                 </div>
                 <div class="cap-card hover-target">
                     <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">✦</div>
                     <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Interface Design</h3>
-                    <p class="cap-desc" style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">Designing minimalist, cyberpunk-inspired visual systems with a focus on typography, layout precision, and magnetic micro-interactions.</p>
+                    <p class="cap-desc" style="color: var(--text-muted); font-size: 0.95rem;">Designing minimalist, cyberpunk-inspired visual systems with a focus on typography, layout precision, and magnetic micro-interactions.</p>
                 </div>
                 <div class="cap-card hover-target">
                     <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">⚙</div>
                     <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Web Architecture</h3>
-                    <p class="cap-desc" style="color: rgba(255,255,255,0.6); font-size: 0.95rem;">Deploying serverless infrastructure, managing state logic, and integrating advanced web APIs for scalable, interactive web applications.</p>
+                    <p class="cap-desc" style="color: var(--text-muted); font-size: 0.95rem;">Deploying serverless infrastructure, managing state logic, and integrating advanced web APIs for scalable, interactive web applications.</p>
                 </div>
             </div>
         </section>
 
         <section style="padding: 100px 0; text-align: center;">
             <p class="section-label reveal text-target" style="margin-bottom: 30px;">READY TO BUILD?</p>
-            <a href="html/contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none; color: #fff;">LET'S TALK</a>
+            <a href="html/contact.html" class="footer-cta reveal hover-target magnetic" style="text-decoration: none; color: var(--text-main);">LET'S TALK</a>
         </section>
     </main>
 
@@ -321,26 +321,26 @@
         <div class="footer-grid reveal">
             <div class="footer-brand">
                 <h2 style="font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 1rem;">CODE<span style="color: var(--accent-glow, #BD52EB);">&gt;</span>OGUE</h2>
-                <p style="color: rgba(255,255,255,0.6); line-height: 1.6; max-width: 400px;">A digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
+                <p style="color: var(--text-muted); line-height: 1.6; max-width: 400px;">A digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
             <div class="footer-links">
-                <h4 style="color: #fff; margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">EXPLORE</h4>
+                <h4 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">EXPLORE</h4>
                 <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
-                    <li><a href="html/projects.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Our Work</a></li>
-                    <li><a href="html/insights.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Insights Journal</a></li>
-                    <li><a href="html/updates.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Update Log</a></li>
+                    <li><a href="html/projects.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Our Work</a></li>
+                    <li><a href="html/insights.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Insights Journal</a></li>
+                    <li><a href="html/updates.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Update Log</a></li>
                 </ul>
             </div>
             <div class="footer-links">
-                <h4 style="color: #fff; margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">CONNECT</h4>
+                <h4 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">CONNECT</h4>
                 <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
-                    <li><a href="html/contact.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Contact Us</a></li>
+                    <li><a href="html/contact.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Contact Us</a></li>
                     <li><a href="html/apply.html" class="hover-target" style="color: var(--accent-glow, #BD52EB); text-decoration: none; font-weight: 600;">Join the Lab</a></li>
-                    <li><a href="html/terms.html" class="hover-target" style="color: rgba(255,255,255,0.6); text-decoration: none;">Terms & Policy</a></li>
+                    <li><a href="html/terms.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Terms & Policy</a></li>
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom-bar reveal" style="color: rgba(255,255,255,0.4); font-size: 0.9rem;">
+        <div class="footer-bottom-bar reveal" style="color: var(--text-muted); font-size: 0.9rem;">
             <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
             <div class="location">Sagar, Madhya Pradesh, IN</div>
         </div>

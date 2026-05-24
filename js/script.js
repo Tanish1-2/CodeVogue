@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (window.innerWidth > 768) { initCursor(); }
     initMagneticElements();
+    initThemeToggle();
+    initContactForm();
     
     // Initialize Page Transitions
     initPageTransitions();
@@ -19,18 +21,9 @@ async function loadBlogs() {
         // Fetching with absolute path from root so it always finds the data folder
         const response = await fetch('/data/blogs.json');
         const data = await response.json();
-        const posts = data.posts || [];
-
-        container.innerHTML = posts.map((post, index) => `
-            <a href="${post.link}" class="article-card reveal" style="transition-delay: ${index * 0.1}s">
-                <div class="article-meta">
-                    <span>${post.category}</span>
-                    <span>${post.date}</span>
-                </div>
-                <h2 class="article-title text-target">${post.title}</h2>
-                <p class="article-desc text-target">${post.description}</p>
-            </a>
-        `).join('');
+        blogPosts = data.posts || [];
+        currentBlogPage = 1;
+        initializeBlogUI();
 
         // Re-attach "READ" Cursor logic to new blog cards
         if (window.innerWidth > 768) {
@@ -44,6 +37,187 @@ async function loadBlogs() {
     } catch (error) {
         console.error('Failed to load insights:', error);
     }
+}
+
+let blogPosts = [];
+let currentBlogPage = 1;
+const BLOGS_PER_PAGE = 4;
+
+function initThemeToggle() {
+    const savedTheme = localStorage.getItem('siteTheme');
+    const preferredTheme = savedTheme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    applyTheme(preferredTheme);
+
+    const nav = document.querySelector('nav');
+    if (!nav || nav.querySelector('.theme-toggle')) return;
+
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'theme-toggle hover-target';
+    button.setAttribute('aria-label', 'Toggle theme');
+    button.innerHTML = `<span class="theme-icon">${preferredTheme === 'light' ? '☀' : '☾'}</span><span class="theme-label">Theme</span>`;
+    button.addEventListener('click', () => {
+        const nextTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        applyTheme(nextTheme);
+        localStorage.setItem('siteTheme', nextTheme);
+    });
+
+    nav.appendChild(button);
+}
+
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.setAttribute('data-theme', theme);
+    const icon = document.querySelector('.theme-icon');
+    if (icon) icon.textContent = theme === 'light' ? '☀' : '☾';
+}
+
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+
+    const status = document.getElementById('formStatus');
+    const button = document.getElementById('submitBtn');
+
+    const showFormStatus = (message, type) => {
+        if (!status) return;
+        status.textContent = message;
+        status.className = `status-message ${type}`;
+        status.style.display = 'block';
+    };
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const name = form.querySelector('[name="name"]');
+        const email = form.querySelector('[name="email"]');
+        const message = form.querySelector('[name="message"]');
+
+        if (!name.value.trim() || !email.value.trim() || !message.value.trim()) {
+            showFormStatus('Please fill in all required fields before sending.', 'error');
+            return;
+        }
+
+        if (!/^\S+@\S+\.\S+$/.test(email.value.trim())) {
+            showFormStatus('Please enter a valid email address.', 'error');
+            email.focus();
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = 'Sending...';
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                headers: { 'Accept': 'application/json' },
+                body: new FormData(form)
+            });
+
+            if (response.ok) {
+                showFormStatus('Message sent successfully. We will reply shortly.', 'success');
+                form.reset();
+            } else {
+                const result = await response.json();
+                showFormStatus(result.error || 'Submission failed. Please try again later.', 'error');
+            }
+        } catch (error) {
+            console.error(error);
+            showFormStatus('Unable to send right now. Please try again later.', 'error');
+        } finally {
+            button.disabled = false;
+            button.textContent = 'Send Message';
+        }
+    });
+}
+
+function renderBlogCards(posts, page = 1) {
+    const container = document.getElementById('blog-container');
+    if (!container) return;
+
+    const startIndex = (page - 1) * BLOGS_PER_PAGE;
+    const chunk = posts.slice(startIndex, startIndex + BLOGS_PER_PAGE);
+
+    if (!chunk.length) {
+        container.innerHTML = `<div class="no-results">No posts match your search. Try a different keyword.</div>`;
+        return;
+    }
+
+    container.innerHTML = chunk.map((post, index) => `
+        <a href="${post.link}" class="article-card reveal" style="transition-delay: ${index * 0.07}s" target="_blank" rel="noopener noreferrer">
+            <div class="article-meta">
+                <span>${post.category}</span>
+                <span>${post.date}</span>
+            </div>
+            <h2 class="article-title text-target">${post.title}</h2>
+            <p class="article-desc text-target">${post.description}</p>
+            <span class="read-more">Read more →</span>
+        </a>
+    `).join('');
+
+    initScrollReveal();
+}
+
+function renderBlogPagination(totalPosts, totalPages) {
+    const pagination = document.getElementById('blog-pagination');
+    if (!pagination) return;
+
+    if (totalPages <= 1) {
+        pagination.innerHTML = '';
+        return;
+    }
+
+    pagination.innerHTML = Array.from({ length: totalPages }, (_, index) => {
+        const pageNumber = index + 1;
+        return `<button class="page-button ${pageNumber === currentBlogPage ? 'active' : ''}" data-page="${pageNumber}">${pageNumber}</button>`;
+    }).join('');
+
+    pagination.querySelectorAll('.page-button').forEach(button => {
+        button.addEventListener('click', () => {
+            currentBlogPage = Number(button.dataset.page);
+            const filtered = getFilteredPosts();
+            renderBlogCards(filtered, currentBlogPage);
+            renderBlogPagination(filtered.length, Math.ceil(filtered.length / BLOGS_PER_PAGE));
+        });
+    });
+}
+
+function getFilteredPosts() {
+    const query = document.getElementById('blog-search')?.value.trim().toLowerCase() || '';
+    if (!query) return blogPosts;
+    return blogPosts.filter(post => {
+        return [post.title, post.description, post.category].some(value => value.toLowerCase().includes(query));
+    });
+}
+
+function updateBlogResults(posts) {
+    const resultCount = document.querySelector('.result-count');
+    if (!resultCount) return;
+    const total = posts.length;
+    const start = total === 0 ? 0 : (currentBlogPage - 1) * BLOGS_PER_PAGE + 1;
+    const end = Math.min(currentBlogPage * BLOGS_PER_PAGE, total);
+    resultCount.textContent = total === 0 ? 'No insights found.' : `Showing ${start}–${end} of ${total} insights`;
+}
+
+function attachBlogSearch() {
+    const search = document.getElementById('blog-search');
+    if (!search) return;
+
+    search.addEventListener('input', () => {
+        currentBlogPage = 1;
+        const filtered = getFilteredPosts();
+        renderBlogCards(filtered, currentBlogPage);
+        renderBlogPagination(filtered.length, Math.ceil(filtered.length / BLOGS_PER_PAGE));
+        updateBlogResults(filtered);
+    });
+}
+
+function initializeBlogUI() {
+    const filtered = getFilteredPosts();
+    renderBlogCards(filtered, currentBlogPage);
+    renderBlogPagination(filtered.length, Math.ceil(filtered.length / BLOGS_PER_PAGE));
+    updateBlogResults(filtered);
+    attachBlogSearch();
 }
 
 function initCursor() {

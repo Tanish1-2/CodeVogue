@@ -4,16 +4,269 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Updates | CodeVogue</title>
-    <!-- Glowing Purple Favicon -->
+
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        .updates-main {
+            padding-top: clamp(120px, 15vw, 180px);
+            padding-bottom: 100px;
+        }
+
+        .updates-title {
+            font-size: clamp(2.5rem, 7vw, 5rem);
+            margin-bottom: 3rem;
+        }
+
+        .timeline-wrapper {
+            position: relative;
+            max-width: 980px;
+            margin: 0 auto;
+            padding-left: 34px;
+        }
+
+        .timeline-wrapper::before {
+            content: "";
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(
+                180deg,
+                rgba(189, 82, 235, 0.05) 0%,
+                rgba(189, 82, 235, 0.35) 12%,
+                rgba(189, 82, 235, 0.18) 88%,
+                rgba(189, 82, 235, 0.04) 100%
+            );
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 28px;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: -32px;
+            top: 24px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(189, 82, 235, 0.5);
+            border: 2px solid rgba(255,255,255,0.16);
+            box-shadow: 0 0 0 6px rgba(189, 82, 235, 0.06);
+            z-index: 2;
+        }
+
+        .timeline-dot.dot-major {
+            background: #BD52EB;
+            box-shadow: 0 0 18px rgba(189, 82, 235, 0.8), 0 0 0 6px rgba(189, 82, 235, 0.08);
+        }
+
+        .timeline-content {
+            background: rgba(12, 12, 18, 0.82);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-left: 3px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 22px 24px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.22);
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-3px);
+            border-color: rgba(189, 82, 235, 0.18);
+            box-shadow: 0 18px 45px rgba(0,0,0,0.3);
+        }
+
+        .timeline-content.border-major {
+            border-left-color: #BD52EB;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .version-title {
+            margin: 0;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.45rem;
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            color: var(--text-main);
+        }
+
+        .version-date {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            white-space: nowrap;
+            padding-top: 4px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.35rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.14);
+            text-transform: uppercase;
+        }
+
+        .badge-major {
+            background: rgba(189, 82, 235, 0.18);
+            color: #BD52EB;
+            border-color: rgba(189, 82, 235, 0.4);
+        }
+
+        .badge-minor {
+            background: rgba(255,255,255,0.06);
+            color: #d4d4d8;
+            border-color: rgba(255,255,255,0.12);
+        }
+
+        .patch-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .patch-list li {
+            color: var(--text-main);
+            line-height: 1.7;
+            font-size: 0.98rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .patch-list li span.inline-tag {
+            flex: 0 0 auto;
+            min-width: 72px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 0.76rem;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .tag-add {
+            background: rgba(34, 197, 94, 0.16);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.28);
+        }
+
+        .tag-fix {
+            background: rgba(14, 165, 233, 0.16);
+            color: #38bdf8;
+            border: 1px solid rgba(14, 165, 233, 0.28);
+        }
+
+        .tag-tweak {
+            background: rgba(234, 179, 8, 0.16);
+            color: #facc15;
+            border: 1px solid rgba(234, 179, 8, 0.28);
+        }
+
+        .patch-list code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.92em;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 0.15rem 0.4rem;
+            border-radius: 8px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .updates-main {
+                padding-top: 110px;
+                padding-bottom: 80px;
+            }
+
+            .updates-title {
+                margin-bottom: 2rem;
+            }
+
+            .timeline-wrapper {
+                padding-left: 24px;
+            }
+
+            .timeline-wrapper::before {
+                left: 7px;
+            }
+
+            .timeline-dot {
+                left: -23px;
+                width: 14px;
+                height: 14px;
+            }
+
+            .timeline-content {
+                padding: 18px 16px;
+                border-radius: 18px;
+            }
+
+            .timeline-header {
+                margin-bottom: 14px;
+            }
+
+            .version-title {
+                font-size: 1.1rem;
+            }
+
+            .version-date {
+                font-size: 0.88rem;
+                width: 100%;
+                padding-top: 0;
+            }
+
+            .patch-list li {
+                flex-direction: column;
+                gap: 6px;
+                font-size: 0.95rem;
+            }
+
+            .patch-list li span.inline-tag {
+                min-width: unset;
+                width: fit-content;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="ambient-glow"></div>
     <div class="cursor" aria-hidden="true"><span class="cursor-text"></span></div>
 
-    <!-- NAVBAR -->
     <nav>
         <div class="logo magnetic hover-target">CODE<span style="color: var(--accent-glow); font-weight: 800;">&gt;</span>OGUE</div>
         <ul class="nav-links" id="navLinks">
@@ -27,46 +280,81 @@
         </button>
     </nav>
 
-    <main class="container" style="padding-top: clamp(120px, 15vw, 180px); padding-bottom: 100px;">
+    <main class="container updates-main">
         <p class="hero-sub reveal text-target">SYSTEM CHANGELOG</p>
-        <h1 class="reveal text-target" style="font-size: clamp(2.5rem, 7vw, 5rem); margin-bottom: 3rem;">PATCH NOTES</h1>
+        <h1 class="reveal text-target updates-title">PATCH NOTES</h1>
 
-        <!-- TIMELINE CONTAINER -->
         <div class="timeline-wrapper reveal">
+
+            <!-- v2.3.0 -->
+            <div class="timeline-item">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v2.3.0 <span class="badge badge-major">MAJOR</span></h3>
+                        <span class="version-date">June 5, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Expanded the account system with richer auth state handling, including provider tracking, verification state, profile updates, and normalized user persistence.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Added onboarding profile persistence so custom user fields now survive account saves, refreshes, and profile reloads.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Integrated support for structured onboarding data like codename, aura theme, path, primary goal, weakness, and completion state.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Renamed and aligned app identity flows around the latest HunterOS and Ascendos-related account architecture updates.</span></li>
+                        <li><span class="inline-tag tag-fix">[FIX]</span><span>Fixed profile desync issues where onboarding data appeared saved in storage but failed to render on the profile screen.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- v2.2.0 -->
+            <div class="timeline-item">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
+                    <div class="timeline-header">
+                        <h3 class="version-title">v2.2.0 <span class="badge badge-major">MAJOR</span></h3>
+                        <span class="version-date">June 4, 2026</span>
+                    </div>
+                    <ul class="patch-list">
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Introduced local and Google-linked account separation with verification-aware auth provider handling.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Added support for email verification logic so provider-authenticated users can remain verified while local accounts stay gated until confirmation.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Extended auth functions with Google sign-in helpers, local unverified account creation, and verified local account promotion.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Cleaned up persistence logic for session updates, account records, and profile synchronization across the app.</span></li>
+                        <li><span class="inline-tag tag-fix">[FIX]</span><span>Resolved user-state issues caused by partial account updates not reaching the active session record.</span></li>
+                    </ul>
+                </div>
+            </div>
 
             <!-- v2.1.0 -->
             <div class="timeline-item">
-                <div class="timeline-dot dot-major" style="background-color: #a855f7; box-shadow: 0 0 15px #a855f7;"></div>
-                <div class="timeline-content hover-target border-major" style="border-left-color: #a855f7;">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
                     <div class="timeline-header">
                         <h3 class="version-title">v2.1.0 <span class="badge badge-major">MINOR</span></h3>
                         <span class="version-date">May 30, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Tightened the desktop icon grid spacing and added responsive breakpoints so the desktop stacks neatly on phones and tablets.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Added 5 neon-style SVG app icons in <code>images/icons/</code> for easier branding and crisp scaling on all screens.</li>
-                        <li><span style="color:#eab308;">[TWEAK]</span> Rebranded the VIP booking app to <b>CodeMeet</b> across the desktop, context menu, and booking UI.</li>
-                        <li><span style="color:#0ea5e9;">[FIX]</span> Fixed the custom right-click menu to include the CodeMeet entry and corrected icon/emoji rendering for the NeuroVogue label.</li>
-                        <li><span style="color:#eab308;">[TWEAK]</span> Added CSS rules to size SVGs inside desktop icons to ensure consistent visual weight on small viewports.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Tightened the desktop icon grid spacing and added responsive breakpoints so the desktop stacks neatly on phones and tablets.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Added 5 neon-style SVG app icons in <code>images/icons/</code> for easier branding and crisp scaling on all screens.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Rebranded the VIP booking app to <b>CodeMeet</b> across the desktop, context menu, and booking UI.</span></li>
+                        <li><span class="inline-tag tag-fix">[FIX]</span><span>Fixed the custom right-click menu to include the CodeMeet entry and corrected icon/emoji rendering for the NeuroVogue label.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Added CSS rules to size SVGs inside desktop icons to ensure consistent visual weight on small viewports.</span></li>
                     </ul>
                 </div>
             </div>
 
             <!-- v2.0.0 -->
             <div class="timeline-item">
-                <div class="timeline-dot dot-major" style="background-color: #BD52EB; box-shadow: 0 0 15px #BD52EB;"></div>
-                <div class="timeline-content hover-target border-major" style="border-left-color: #BD52EB;">
+                <div class="timeline-dot dot-major"></div>
+                <div class="timeline-content hover-target border-major">
                     <div class="timeline-header">
-                        <h3 class="version-title">v2.0.0 <span class="badge badge-major" style="background: rgba(189, 82, 235, 0.2); color: #BD52EB; border-color: #BD52EB;">MAJOR</span></h3>
+                        <h3 class="version-title">v2.0.0 <span class="badge badge-major">MAJOR</span></h3>
                         <span class="version-date">March 30, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Deployed <b>CODE>OS</b>, a fully functional web-based operating system for VIP Clients.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Integrated Google Firebase Auth and Cloud Firestore for real-time database communication.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Engineered an Admin GOD MODE terminal to intercept, read, and reply to client comms in real-time.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Constructed a custom Cloudinary CDN pipeline for secure, in-chat file sharing.</li>
-                        <li><span style="color:#eab308;">[TWEAK]</span> Converted desktop windows to scale dynamically into a stacked, touch-friendly UI on mobile devices.</li>
-                        <li><span style="color:#0ea5e9;">[FIX]</span> Allowed dragging windows by double-clicking the main body to prevent tab-headers from clipping off-screen.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Deployed <b>CODE&gt;OS</b>, a fully functional web-based operating system for VIP Clients.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Integrated Google Firebase Auth and Cloud Firestore for real-time database communication.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Engineered an Admin GOD MODE terminal to intercept, read, and reply to client comms in real-time.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Constructed a custom Cloudinary CDN pipeline for secure, in-chat file sharing.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Converted desktop windows to scale dynamically into a stacked, touch-friendly UI on mobile devices.</span></li>
+                        <li><span class="inline-tag tag-fix">[FIX]</span><span>Allowed dragging windows by double-clicking the main body to prevent tab-headers from clipping off-screen.</span></li>
                     </ul>
                 </div>
             </div>
@@ -80,8 +368,8 @@
                         <span class="version-date">March 29, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0ea5e9;">[FIX]</span> Made the Hacker Terminal Contact Form fully responsive for mobile devices.</li>
-                        <li><span style="color:#eab308;">[TWEAK]</span> Improved UI/UX on the contact form by adding visible input backgrounds and side-by-side flexbox alignment.</li>
+                        <li><span class="inline-tag tag-fix">[FIX]</span><span>Made the Hacker Terminal Contact Form fully responsive for mobile devices.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Improved UI/UX on the contact form by adding visible input backgrounds and side-by-side flexbox alignment.</span></li>
                     </ul>
                 </div>
             </div>
@@ -95,8 +383,8 @@
                         <span class="version-date">March 29, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Completely redesigned <code>contact.html</code> into a fully functional Hacker Terminal interface.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Implemented fake "encryption & transmission" animation before sending data to Formspree.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Completely redesigned <code>contact.html</code> into a fully functional Hacker Terminal interface.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Implemented fake "encryption &amp; transmission" animation before sending data to Formspree.</span></li>
                     </ul>
                 </div>
             </div>
@@ -110,8 +398,8 @@
                         <span class="version-date">March 29, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0ea5e9;">[FIX]</span> Reverted custom CSS injection in <code>admin/index.html</code> to fix critical layout breaks in Decap CMS.</li>
-                        <li><span style="color:#eab308;">[TWEAK]</span> Re-registered default site CSS for the CMS preview pane.</li>
+                        <li><span class="inline-tag tag-fix">[FIX]</span><span>Reverted custom CSS injection in <code>admin/index.html</code> to fix critical layout breaks in Decap CMS.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Re-registered default site CSS for the CMS preview pane.</span></li>
                     </ul>
                 </div>
             </div>
@@ -125,9 +413,9 @@
                         <span class="version-date">March 29, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Configured Decap CMS <code>config.yml</code> for the Insights/Blogs page.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Integrated custom CodeVogue logo into the CMS login screen.</li>
-                        <li><span style="color:#eab308;">[TWEAK]</span> Updated CMS list widgets to properly display Blog Titles instead of generic item numbers.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Configured Decap CMS <code>config.yml</code> for the Insights/Blogs page.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Integrated custom CodeVogue logo into the CMS login screen.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Updated CMS list widgets to properly display Blog Titles instead of generic item numbers.</span></li>
                     </ul>
                 </div>
             </div>
@@ -141,8 +429,8 @@
                         <span class="version-date">March 29, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Implemented Dynamic Neural Network background canvas on the homepage.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Floating particle logic with distance-based laser connections.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Implemented Dynamic Neural Network background canvas on the homepage.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Floating particle logic with distance-based laser connections.</span></li>
                     </ul>
                 </div>
             </div>
@@ -156,8 +444,8 @@
                         <span class="version-date">March 29, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0ea5e9;">[FIX]</span> Resolved the "T-T" default Live Server favicon bug.</li>
-                        <li><span style="color:#eab308;">[TWEAK]</span> Injected URL-encoded SVG glowing logo across all HTML files.</li>
+                        <li><span class="inline-tag tag-fix">[FIX]</span><span>Resolved the "T-T" default Live Server favicon bug.</span></li>
+                        <li><span class="inline-tag tag-tweak">[TWEAK]</span><span>Injected URL-encoded SVG glowing logo across all HTML files.</span></li>
                     </ul>
                 </div>
             </div>
@@ -171,8 +459,8 @@
                         <span class="version-date">March 28, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Created secret <code>matrix</code> command to inject HTML5 dropping matrix code.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Created secret <code>party</code> command for hue-rotate CSS animations.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Created secret <code>matrix</code> command to inject HTML5 dropping matrix code.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Created secret <code>party</code> command for hue-rotate CSS animations.</span></li>
                     </ul>
                 </div>
             </div>
@@ -186,8 +474,8 @@
                         <span class="version-date">March 28, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Hidden Developer Terminal Easter Egg triggered by typing <code>admin</code>.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Terminal command parser for commands like <code>whoami</code>, <code>hack</code>, and <code>clear</code>.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Hidden Developer Terminal Easter Egg triggered by typing <code>admin</code>.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Terminal command parser for commands like <code>whoami</code>, <code>hack</code>, and <code>clear</code>.</span></li>
                     </ul>
                 </div>
             </div>
@@ -201,16 +489,15 @@
                         <span class="version-date">March 28, 2026</span>
                     </div>
                     <ul class="patch-list">
-                        <li><span style="color:#0f0;">[ADD]</span> Core CodeVogue architecture and layout.</li>
-                        <li><span style="color:#0f0;">[ADD]</span> Cyberpunk preloader, custom cursor, ambient glow, infinite marquee, and dynamic Bento Box grid.</li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Core CodeVogue architecture and layout.</span></li>
+                        <li><span class="inline-tag tag-add">[ADD]</span><span>Cyberpunk preloader, custom cursor, ambient glow, infinite marquee, and dynamic Bento Box grid.</span></li>
                     </ul>
                 </div>
             </div>
 
         </div>
     </main>
-    
-    <!-- FOOTER -->
+
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
@@ -243,16 +530,18 @@
     <script>
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
-        if(hamburgerBtn && navLinks) {
-            hamburgerBtn.addEventListener('click', () => { 
-                hamburgerBtn.classList.toggle('active'); 
-                navLinks.classList.toggle('active'); 
+
+        if (hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => {
+                hamburgerBtn.classList.toggle('active');
+                navLinks.classList.toggle('active');
             });
-            navLinks.querySelectorAll('a').forEach(link => { 
-                link.addEventListener('click', () => { 
-                    hamburgerBtn.classList.remove('active'); 
-                    navLinks.classList.remove('active'); 
-                }); 
+
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    hamburgerBtn.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
             });
         }
     </script>

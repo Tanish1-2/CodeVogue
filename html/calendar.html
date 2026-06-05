@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exam Calendar — HunterOS</title>
+<meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Track contracts, trials, focus runs, and Hunter Exam planning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .calendar-shell {
+    display: grid;
+    gap: 18px;
+  }
+
+  .calendar-weekdays,
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .calendar-weekday {
+    text-align: center;
+    letter-spacing: .14em;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .calendar-day {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    padding: 8px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    min-height: 110px;
+  }
+
+  .calendar-day:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+  }
+
+  .calendar-day.outside {
+    opacity: .35;
+  }
+
+  .calendar-day.today {
+    background: linear-gradient(135deg, rgba(56,189,248,.22), rgba(52,211,153,.10));
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 1px rgba(56,189,248,.15) inset;
+  }
+
+  .calendar-day.selected {
+    outline: 2px solid rgba(34,211,238,.65);
+    outline-offset: 1px;
+  }
+
+  .calendar-day-num {
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text);
+  }
+
+  .calendar-day.outside .calendar-day-num {
+    color: var(--muted);
+  }
+
+  .calendar-dots {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .calendar-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  .calendar-meta {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.3;
+    min-height: 28px;
+  }
+
+  .calendar-layout {
+    display: grid;
+    grid-template-columns: 1.35fr .75fr;
+    gap: 22px;
+  }
+
+  .event-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .event-item {
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    border-radius: 14px;
+    padding: 12px 14px;
+  }
+
+  .event-item-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .event-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,.08);
+  }
+
+  .event-badge.mission { color: #a78bfa; background: rgba(124,92,255,.12); }
+  .event-badge.focus { color: #67e8f9; background: rgba(34,211,238,.12); }
+  .event-badge.quest { color: #86efac; background: rgba(74,222,128,.12); }
+  .event-badge.custom { color: #fda4af; background: rgba(255,107,157,.12); }
+
+  .calendar-form {
+    display: grid;
+    gap: 12px;
+  }
+
+  .calendar-form input,
+  .calendar-form select,
+  .calendar-form textarea {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--panel-2);
+    color: var(--text);
+    padding: 12px 13px;
+    font: inherit;
+    outline: none;
+  }
+
+  .calendar-form textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+
+  .calendar-form input:focus,
+  .calendar-form select:focus,
+  .calendar-form textarea:focus {
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 3px rgba(56,189,248,.14);
+  }
+
+  .calendar-empty {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 8px 0 0;
+  }
+
+  @media (max-width: 980px) {
+    .calendar-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .calendar-day {
+      min-height: 88px;
+      padding: 6px;
+    }
+
+    .calendar-meta {
+      display: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    if (!AuthSystem.requireAuth()) {}
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html" aria-current="page"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="if (typeof AuthSystem !== 'undefined') { AuthSystem.logout(); } return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">EXAM SCHEDULE</div>
+        <h1 id="calendarTitle">Exam Calendar</h1>
+      </div>
+      <div class="row">
+        <button class="btn" id="prevMonthBtn" type="button">‹</button>
+        <button class="btn" id="todayBtn" type="button">Today</button>
+        <button class="btn" id="nextMonthBtn" type="button">›</button>
+      </div>
+    </div>
+
+    <div class="calendar-layout">
+      <div class="card">
+        <div class="calendar-shell">
+          <div class="calendar-weekdays">
+            <div class="calendar-weekday">SUN</div>
+            <div class="calendar-weekday">MON</div>
+            <div class="calendar-weekday">TUE</div>
+            <div class="calendar-weekday">WED</div>
+            <div class="calendar-weekday">THU</div>
+            <div class="calendar-weekday">FRI</div>
+            <div class="calendar-weekday">SAT</div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+      </div>
+
+      <div class="col" style="gap:18px">
+        <div class="card">
+          <div class="eyebrow">SELECTED DAY</div>
+          <h2 style="margin:6px 0 14px" id="selectedDateLabel">No day selected</h2>
+          <div class="event-list" id="selectedDateEvents"></div>
+          <div class="calendar-empty" id="selectedDateEmpty">Pick a day to inspect its schedule.</div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">FIELD ENTRY</div>
+          <h3 style="margin:6px 0 14px">Add schedule item</h3>
+
+          <form class="calendar-form" id="calendarEventForm">
+            <div>
+              <label class="eyebrow" for="eventTitleInput" style="display:block;margin-bottom:6px">Title</label>
+              <input id="eventTitleInput" type="text" maxlength="80" placeholder="Example: Zetsu focus block">
+            </div>
+
+            <div>
+              <label class="eyebrow" for="eventTypeInput" style="display:block;margin-bottom:6px">Type</label>
+              <select id="eventTypeInput">
+                <option value="custom">Custom</option>
+                <option value="focus">Focus</option>
+                <option value="mission">Contract</option>
+                <option value="quest">Trial</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="eyebrow" for="eventDateInput" style="display:block;margin-bottom:6px">Date</label>
+              <input id="eventDateInput" type="date">
+            </div>
+
+            <div>
+              <label class="eyebrow" for="eventNotesInput" style="display:block;margin-bottom:6px">Notes</label>
+              <textarea id="eventNotesInput" maxlength="160" placeholder="Optional notes"></textarea>
+            </div>
+
+            <button class="btn primary" type="submit">Add Event</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+<script>
+  (function () {
+    var now = new Date();
+    var viewedYear = now.getFullYear();
+    var viewedMonth = now.getMonth();
+    var selectedDateKey = makeDateKey(now);
+
+    var calendarTitle = document.getElementById('calendarTitle');
+    var calendarGrid = document.getElementById('calendarGrid');
+    var selectedDateLabel = document.getElementById('selectedDateLabel');
+    var selectedDateEvents = document.getElementById('selectedDateEvents');
+    var selectedDateEmpty = document.getElementById('selectedDateEmpty');
+    var prevMonthBtn = document.getElementById('prevMonthBtn');
+    var nextMonthBtn = document.getElementById('nextMonthBtn');
+    var todayBtn = document.getElementById('todayBtn');
+    var calendarEventForm = document.getElementById('calendarEventForm');
+    var eventTitleInput = document.getElementById('eventTitleInput');
+    var eventTypeInput = document.getElementById('eventTypeInput');
+    var eventDateInput = document.getElementById('eventDateInput');
+    var eventNotesInput = document.getElementById('eventNotesInput');
+    var topbarAvatar = document.getElementById('topbarAvatar');
+
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name.trim().split(/\s+/).map(function (part) {
+        return part[0] || '';
+      }).slice(0, 2).join('').toUpperCase() || 'H';
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getCalendarEventsKey(user) {
+      return 'ascendos-calendar-events::' + getUserKey(user);
+    }
+
+    function getFocusSessionsKey(user) {
+      return 'ascendos-focus-sessions::' + getUserKey(user);
+    }
+
+    function getQuestsKey(user) {
+      return 'ascendos-quests::' + getUserKey(user);
+    }
+
+    function getDashboardStateKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function makeDateKey(date) {
+      var y = date.getFullYear();
+      var m = String(date.getMonth() + 1).padStart(2, '0');
+      var d = String(date.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + d;
+    }
+
+    function humanDate(dateKey) {
+      var parts = dateKey.split('-');
+      var date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+      return date.toLocaleDateString(undefined, {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    function loadCustomEvents(user) {
+      var raw = localStorage.getItem(getCalendarEventsKey(user));
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveCustomEvents(user, events) {
+      localStorage.setItem(getCalendarEventsKey(user), JSON.stringify(events));
+    }
+
+    function loadFocusSessions(user) {
+      var raw = localStorage.getItem(getFocusSessionsKey(user));
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadQuests(user) {
+      var raw = localStorage.getItem(getQuestsKey(user));
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function loadDashboardState(user) {
+      var raw = localStorage.getItem(getDashboardStateKey(user));
+      if (!raw) return null;
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function buildSystemEvents(user) {
+      var events = [];
+      var focusSessions = loadFocusSessions(user);
+      var quests = loadQuests(user);
+      var dashboardState = loadDashboardState(user);
+
+      focusSessions.forEach(function (session) {
+        if (!session || !session.startedAt) return;
+        events.push({
+          id: 'focus-' + session.startedAt,
+          type: 'focus',
+          title: 'Zetsu Session',
+          date: String(session.startedAt).slice(0, 10),
+          notes: (Math.floor((Number(session.durationSec) || 0) / 60)) + 'm logged'
+        });
+      });
+
+      quests.forEach(function (quest) {
+        if (!quest || !quest.done) return;
+        var doneDate = quest.completedAt ? String(quest.completedAt).slice(0, 10) : null;
+        if (!doneDate) return;
+        events.push({
+          id: 'quest-' + quest.id,
+          type: 'quest',
+          title: quest.title || 'Trial Completed',
+          date: doneDate,
+          notes: 'Trial cleared'
+        });
+      });
+
+      if (dashboardState && Array.isArray(dashboardState.missions)) {
+        dashboardState.missions.forEach(function (mission) {
+          if (!mission || !mission.completed || !mission.completedAt) return;
+          events.push({
+            id: 'mission-' + mission.id + '-' + mission.completedAt,
+            type: 'mission',
+            title: mission.title || 'Contract Completed',
+            date: String(mission.completedAt).slice(0, 10),
+            notes: 'Contract cleared'
+          });
+        });
+      }
+
+      return events;
+    }
+
+    function getAllEvents(user) {
+      return buildSystemEvents(user).concat(loadCustomEvents(user));
+    }
+
+    function getEventsByDate(user) {
+      var map = {};
+      getAllEvents(user).forEach(function (event) {
+        if (!event || !event.date) return;
+        if (!map[event.date]) map[event.date] = [];
+        map[event.date].push(event);
+      });
+      return map;
+    }
+
+    function eventColor(type) {
+      if (type === 'mission') return 'var(--primary)';
+      if (type === 'focus') return 'var(--primary-2)';
+      if (type === 'quest') return '#4ade80';
+      return '#ff6b9d';
+    }
+
+    function renderCalendar(user) {
+      var monthLabel = new Date(viewedYear, viewedMonth, 1).toLocaleDateString(undefined, {
+        month: 'long',
+        year: 'numeric'
+      });
+      calendarTitle.textContent = monthLabel;
+      calendarGrid.innerHTML = '';
+
+      var firstDay = new Date(viewedYear, viewedMonth, 1);
+      var firstWeekday = firstDay.getDay();
+      var daysInMonth = new Date(viewedYear, viewedMonth + 1, 0).getDate();
+      var prevMonthDays = new Date(viewedYear, viewedMonth, 0).getDate();
+
+      var eventsByDate = getEventsByDate(user);
+      var todayKey = makeDateKey(new Date());
+
+      var cells = [];
+
+      for (var i = 0; i < firstWeekday; i++) {
+        var prevDate = new Date(viewedYear, viewedMonth - 1, prevMonthDays - firstWeekday + i + 1);
+        cells.push({ date: prevDate, outside: true });
+      }
+
+      for (var day = 1; day <= daysInMonth; day++) {
+        cells.push({ date: new Date(viewedYear, viewedMonth, day), outside: false });
+      }
+
+      while (cells.length % 7 !== 0) {
+        var nextIndex = cells.length - (firstWeekday + daysInMonth) + 1;
+        cells.push({ date: new Date(viewedYear, viewedMonth + 1, nextIndex), outside: true });
+      }
+
+      cells.forEach(function (cell) {
+        var dateKey = makeDateKey(cell.date);
+        var events = eventsByDate[dateKey] || [];
+        var dayEl = document.createElement('button');
+        dayEl.type = 'button';
+        dayEl.className = 'calendar-day' +
+          (cell.outside ? ' outside' : '') +
+          (dateKey === todayKey ? ' today' : '') +
+          (dateKey === selectedDateKey ? ' selected' : '');
+
+        var dotsHtml = events.slice(0, 4).map(function (event) {
+          return '<i class="calendar-dot" style="background:' + eventColor(event.type) + '"></i>';
+        }).join('');
+
+        var metaText = events.length
+          ? events[0].title + (events.length > 1 ? ' +' + (events.length - 1) : '')
+          : '';
+
+        dayEl.innerHTML = `
+          <span class="calendar-day-num">${cell.date.getDate()}</span>
+          <div class="calendar-meta">${metaText}</div>
+          <div class="calendar-dots">${dotsHtml}</div>
+        `;
+
+        dayEl.addEventListener('click', function () {
+          selectedDateKey = dateKey;
+          renderCalendar(user);
+          renderSelectedDate(user);
+        });
+
+        calendarGrid.appendChild(dayEl);
+      });
+    }
+
+    function renderSelectedDate(user) {
+      selectedDateLabel.textContent = humanDate(selectedDateKey);
+      selectedDateEvents.innerHTML = '';
+
+      var events = getAllEvents(user).filter(function (event) {
+        return event.date === selectedDateKey;
+      });
+
+      if (!events.length) {
+        selectedDateEmpty.style.display = 'block';
+        selectedDateEmpty.textContent = 'No schedule items on this date yet.';
+        return;
+      }
+
+      selectedDateEmpty.style.display = 'none';
+
+      events.forEach(function (event) {
+        var label = event.type === 'mission' ? 'contract'
+          : event.type === 'quest' ? 'trial'
+          : event.type === 'focus' ? 'focus'
+          : 'custom';
+
+        var item = document.createElement('div');
+        item.className = 'event-item';
+        item.innerHTML = `
+          <div class="event-item-head">
+            <div style="font-family:var(--font-display);font-weight:600">${event.title}</div>
+            <span class="event-badge ${event.type}">${label}</span>
+          </div>
+          <div style="font-size:13px;color:var(--muted)">${event.notes || 'No extra notes'}</div>
+        `;
+        selectedDateEvents.appendChild(item);
+      });
+    }
+
+    function addCustomEvent(user, payload) {
+      var events = loadCustomEvents(user);
+      events.unshift({
+        id: 'custom-' + Date.now(),
+        type: payload.type,
+        title: payload.title,
+        date: payload.date,
+        notes: payload.notes
+      });
+      saveCustomEvents(user, events);
+    }
+
+    function initUserUI(user) {
+      var name = getUserDisplayName(user);
+      var initials = getInitials(name);
+      if (topbarAvatar) topbarAvatar.textContent = initials;
+    }
+
+    prevMonthBtn.addEventListener('click', function () {
+      viewedMonth -= 1;
+      if (viewedMonth < 0) {
+        viewedMonth = 11;
+        viewedYear -= 1;
+      }
+      var user = getCurrentUserSafe();
+      if (user) renderCalendar(user);
+    });
+
+    nextMonthBtn.addEventListener('click', function () {
+      viewedMonth += 1;
+      if (viewedMonth > 11) {
+        viewedMonth = 0;
+        viewedYear += 1;
+      }
+      var user = getCurrentUserSafe();
+      if (user) renderCalendar(user);
+    });
+
+    todayBtn.addEventListener('click', function () {
+      var today = new Date();
+      viewedYear = today.getFullYear();
+      viewedMonth = today.getMonth();
+      selectedDateKey = makeDateKey(today);
+      var user = getCurrentUserSafe();
+      if (user) {
+        renderCalendar(user);
+        renderSelectedDate(user);
+      }
+    });
+
+    calendarEventForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      var user = getCurrentUserSafe();
+      if (!user) return;
+
+      var title = String(eventTitleInput.value || '').trim();
+      var type = String(eventTypeInput.value || 'custom').trim();
+      var date = String(eventDateInput.value || '').trim();
+      var notes = String(eventNotesInput.value || '').trim();
+
+      if (!title || !date) {
+        return;
+      }
+
+      addCustomEvent(user, {
+        title: title,
+        type: type,
+        date: date,
+        notes: notes
+      });
+
+      selectedDateKey = date;
+      var parts = date.split('-');
+      viewedYear = Number(parts[0]);
+      viewedMonth = Number(parts[1]) - 1;
+
+      calendarEventForm.reset();
+
+      renderCalendar(user);
+      renderSelectedDate(user);
+    });
+
+    function init() {
+      eventDateInput.value = makeDateKey(new Date());
+
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          initUserUI(user);
+          renderCalendar(user);
+          renderSelectedDate(user);
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Command Center — HunterOS</title>
+  <meta name="description" content="HunterOS by CodeVogue — a tactical hunter license system for contracts, aura growth, Nen development, and rank advancement.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background:
+        radial-gradient(circle at 15% 18%, rgba(56, 189, 248, 0.08), transparent 0 20%),
+        radial-gradient(circle at 84% 16%, rgba(168, 85, 247, 0.14), transparent 0 22%),
+        radial-gradient(circle at 70% 72%, rgba(217, 70, 239, 0.12), transparent 0 20%),
+        radial-gradient(circle at 20% 82%, rgba(34, 197, 94, 0.08), transparent 0 18%),
+        linear-gradient(180deg, rgba(2, 4, 10, 0.98), rgba(3, 4, 12, 0.985));
+      overflow: hidden;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 700ms ease, visibility 700ms ease;
+      cursor: pointer;
+      isolation: isolate;
+    }
+
+    .intro-overlay.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro-overlay::before {
+      content: "";
+      position: absolute;
+      inset: -10%;
+      background:
+        radial-gradient(circle, rgba(168, 85, 247, 0.11) 0 2px, transparent 2px) 12% 20% / 180px 180px,
+        radial-gradient(circle, rgba(56, 189, 248, 0.10) 0 1.5px, transparent 1.5px) 64% 30% / 220px 220px,
+        radial-gradient(circle, rgba(255,255,255,0.18) 0 1px, transparent 1px) 0 0 / 160px 160px;
+      opacity: 0.65;
+      animation: introStarsDrift 24s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .intro-overlay::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+      opacity: 0.10;
+      mask-image: radial-gradient(circle at center, black 42%, transparent 90%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .intro-orb {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(18px);
+      opacity: 0.22;
+      pointer-events: none;
+      z-index: 0;
+      animation: introOrbFloat 10s ease-in-out infinite;
+    }
+
+    .intro-orb.orb-a {
+      width: 260px;
+      height: 260px;
+      top: 10%;
+      right: -40px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.28), transparent 68%);
+      animation-delay: 0s;
+    }
+
+    .intro-orb.orb-b {
+      width: 220px;
+      height: 220px;
+      bottom: 8%;
+      right: 10%;
+      background: radial-gradient(circle, rgba(217, 70, 239, 0.22), transparent 70%);
+      animation-delay: -2.5s;
+    }
+
+    .intro-orb.orb-c {
+      width: 180px;
+      height: 180px;
+      top: 18%;
+      left: -20px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.16), transparent 70%);
+      animation-delay: -5s;
+    }
+
+    .intro-panel {
+      position: relative;
+      z-index: 2;
+      width: min(1100px, 100%);
+      text-align: center;
+      display: grid;
+      gap: 18px;
+      justify-items: center;
+    }
+
+    .intro-kicker {
+      font-family: "JetBrains Mono", monospace;
+      font-size: clamp(11px, 1.4vw, 13px);
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: rgba(182, 156, 255, 0.78);
+      opacity: 0;
+      transform: translateY(10px);
+      animation: introFadeUp 700ms ease forwards;
+      animation-delay: 180ms;
+    }
+
+    .intro-quote {
+      max-width: 18ch;
+      margin: 0;
+      font-family: "JetBrains Mono", monospace;
+      font-size: clamp(24px, 3.3vw, 54px);
+      line-height: 1.16;
+      letter-spacing: 0.01em;
+      color: #b45cff;
+      text-shadow:
+        0 0 14px rgba(180, 92, 255, 0.34),
+        0 0 28px rgba(180, 92, 255, 0.16);
+      opacity: 0;
+      transform: translateY(16px) scale(0.985);
+      animation: introFadeUp 950ms cubic-bezier(.2,.7,.1,1) forwards;
+      animation-delay: 520ms;
+    }
+
+    .intro-welcome {
+      margin: 0;
+      font-family: "Rajdhani", sans-serif;
+      font-weight: 700;
+      font-size: clamp(42px, 7vw, 96px);
+      line-height: 0.98;
+      letter-spacing: 0.01em;
+      color: #ffffff;
+      text-shadow:
+        0 0 20px rgba(180, 92, 255, 0.16),
+        0 0 38px rgba(180, 92, 255, 0.12);
+      opacity: 0;
+      transform: translateY(18px) scale(0.985);
+      animation: introFadeUp 950ms cubic-bezier(.2,.7,.1,1) forwards;
+      animation-delay: 1450ms;
+    }
+
+    .intro-welcome .intro-accent {
+      color: #b45cff;
+      text-shadow:
+        0 0 16px rgba(180, 92, 255, 0.42),
+        0 0 34px rgba(180, 92, 255, 0.22);
+    }
+
+    .intro-subline {
+      margin: 0;
+      max-width: 60ch;
+      color: rgba(225, 232, 255, 0.72);
+      font-size: clamp(14px, 1.8vw, 18px);
+      line-height: 1.7;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: introFadeUp 800ms ease forwards;
+      animation-delay: 2150ms;
+    }
+
+    .intro-actions {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: introFadeUp 800ms ease forwards;
+      animation-delay: 2500ms;
+    }
+
+    .intro-skip,
+    .intro-enter {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 11px 18px;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease, opacity 160ms ease;
+    }
+
+    .intro-enter {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.24), rgba(56, 189, 248, 0.18));
+      color: #f6f3ff;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .intro-skip {
+      background: rgba(255,255,255,0.04);
+      color: rgba(226, 232, 240, 0.82);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .intro-enter:hover,
+    .intro-skip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(180, 92, 255, 0.26);
+    }
+
+    .intro-tap {
+      position: absolute;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(203, 213, 225, 0.35);
+      z-index: 2;
+      animation: introPulse 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes introFadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes introPulse {
+      0%, 100% { opacity: 0.24; }
+      50% { opacity: 0.62; }
+    }
+
+    @keyframes introOrbFloat {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(0,-12px,0) scale(1.04); }
+    }
+
+    @keyframes introStarsDrift {
+      from { transform: translate3d(0,0,0) scale(1); }
+      to { transform: translate3d(-18px, 14px, 0) scale(1.02); }
+    }
+
+    @media (max-width: 720px) {
+      .intro-panel {
+        gap: 14px;
+      }
+
+      .intro-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .intro-enter,
+      .intro-skip {
+        width: min(280px, 100%);
+      }
+
+      .intro-tap {
+        bottom: 20px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro-overlay,
+      .intro-kicker,
+      .intro-quote,
+      .intro-welcome,
+      .intro-subline,
+      .intro-actions,
+      .intro-tap,
+      .intro-orb {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="dashboardIntro" class="intro-overlay" aria-hidden="true">
+  <div class="intro-orb orb-a"></div>
+  <div class="intro-orb orb-b"></div>
+  <div class="intro-orb orb-c"></div>
+
+  <div class="intro-panel">
+    <div class="intro-kicker" id="introKicker">HUNTER ASSOCIATION // COMMAND CENTER</div>
+    <p class="intro-quote" id="introQuote">Stillness is not surrender. It is the moment before precision.</p>
+    <h1 class="intro-welcome" id="introWelcome">
+      <span class="intro-accent">Welcome back,</span> Hunter
+    </h1>
+    <p class="intro-subline" id="introSubline">
+      Your contracts are loaded. Your aura is listening. Step forward with intent.
+    </p>
+
+    <div class="intro-actions">
+      <button type="button" class="intro-enter" id="introEnterBtn">Enter Command Center</button>
+      <button type="button" class="intro-skip" id="introSkipBtn">Skip intro</button>
+    </div>
+  </div>
+
+  <div class="intro-tap">tap anywhere to skip</div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    if (!AuthSystem.requireAuth()) {}
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html" aria-current="page"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="AuthSystem.logout(); return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <section class="card glow" style="padding:28px;overflow:hidden;position:relative">
+      <div class="grid" style="grid-template-columns:1.25fr .8fr;gap:24px;align-items:center">
+        <div>
+          <div class="eyebrow" id="profileEyebrow">HUNTER LICENSE // ID-0421</div>
+          <h1 id="dashboardGreeting" style="font-size:clamp(34px,4vw,60px);margin:8px 0 10px">Welcome back, Hunter.</h1>
+          <p style="max-width:52ch">Complete contracts, refine your aura, and rise through the Hunter Association with every cleared trial.</p>
+          <div class="row" style="margin-top:16px;gap:12px;flex-wrap:wrap">
+            <span class="tag" id="rankBadge" style="padding:10px 14px">EXAMINEE</span>
+            <span class="tag" id="streakBadge">🔥 0 day discipline streak</span>
+            <span class="tag" id="powerBadge">✦ Aura Output Tier 1</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="row" style="justify-content:space-between;align-items:flex-end">
+            <div>
+              <div class="eyebrow">HUNTER LEVEL <span id="levelValue">1</span></div>
+              <div style="font-size:24px;font-weight:700" id="xpTotalValue">0 AURA</div>
+            </div>
+            <div class="ring-wrap">
+              <svg viewBox="0 0 120 120" width="120" height="120" aria-hidden="true">
+                <circle cx="60" cy="60" r="48" stroke="rgba(255,255,255,.08)" stroke-width="10" fill="none"></circle>
+                <circle id="xpRing" cx="60" cy="60" r="48" stroke="url(#ringGrad)" stroke-width="10" fill="none" stroke-linecap="round"
+                  transform="rotate(-90 60 60)" stroke-dasharray="301.59" stroke-dashoffset="301.59"></circle>
+                <defs>
+                  <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#38bdf8"></stop>
+                    <stop offset="100%" stop-color="#34d399"></stop>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="ring-center">
+                <strong id="xpPercentValue">0%</strong>
+                <span id="toLevelText">TO LV 2</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px">
+            <div class="xp-bar"><div id="dashboardXpFill" class="xp-fill" style="width:0%"></div></div>
+            <div class="xp-meta">
+              <span id="xpMetaLeft">0 / 100 AURA</span>
+              <span id="xpMetaRight">+ 100 to next level</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid grid-4" style="margin-top:22px">
+      <div class="card">
+        <div class="eyebrow">DISCIPLINE</div>
+        <div id="disciplineStat" style="font-size:28px;font-weight:700;margin-top:8px">0</div>
+        <p style="margin-top:6px;color:#4ade80">Aura awakening begins</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">ZETSU HOURS</div>
+        <div id="focusHoursStat" style="font-size:28px;font-weight:700;margin-top:8px">0.0h</div>
+        <p style="margin-top:6px;color:#34d399">No Zetsu sessions recorded</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">ACTIVE TRIALS</div>
+        <div id="activeQuestsStat" style="font-size:28px;font-weight:700;margin-top:8px">0</div>
+        <p style="margin-top:6px;color:#34d399">New trials available</p>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">INCOMPLETE CONTRACTS</div>
+        <div id="shadowDebtStat" style="font-size:28px;font-weight:700;margin-top:8px">0</div>
+        <p style="margin-top:6px;color:#ff6b9d">▼ resolve today</p>
+      </div>
+    </section>
+
+    <section class="grid" style="grid-template-columns:1.6fr 1fr;gap:22px;margin-top:22px">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div>
+            <div class="eyebrow">TODAY'S CONTRACTS</div>
+            <h2 style="margin-top:4px">Contract Board</h2>
+          </div>
+          <a class="btn ghost" href="missions.html">All contracts →</a>
+        </div>
+
+        <div id="dashboardMissionsList" style="display:grid;gap:12px"></div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">NEN ATTRIBUTES</div>
+        <h2 style="margin-top:4px">Nen Matrix</h2>
+        <div id="dashboardStatsPreview" style="display:grid;gap:12px;margin-top:18px"></div>
+      </div>
+    </section>
+
+    <section class="grid" style="grid-template-columns:1.35fr .95fr;gap:22px;margin-top:22px">
+      <div class="card">
+        <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div>
+            <div class="eyebrow">FIELD NOTES</div>
+            <h2 style="margin-top:4px">Latest Record</h2>
+          </div>
+          <a class="btn ghost" href="journal.html">Open notes →</a>
+        </div>
+
+        <div id="dashboardJournalPreview" style="display:grid;gap:12px">
+          <div class="card" style="padding:14px;background:rgba(255,255,255,.03)">
+            <div class="eyebrow" style="margin-bottom:8px">NO RECORDS YET</div>
+            <div style="font-weight:600">Your field notes will appear here.</div>
+            <p style="margin-top:8px;max-width:58ch">Log reflections, lessons, and mission observations to build a stronger advancement record.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">ASSOCIATION STATUS</div>
+        <h2 style="margin-top:4px">License Summary</h2>
+
+        <div id="dashboardStatusPanel" style="display:grid;gap:12px;margin-top:18px">
+          <div class="card" style="padding:14px;background:rgba(255,255,255,.03)">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <span>License Rank</span>
+              <span class="mono" id="licenseRankInline">EXAMINEE</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;background:rgba(255,255,255,.03)">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <span>Hunter Level</span>
+              <span class="mono" id="hunterLevelInline">1</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;background:rgba(255,255,255,.03)">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <span>Aura Reserve</span>
+              <span class="mono" id="auraReserveInline">0 AURA</span>
+            </div>
+          </div>
+
+          <div class="card" style="padding:14px;background:rgba(255,255,255,.03)">
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <span>Incomplete Contracts</span>
+              <span class="mono" id="incompleteContractsInline">0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+<script>
+  (function () {
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name.trim().split(/\s+/).map(function (part) { return part[0] || ''; }).slice(0, 2).join('').toUpperCase() || 'H';
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function getStatsStorageKey(user) {
+      return 'ascendos-stats::' + getUserKey(user);
+    }
+
+    function getQuestsStorageKey(user) {
+      return 'ascendos-quests::' + getUserKey(user);
+    }
+
+    function getHourKey() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = String(now.getMonth() + 1).padStart(2, '0');
+      var d = String(now.getDate()).padStart(2, '0');
+      var h = String(now.getHours()).padStart(2, '0');
+      return y + '-' + m + '-' + d + '-' + h;
+    }
+
+    function xpRequiredForLevel(level) {
+      return 100 + ((level - 1) * 20);
+    }
+
+    function getDefaultDashboardState() {
+      return {
+        version: 2,
+        level: 1,
+        xpTotal: 0,
+        xpIntoCurrentLevel: 0,
+        streakDays: 0,
+        rank: 'Examinee',
+        path: 'discipline',
+        onboarded: false,
+        lastMissionResetHour: getHourKey(),
+        missions: [
+          { id: 'hydration', title: 'Maintain hydration — 3L water', xp: 10, completed: false, tag: 'BODY' },
+          { id: 'focus', title: 'Zetsu focus session — 60 min', xp: 20, completed: false, tag: 'FOCUS' },
+          { id: 'reading', title: 'Study field material — 10 pages', xp: 15, completed: false, tag: 'MIND' },
+          { id: 'training', title: 'Physical conditioning — 30 min', xp: 20, completed: false, tag: 'BODY' },
+          { id: 'journal', title: 'Record field notes', xp: 10, completed: false, tag: 'SOUL' }
+        ],
+        completedQuests: [],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function getDefaultStatsState() {
+      function makeAttr(label, desc) {
+        return { label: label, roman: 'I', points: 0, base: 0, progress: 0, desc: desc };
+      }
+
+      return {
+        version: 1,
+        appliedQuestIds: [],
+        path: 'discipline',
+        attributes: {
+          strength: makeAttr('Enhancement', 'Direct reinforcement of body, action, and force.'),
+          endurance: makeAttr('Emission', 'Output sustained across distance, time, and effort.'),
+          intellect: makeAttr('Conjuration', 'Systems thinking, structure, and precision.'),
+          discipline: makeAttr('Manipulation', 'Control over intent, routine, and execution.'),
+          charisma: makeAttr('Transmutation', 'Adaptive expression, creativity, and style.'),
+          vitality: makeAttr('Vitality', 'Recovery, sleep, energy, and baseline condition.'),
+          willpower: makeAttr('Willpower', 'Resistance against distraction and impulse.'),
+          creativity: makeAttr('Specialization', 'Unique patterning and unconventional growth.'),
+          wisdom: makeAttr('Wisdom', 'Experience refined into judgment.')
+        }
+      };
+    }
+
+    function loadDashboardState(user) {
+      var key = getDashboardStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.missions)) throw new Error('Invalid dashboard state');
+        if (!Array.isArray(parsed.completedQuests)) parsed.completedQuests = [];
+        if (!parsed.lastMissionResetHour) parsed.lastMissionResetHour = getHourKey();
+        parsed.xpTotal = Number(parsed.xpTotal) || 0;
+        parsed.level = Number(parsed.level) || 1;
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultDashboardState();
+        var oldXp = 0;
+        try { if (raw) oldXp = Number(JSON.parse(raw).xpTotal) || 0; } catch (err) {}
+        repaired.xpTotal = oldXp;
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveDashboardState(user, state) {
+      localStorage.setItem(getDashboardStorageKey(user), JSON.stringify(state));
+    }
+
+    function loadStatsState(user) {
+      var key = getStatsStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultStatsState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || !parsed.attributes) throw new Error('Invalid stats state');
+        if (!Array.isArray(parsed.appliedQuestIds)) parsed.appliedQuestIds = [];
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultStatsState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function getJournalStorageKey(user) {
+      return 'ascendos-journal::' + getUserKey(user);
+    }
+
+    function loadJournalEntries(user) {
+      var raw = localStorage.getItem(getJournalStorageKey(user));
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function applyHourlyMissionReset(state) {
+      var currentHourKey = getHourKey();
+
+      if (state.lastMissionResetHour !== currentHourKey) {
+        state.missions = (state.missions || []).map(function (mission) {
+          return {
+            id: mission.id,
+            title: mission.title,
+            xp: mission.xp,
+            tag: mission.tag || 'MIND',
+            completed: false
+          };
+        });
+        state.lastMissionResetHour = currentHourKey;
+      }
+
+      return state;
+    }
+
+    function recalculateLevel(state) {
+      var totalXp = Math.max(0, Number(state.xpTotal) || 0);
+      var level = 1;
+      var remaining = totalXp;
+
+      while (remaining >= xpRequiredForLevel(level)) {
+        remaining -= xpRequiredForLevel(level);
+        level++;
+      }
+
+      state.level = level;
+      state.xpIntoCurrentLevel = remaining;
+      return state;
+    }
+
+    function getRankFromLevel(level) {
+      if (level >= 1400) return 'Chairman-Class Hunter';
+      if (level >= 1200) return 'Zodiac-Class Hunter';
+      if (level >= 1050) return 'Triple-Star Hunter';
+      if (level >= 915) return 'Senior Double-Star Hunter';
+      if (level >= 790) return 'Double-Star Hunter';
+      if (level >= 675) return 'Senior Single-Star Hunter';
+      if (level >= 570) return 'Single-Star Hunter';
+      if (level >= 475) return 'Association Hunter';
+      if (level >= 390) return 'Master Hunter';
+      if (level >= 315) return 'Senior Hunter';
+      if (level >= 250) return 'Elite Hunter';
+      if (level >= 195) return 'Veteran Hunter';
+      if (level >= 150) return 'Skilled Hunter';
+      if (level >= 110) return 'Field Hunter';
+      if (level >= 80) return 'Contract Hunter';
+      if (level >= 55) return 'Licensed Hunter';
+      if (level >= 35) return 'Rookie Hunter';
+      if (level >= 20) return 'Candidate';
+      if (level >= 10) return 'Provisional Candidate';
+      return 'Examinee';
+    }
+
+    function getQuests(user) {
+      var raw = localStorage.getItem(getQuestsStorageKey(user));
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function getDisciplineValue(statsState) {
+      var attr = statsState && statsState.attributes && statsState.attributes.discipline;
+      if (!attr) return 0;
+      return Math.max(0, Math.min(100, Number(attr.points) || 0));
+    }
+
+    function renderMissionQueue(state) {
+      var list = document.getElementById('dashboardMissionsList');
+      if (!list) return;
+
+      list.innerHTML = '';
+
+      (state.missions || []).slice(0, 4).forEach(function (mission) {
+        var row = document.createElement('div');
+        row.className = 'card';
+        row.style.padding = '14px';
+        row.style.background = 'rgba(255,255,255,.03)';
+
+        row.innerHTML = `
+          <div class="row" style="justify-content:space-between;align-items:center;gap:10px">
+            <div class="row" style="gap:12px;align-items:center">
+              <div class="icon-btn" style="width:30px;height:30px;border-radius:10px;${mission.completed ? 'background:rgba(52,211,153,.18);color:#34d399' : ''}">
+                ${mission.completed ? '✓' : '○'}
+              </div>
+              <div>
+                <div style="font-weight:600;${mission.completed ? 'text-decoration:line-through;opacity:.65' : ''}">${mission.title}</div>
+                <div class="row" style="gap:8px;margin-top:4px">
+                  <span class="tag">${mission.tag || 'MIND'}</span>
+                  <span class="mono" style="color:#9ae6b4">+${mission.xp} AURA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function renderStatsPreview(statsState) {
+      var container = document.getElementById('dashboardStatsPreview');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      var order = ['strength', 'endurance', 'intellect', 'discipline'];
+
+      order.forEach(function (key) {
+        var attr = statsState.attributes[key];
+        if (!attr) return;
+
+        var value = Math.max(0, Math.min(100, Number(attr.points) || 0));
+
+        var block = document.createElement('div');
+        block.innerHTML = `
+          <div class="row" style="justify-content:space-between;margin-bottom:6px">
+            <span>${attr.label}</span>
+            <span class="mono">${value} / 100</span>
+          </div>
+          <div class="attr-bar"><i data-pct="${value}" style="width:${value}%"></i></div>
+        `;
+        container.appendChild(block);
+      });
+    }
+
+    function renderJournalPreview(entries) {
+      var container = document.getElementById('dashboardJournalPreview');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      if (!entries.length) {
+        container.innerHTML = `
+          <div class="card" style="padding:14px;background:rgba(255,255,255,.03)">
+            <div class="eyebrow" style="margin-bottom:8px">NO RECORDS YET</div>
+            <div style="font-weight:600">Your field notes will appear here.</div>
+            <p style="margin-top:8px;max-width:58ch">Log reflections, lessons, and mission observations to build a stronger advancement record.</p>
+          </div>
+        `;
+        return;
+      }
+
+      var latest = entries[entries.length - 1];
+      var title = latest.title || 'Untitled Record';
+      var body = latest.body || latest.text || latest.content || 'No details recorded.';
+      var dateLabel = latest.date || latest.createdAt || latest.timestamp || 'Latest Entry';
+
+      container.innerHTML = `
+        <div class="card" style="padding:14px;background:rgba(255,255,255,.03)">
+          <div class="eyebrow" style="margin-bottom:8px">${String(dateLabel)}</div>
+          <div style="font-weight:600">${String(title)}</div>
+          <p style="margin-top:8px;max-width:58ch">${String(body).slice(0, 180)}${String(body).length > 180 ? '…' : ''}</p>
+        </div>
+      `;
+    }
+
+    function getIntroQuote(user, dashboardState) {
+      var streak = Number(dashboardState && dashboardState.streakDays) || 0;
+      var xp = Number(dashboardState && dashboardState.xpTotal) || 0;
+      var pool = [
+        'Discipline turns small acts into irreversible momentum.',
+        'A clear mind sharpens faster than a restless blade.',
+        'Progress is quiet until the day it becomes undeniable.',
+        'Your next level is hidden inside repeated effort.',
+        'Resolve first. Power follows.',
+        'Every completed contract leaves a mark on the hunter you are becoming.'
+      ];
+
+      if (streak >= 7) {
+        return 'Seven days of consistency is no accident. Keep pressing forward.';
+      }
+
+      if (xp >= 100) {
+        return 'Power earned through repetition carries further than power borrowed from mood.';
+      }
+
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+
+    function showIntro(user, dashboardState) {
+      var overlay = document.getElementById('dashboardIntro');
+      if (!overlay) return;
+
+      var welcome = document.getElementById('introWelcome');
+      var quote = document.getElementById('introQuote');
+      var subline = document.getElementById('introSubline');
+      var kicker = document.getElementById('introKicker');
+      var enterBtn = document.getElementById('introEnterBtn');
+      var skipBtn = document.getElementById('introSkipBtn');
+
+      var name = getUserDisplayName(user);
+      var rank = dashboardState && dashboardState.rank ? dashboardState.rank : 'Examinee';
+      var streak = Number(dashboardState && dashboardState.streakDays) || 0;
+      var pending = (dashboardState && dashboardState.missions || []).filter(function (m) {
+        return !m.completed;
+      }).length;
+
+      if (welcome) {
+        welcome.innerHTML = '<span class="intro-accent">Welcome back,</span> ' + name;
+      }
+
+      if (quote) {
+        quote.textContent = getIntroQuote(user, dashboardState);
+      }
+
+      if (subline) {
+        subline.textContent = pending + ' contracts are waiting. Current standing: ' + rank + '. Discipline streak: ' + streak + ' day' + (streak === 1 ? '' : 's') + '.';
+      }
+
+      if (kicker) {
+        kicker.textContent = 'HUNTER ASSOCIATION // ' + rank.toUpperCase();
+      }
+
+      function closeIntro() {
+        overlay.classList.add('is-hidden');
+      }
+
+      overlay.addEventListener('click', closeIntro, { once: true });
+      if (enterBtn) enterBtn.addEventListener('click', function (e) { e.stopPropagation(); closeIntro(); }, { once: true });
+      if (skipBtn) skipBtn.addEventListener('click', function (e) { e.stopPropagation(); closeIntro(); }, { once: true });
+
+      window.addEventListener('keydown', function onKey(e) {
+        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+          closeIntro();
+          window.removeEventListener('keydown', onKey);
+        }
+      });
+
+      setTimeout(closeIntro, 5200);
+    }
+
+    function renderDashboard(user) {
+      var dashboardState = loadDashboardState(user);
+      var statsState = loadStatsState(user);
+      var quests = getQuests(user);
+      var journalEntries = loadJournalEntries(user);
+
+      dashboardState = applyHourlyMissionReset(dashboardState);
+      dashboardState = recalculateLevel(dashboardState);
+      dashboardState.rank = getRankFromLevel(dashboardState.level);
+      saveDashboardState(user, dashboardState);
+
+      var name = getUserDisplayName(user);
+      var initials = getInitials(name);
+      var level = dashboardState.level || 1;
+      var xpCurrent = dashboardState.xpIntoCurrentLevel || 0;
+      var xpNeeded = xpRequiredForLevel(level);
+      var percent = Math.max(0, Math.min(100, Math.round((xpCurrent / xpNeeded) * 100)));
+      var circumference = 301.59;
+      var offset = circumference - ((percent / 100) * circumference);
+      var activeQuests = quests.filter(function (q) { return !q.done; }).length;
+      var shadowDebt = (dashboardState.missions || []).filter(function (m) { return !m.completed; }).length;
+
+      var greeting = document.getElementById('dashboardGreeting');
+      var avatar = document.getElementById('topbarAvatar');
+      var profileEyebrow = document.getElementById('profileEyebrow');
+      var rankBadge = document.getElementById('rankBadge');
+      var streakBadge = document.getElementById('streakBadge');
+      var powerBadge = document.getElementById('powerBadge');
+      var levelValue = document.getElementById('levelValue');
+      var xpTotalValue = document.getElementById('xpTotalValue');
+      var xpPercentValue = document.getElementById('xpPercentValue');
+      var toLevelText = document.getElementById('toLevelText');
+      var dashboardXpFill = document.getElementById('dashboardXpFill');
+      var xpMetaLeft = document.getElementById('xpMetaLeft');
+      var xpMetaRight = document.getElementById('xpMetaRight');
+      var xpRing = document.getElementById('xpRing');
+      var disciplineStat = document.getElementById('disciplineStat');
+      var activeQuestsStat = document.getElementById('activeQuestsStat');
+      var shadowDebtStat = document.getElementById('shadowDebtStat');
+      var licenseRankInline = document.getElementById('licenseRankInline');
+      var hunterLevelInline = document.getElementById('hunterLevelInline');
+      var auraReserveInline = document.getElementById('auraReserveInline');
+      var incompleteContractsInline = document.getElementById('incompleteContractsInline');
+
+      if (greeting) greeting.textContent = 'Welcome back, ' + name + '.';
+      if (avatar) avatar.textContent = initials;
+      if (profileEyebrow) profileEyebrow.textContent = 'HUNTER LICENSE // ' + getUserKey(user).slice(0, 12).toUpperCase();
+      if (rankBadge) rankBadge.textContent = dashboardState.rank.toUpperCase();
+      if (streakBadge) streakBadge.textContent = '🔥 ' + (dashboardState.streakDays || 0) + ' day discipline streak';
+      if (powerBadge) powerBadge.textContent = '✦ Aura Output Tier ' + level;
+      if (levelValue) levelValue.textContent = String(level);
+      if (xpTotalValue) xpTotalValue.textContent = (dashboardState.xpTotal || 0) + ' AURA';
+      if (xpPercentValue) xpPercentValue.textContent = percent + '%';
+      if (toLevelText) toLevelText.textContent = 'TO LV ' + (level + 1);
+      if (dashboardXpFill) dashboardXpFill.style.width = percent + '%';
+      if (xpMetaLeft) xpMetaLeft.textContent = xpCurrent + ' / ' + xpNeeded + ' AURA';
+      if (xpMetaRight) xpMetaRight.textContent = '+ ' + Math.max(0, xpNeeded - xpCurrent) + ' to next level';
+      if (xpRing) xpRing.style.strokeDashoffset = String(offset);
+      if (disciplineStat) disciplineStat.textContent = String(getDisciplineValue(statsState));
+      if (activeQuestsStat) activeQuestsStat.textContent = String(activeQuests);
+      if (shadowDebtStat) shadowDebtStat.textContent = String(shadowDebt);
+      if (licenseRankInline) licenseRankInline.textContent = dashboardState.rank.toUpperCase();
+      if (hunterLevelInline) hunterLevelInline.textContent = String(level);
+      if (auraReserveInline) auraReserveInline.textContent = (dashboardState.xpTotal || 0) + ' AURA';
+      if (incompleteContractsInline) incompleteContractsInline.textContent = String(shadowDebt);
+
+      renderMissionQueue(dashboardState);
+      renderStatsPreview(statsState);
+      renderJournalPreview(journalEntries);
+      showIntro(user, dashboardState);
+    }
+
+    function init() {
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          renderDashboard(user);
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

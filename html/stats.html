@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Nen Attributes — HunterOS</title>
+  <meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Build aura, sharpen your attributes, and rise through the Association.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (!AuthSystem.requireAuth()) {}
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html" aria-current="page"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="AuthSystem.logout(); return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">CORE ATTRIBUTES</div>
+        <h1 id="statsHeading">Nen Attributes</h1>
+      </div>
+    </div>
+
+    <div class="grid grid-3" id="statsGrid"></div>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+<script>
+  (function () {
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name
+        .trim()
+        .split(/\s+/)
+        .map(function (part) { return part[0] || ''; })
+        .slice(0, 2)
+        .join('')
+        .toUpperCase() || 'H';
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function getStatsStorageKey(user) {
+      return 'ascendos-stats::' + getUserKey(user);
+    }
+
+    function getQuestStorageKey(user) {
+      return 'ascendos-quests::' + getUserKey(user);
+    }
+
+    function getDefaultDashboardState() {
+      return {
+        version: 2,
+        level: 1,
+        xpTotal: 0,
+        xpIntoCurrentLevel: 0,
+        streakDays: 0,
+        longestStreak: 0,
+        rank: 'Examinee',
+        path: 'discipline',
+        onboarded: false,
+        lastMissionResetHour: null,
+        missions: [
+          { id: 'hydration', title: 'Maintain hydration — 3L water', xp: 10, completed: false, tag: 'BODY' },
+          { id: 'focus', title: 'Zetsu focus session — 60 min', xp: 20, completed: false, tag: 'FOCUS' },
+          { id: 'reading', title: 'Study field material — 10 pages', xp: 15, completed: false, tag: 'MIND' },
+          { id: 'training', title: 'Physical conditioning — 30 min', xp: 20, completed: false, tag: 'BODY' },
+          { id: 'journal', title: 'Record field notes', xp: 10, completed: false, tag: 'SOUL' }
+        ],
+        completedQuests: [],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function loadDashboardState(user) {
+      var key = getDashboardStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') throw new Error('Invalid dashboard state');
+        if (!Array.isArray(parsed.missions)) parsed.missions = getDefaultDashboardState().missions;
+        if (!Array.isArray(parsed.completedQuests)) parsed.completedQuests = [];
+        if (typeof parsed.xpTotal !== 'number') parsed.xpTotal = 0;
+        if (typeof parsed.xpIntoCurrentLevel !== 'number') parsed.xpIntoCurrentLevel = 0;
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function getDefaultStatsState() {
+      return {
+        version: 2,
+        appliedQuestIds: [],
+        attributes: {
+          strength:   { label: 'Strength', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Push, pull, carry. Raw output.' },
+          endurance:  { label: 'Endurance', roman: 'I', points: 0, base: 0, progress: 0, desc: 'How long before you break.' },
+          intellect:  { label: 'Intellect', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Pattern recognition and recall.' },
+          discipline: { label: 'Discipline', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Distance between intent and action.' },
+          charisma:   { label: 'Charisma', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Signal strength to other humans.' },
+          vitality:   { label: 'Vitality', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Sleep, recovery, and baseline energy.' },
+          willpower:  { label: 'Willpower', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Override of comfort impulses.' },
+          creativity: { label: 'Creativity', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Novel combination output.' },
+          wisdom:     { label: 'Wisdom', roman: 'I', points: 0, base: 0, progress: 0, desc: 'Pattern decoded into principle.' }
+        }
+      };
+    }
+
+    function loadStatsState(user) {
+      var key = getStatsStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultStatsState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || !parsed.attributes) throw new Error('Invalid stats state');
+        if (!Array.isArray(parsed.appliedQuestIds)) parsed.appliedQuestIds = [];
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultStatsState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveStatsState(user, state) {
+      localStorage.setItem(getStatsStorageKey(user), JSON.stringify(state));
+    }
+
+    function toRoman(num) {
+      var romans = [
+        { value: 10, symbol: 'X' },
+        { value: 9, symbol: 'IX' },
+        { value: 5, symbol: 'V' },
+        { value: 4, symbol: 'IV' },
+        { value: 1, symbol: 'I' }
+      ];
+      var result = '';
+      var n = Math.max(1, num);
+
+      romans.forEach(function (item) {
+        while (n >= item.value) {
+          result += item.symbol;
+          n -= item.value;
+        }
+      });
+
+      return result;
+    }
+
+    function getAttributeByQuestTag(tag) {
+      switch (String(tag || '').toUpperCase()) {
+        case 'BODY':
+          return ['strength', 'endurance', 'vitality'];
+        case 'MIND':
+          return ['intellect', 'wisdom', 'creativity'];
+        case 'SOUL':
+          return ['discipline', 'willpower', 'wisdom'];
+        case 'FOCUS':
+          return ['discipline', 'intellect', 'willpower'];
+        default:
+          return ['discipline'];
+      }
+    }
+
+    function getQuestTagMap(user) {
+      var map = {};
+      try {
+        var questsRaw = localStorage.getItem(getQuestStorageKey(user));
+        if (!questsRaw) return map;
+        var quests = JSON.parse(questsRaw);
+        if (!Array.isArray(quests)) return map;
+
+        quests.forEach(function (quest) {
+          if (quest && quest.id) {
+            map[quest.id] = String(quest.tag || 'MIND').toUpperCase();
+          }
+        });
+      } catch (e) {}
+      return map;
+    }
+
+    function applyQuestCompletionsToStats(user) {
+      var dashboard = loadDashboardState(user);
+      var stats = loadStatsState(user);
+      var completedIds = Array.isArray(dashboard.completedQuests) ? dashboard.completedQuests : [];
+      var questTagMap = getQuestTagMap(user);
+
+      completedIds.forEach(function (questId) {
+        if (stats.appliedQuestIds.includes(questId)) return;
+
+        var questTag = questTagMap[questId] || 'MIND';
+        var targets = getAttributeByQuestTag(questTag);
+
+        targets.forEach(function (attrKey) {
+          var attr = stats.attributes[attrKey];
+          if (!attr) return;
+
+          attr.progress = (Number(attr.progress) || 0) + 1;
+
+          while (attr.progress >= 100) {
+            attr.progress -= 100;
+            attr.base = (Number(attr.base) || 0) + 1;
+            attr.roman = toRoman((Number(attr.base) || 0) + 1);
+          }
+
+          attr.points = Math.min(100, (Number(attr.base) || 0) + Math.floor((Number(attr.progress) || 0) / 10));
+        });
+
+        stats.appliedQuestIds.push(questId);
+      });
+
+      saveStatsState(user, stats);
+      return stats;
+    }
+
+    function renderStats(user) {
+      var grid = document.getElementById('statsGrid');
+      var topbarAvatar = document.getElementById('topbarAvatar');
+      var statsHeading = document.getElementById('statsHeading');
+
+      if (!grid) return;
+
+      var name = getUserDisplayName(user);
+      if (topbarAvatar) topbarAvatar.textContent = getInitials(name);
+      if (statsHeading) statsHeading.textContent = name + "'s Nen Attributes";
+
+      var stats = applyQuestCompletionsToStats(user);
+      grid.innerHTML = '';
+
+      Object.keys(stats.attributes).forEach(function (key) {
+        var attr = stats.attributes[key];
+        var value = Math.max(0, Math.min(100, Number(attr.points) || 0));
+        var tierLabel = attr.label + ' ' + (attr.roman || 'I');
+
+        var card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="row" style="justify-content:space-between">
+            <h3>${tierLabel}</h3>
+            <span class="mono" style="color:var(--accent)">${value}/100</span>
+          </div>
+          <p style="margin:8px 0 14px">${attr.desc}</p>
+          <div class="attr-bar"><i data-pct="${value}" style="width:${value}%"></i></div>
+          <div class="xp-meta" style="margin-top:10px">
+            <span>${attr.progress}% toward ${attr.label} ${toRoman((Number(attr.base) || 0) + 2)}</span>
+            <span>Trial growth synced</span>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function initStatsPage() {
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          renderStats(user);
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', initStatsPage);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

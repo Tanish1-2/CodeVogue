@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In | HunterOS</title>
+  <meta name="color-scheme" content="dark" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070812;
+      --bg-2: #0d1020;
+      --panel: rgba(14, 18, 34, 0.88);
+      --panel-2: rgba(20, 26, 48, 0.9);
+      --line: rgba(95, 126, 255, 0.18);
+      --line-strong: rgba(72, 214, 255, 0.34);
+      --text: #eef4ff;
+      --muted: #94a3b8;
+      --soft: #cbd5e1;
+      --cyan: #22d3ee;
+      --cyan-2: #38bdf8;
+      --blue: #5b7cfa;
+      --violet: #7c3aed;
+      --ok: #4ade80;
+      --warn: #f59e0b;
+      --error: #f87171;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(34, 211, 238, 0.14), transparent 0 28%),
+        radial-gradient(circle at 82% 14%, rgba(91, 124, 250, 0.18), transparent 0 24%),
+        radial-gradient(circle at 50% 110%, rgba(124, 58, 237, 0.14), transparent 0 30%),
+        linear-gradient(180deg, #05060d 0%, #080a14 45%, #070812 100%);
+      color: var(--text);
+      font-family: "Inter", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 38px 38px;
+      opacity: 0.24;
+      mask-image: radial-gradient(circle at center, black 48%, transparent 95%);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 28px;
+      align-items: center;
+      padding: 28px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(11, 14, 28, 0.88), rgba(10, 12, 24, 0.94));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+    }
+
+    .intro {
+      padding: 40px;
+      min-height: 720px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .intro::after,
+    .auth-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(34,211,238,0.08), transparent 30%, transparent 70%, rgba(91,124,250,0.08));
+      opacity: 0.9;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #f6b26b;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #f6b26b);
+      display: inline-block;
+    }
+
+    .brand {
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(44px, 8vw, 92px);
+      line-height: 0.92;
+      letter-spacing: 0.06em;
+      margin: 0 0 18px;
+      text-transform: uppercase;
+      text-shadow: 0 0 22px rgba(56, 189, 248, 0.18);
+    }
+
+    .intro-copy {
+      max-width: 560px;
+      color: var(--soft);
+      font-size: 20px;
+      line-height: 1.75;
+      margin: 0;
+    }
+
+    .intro-grid {
+      margin-top: 30px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      max-width: 560px;
+    }
+
+    .intro-card {
+      padding: 18px 18px 18px 20px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.025));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .intro-card-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      color: #c4b5fd;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .intro-card p {
+      margin: 0;
+      color: #edf6ff;
+      line-height: 1.65;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .auth-card {
+      padding: 34px;
+      min-height: 720px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at top center, rgba(34, 211, 238, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(14, 18, 34, 0.94), rgba(8, 10, 22, 0.98));
+    }
+
+    .auth-shell {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .auth-title {
+      font-family: "Orbitron", sans-serif;
+      font-size: 42px;
+      letter-spacing: 0.05em;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+    }
+
+    .auth-subtitle {
+      margin: 0 0 26px;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .status {
+      margin-bottom: 18px;
+      border-radius: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+      color: var(--soft);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+    }
+
+    .status.ok {
+      color: #dcfce7;
+      border-color: rgba(74, 222, 128, 0.28);
+      background: rgba(74, 222, 128, 0.08);
+    }
+
+    .status.error {
+      color: #ffe2e2;
+      border-color: rgba(248, 113, 113, 0.28);
+      background: rgba(248, 113, 113, 0.09);
+    }
+
+    .status.warn {
+      color: #ffefc7;
+      border-color: rgba(245, 158, 11, 0.28);
+      background: rgba(245, 158, 11, 0.09);
+    }
+
+    .field { margin-bottom: 16px; }
+
+    .field label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #dbeafe;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.1);
+      outline: none;
+      color: #fff;
+      background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.025));
+      font-size: 15px;
+      transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+    }
+
+    .field input::placeholder { color: #8aa0c1; }
+
+    .field input:focus {
+      border-color: rgba(56, 189, 248, 0.7);
+      box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .primary-btn,
+    .ghost-btn,
+    .link-btn {
+      font: inherit;
+      cursor: pointer;
+      border: none;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 18px;
+      margin-top: 6px;
+      color: #04111a;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, var(--cyan-2), var(--cyan));
+      box-shadow: 0 18px 40px rgba(34, 211, 238, 0.22);
+      transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms ease;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 22px 44px rgba(34, 211, 238, 0.28);
+    }
+
+    .primary-btn:disabled,
+    .ghost-btn:disabled,
+    .link-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 22px 0 18px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.16), transparent);
+    }
+
+    #googleSignInMount {
+      display: flex;
+      justify-content: center;
+      min-height: 46px;
+      margin-bottom: 18px;
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .ghost-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #e5edf9;
+      font-weight: 700;
+      transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+    }
+
+    .ghost-btn:hover {
+      background: rgba(255,255,255,0.075);
+      border-color: rgba(56, 189, 248, 0.24);
+      transform: translateY(-1px);
+    }
+
+    .links-row {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .link-btn,
+    .text-link {
+      color: #8fdfff;
+      background: transparent;
+      padding: 0;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .text-link { color: #c4b5fd; }
+
+    .security-note {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(91, 124, 250, 0.08);
+      border: 1px solid rgba(91, 124, 250, 0.18);
+      color: #dce8ff;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .mini-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .mini-list li + li { margin-top: 6px; }
+
+    .loading {
+      opacity: 0.76;
+      pointer-events: none;
+    }
+
+    @media (max-width: 1080px) {
+      .page { grid-template-columns: 1fr; }
+      .intro, .auth-card { min-height: auto; }
+    }
+
+    @media (max-width: 680px) {
+      .page {
+        padding: 14px;
+        gap: 16px;
+      }
+
+      .intro, .auth-card {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .brand { font-size: 52px; }
+      .auth-title { font-size: 34px; }
+      .intro-copy { font-size: 17px; }
+
+      .links-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="panel intro">
+      <div>
+        <div class="eyebrow">Hunter Association Entry Gateway</div>
+        <h1 class="brand">HunterOS</h1>
+        <p class="intro-copy">
+          Enter through a provider-linked or local hunter record. Provider-verified identities remain trusted, while local users stay blocked from access until their verification mail has been confirmed.
+        </p>
+
+        <div class="intro-grid">
+          <div class="intro-card">
+            <div class="intro-card-label">Provider Login</div>
+            <p>Google sign-in keeps verification if the provider token says the email is verified.</p>
+          </div>
+          <div class="intro-card">
+            <div class="intro-card-label">Local Login</div>
+            <p>Email/password accounts remain local until their confirmation link is completed before entering the system.</p>
+          </div>
+          <div class="intro-card">
+            <div class="intro-card-label">Hunter Security</div>
+            <p>Verification state comes from Firebase or Google, not from plain local storage alone.</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="footer-note">
+        Local verification should be refreshed from Firebase before granting local-account access, while provider identities can rely on provider-reported verified email state. [web:245][web:325]
+      </p>
+    </section>
+
+    <section class="panel auth-card">
+      <div class="auth-shell">
+        <h2 class="auth-title">Sign In</h2>
+        <p class="auth-subtitle">
+          Access your HunterOS identity using Google or your local email and password.
+        </p>
+
+        <div id="authStatus" class="status">
+          Waiting for hunter credentials...
+        </div>
+
+        <form id="signinForm" novalidate>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="hunter@domain.com" autocomplete="email" required />
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" placeholder="Enter your password" autocomplete="current-password" required />
+          </div>
+
+          <button id="signinBtn" class="primary-btn" type="submit">Enter HunterOS</button>
+        </form>
+
+        <div class="divider">Or continue with</div>
+
+        <div id="googleSignInMount"></div>
+
+        <div class="action-grid">
+          <button id="forgotPasswordBtn" class="ghost-btn" type="button">Forgot Password</button>
+          <button id="resendVerifyBtn" class="ghost-btn" type="button">Resend Verification Email</button>
+          <button id="refreshVerifyBtn" class="ghost-btn" type="button">Refresh Verification Status</button>
+        </div>
+
+        <div class="links-row">
+          <a class="text-link" href="signup.html">Create local hunter account</a>
+          <button id="goLandingBtn" class="link-btn" type="button">Back to landing</button>
+        </div>
+
+        <div class="security-note">
+          <ul class="mini-list">
+            <li>Google accounts inherit provider verification when the ID token reports the email as verified.</li>
+            <li>Local accounts stay blocked until Firebase shows the email as verified after reload.</li>
+            <li>Password resets and verification re-sends are handled through Firebase Auth email flows.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/auth.js"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      sendPasswordResetEmail,
+      sendEmailVerification
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB1RstKg1rmjTe31Zwnam88xgF1ad0IF6A",
+      authDomain: "codevogue-5656c.firebaseapp.com",
+      projectId: "codevogue-5656c",
+      storageBucket: "codevogue-5656c.appspot.com",
+      messagingSenderId: "723313357441",
+      appId: "1:723313357441:web:9847416461c35cda421380"
+    };
+
+    const GOOGLE_CLIENT_ID = "750643658379-nrvnjrjajipl879e5fcddkd34edq18m5.apps.googleusercontent.com";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const form = document.getElementById('signinForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const signinBtn = document.getElementById('signinBtn');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+    const resendVerifyBtn = document.getElementById('resendVerifyBtn');
+    const refreshVerifyBtn = document.getElementById('refreshVerifyBtn');
+    const goLandingBtn = document.getElementById('goLandingBtn');
+    const statusEl = document.getElementById('authStatus');
+    const authShell = document.querySelector('.auth-shell');
+
+    function setMessage(message, type = '') {
+      statusEl.textContent = message;
+      statusEl.className = 'status';
+      if (type) statusEl.classList.add(type);
+    }
+
+    function setBusy(isBusy) {
+      authShell.classList.toggle('loading', isBusy);
+      signinBtn.disabled = isBusy;
+      forgotPasswordBtn.disabled = isBusy;
+      resendVerifyBtn.disabled = isBusy;
+      refreshVerifyBtn.disabled = isBusy;
+    }
+
+    function decodeJwtPayload(token) {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          })
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    }
+
+    async function handleForgotPassword(email) {
+      const normalizedEmail = String(email || '').trim();
+
+      if (!normalizedEmail) {
+        setMessage('Enter your email first, then use Forgot Password.', 'error');
+        return;
+      }
+
+      try {
+        setBusy(true);
+        await sendPasswordResetEmail(auth, normalizedEmail);
+        setMessage('Password reset email sent. Check inbox, spam, and promotions.', 'ok');
+      } catch (error) {
+        setMessage(error?.message || 'Could not send password reset email.', 'error');
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function resendVerificationForCurrentUser() {
+      const user = auth.currentUser;
+
+      if (!user) {
+        setMessage('Sign in to your local account first, then resend verification.', 'warn');
+        return;
+      }
+
+      try {
+        setBusy(true);
+        await sendEmailVerification(user);
+        setMessage('Verification email sent again. Check inbox, spam, and promotions.', 'ok');
+      } catch (error) {
+        setMessage(error?.message || 'Could not resend verification email.', 'error');
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function refreshVerificationStatus() {
+      if (!auth.currentUser) {
+        setMessage('No active Firebase user to refresh. Sign in first.', 'warn');
+        return;
+      }
+
+      try {
+        setBusy(true);
+        await auth.currentUser.reload();
+
+        const verified = !!auth.currentUser.emailVerified;
+        const current = AuthSystem.getCurrentUser();
+
+        if (current?.email) {
+          if (verified && typeof AuthSystem.markLocalUserVerified === 'function') {
+            AuthSystem.markLocalUserVerified(current.email);
+          } else {
+            AuthSystem.updateProfile(null, {
+              authProvider: current.authProvider || 'local',
+              emailVerified: verified
+            });
+          }
+        }
+
+        if (verified) {
+          setMessage('Email verified successfully. You can now enter HunterOS.', 'ok');
+        } else {
+          setMessage('Still not verified yet. Open the email link first, then refresh status.', 'warn');
+        }
+      } catch (error) {
+        setMessage(error?.message || 'Could not refresh verification status.', 'error');
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function signInLocal(email, password) {
+      const normalizedEmail = String(email || '').trim();
+      const normalizedPassword = String(password || '');
+
+      if (!normalizedEmail || !normalizedPassword) {
+        setMessage('Email and password are required.', 'error');
+        return;
+      }
+
+      try {
+        setBusy(true);
+        setMessage('Checking hunter credentials...', 'warn');
+
+        const credential = await signInWithEmailAndPassword(auth, normalizedEmail, normalizedPassword);
+        await credential.user.reload();
+
+        const verified = !!auth.currentUser?.emailVerified;
+
+        const result = AuthSystem.verifyLogin(normalizedEmail, normalizedPassword);
+        if (!result.success) {
+          setMessage(result.message || 'Local login failed.', 'error');
+          return;
+        }
+
+        if (verified && typeof AuthSystem.markLocalUserVerified === 'function') {
+          AuthSystem.markLocalUserVerified(normalizedEmail);
+        } else {
+          AuthSystem.updateProfile(null, {
+            authProvider: 'local',
+            emailVerified: verified
+          });
+        }
+
+        if (!verified) {
+          setMessage('Email not verified yet. Use resend verification or verify from your inbox first.', 'warn');
+          return;
+        }
+
+        setMessage('Hunter record verified. Entering system...', 'ok');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 650);
+      } catch (error) {
+        setMessage(error?.message || 'Unable to sign in with email/password.', 'error');
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function handleGoogleResponse(response) {
+      try {
+        setBusy(true);
+        setMessage('Processing Google hunter identity...', 'warn');
+
+        const payload = decodeJwtPayload(response.credential);
+        const result = AuthSystem.loginWithGoogle({
+          googleId: payload.sub,
+          email: payload.email,
+          displayName: payload.name,
+          avatar: payload.picture,
+          emailVerified: !!payload.email_verified
+        });
+
+        if (!result.success) {
+          setMessage(result.message || 'Google sign-in failed.', 'error');
+          setBusy(false);
+          return;
+        }
+
+        setMessage('Provider-verified account accepted. Entering HunterOS...', 'ok');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 650);
+      } catch (error) {
+        setMessage('Failed to process Google sign-in.', 'error');
+        setBusy(false);
+      }
+    }
+
+    function initGoogleSignIn() {
+      if (!window.google || !google.accounts || !google.accounts.id) {
+        setMessage('Google Sign-In failed to load. Reload and try again.', 'error');
+        return;
+      }
+
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
+        auto_select: false
+      });
+
+      google.accounts.id.renderButton(
+        document.getElementById('googleSignInMount'),
+        {
+          theme: 'outline',
+          size: 'large',
+          shape: 'pill',
+          text: 'signin_with',
+          width: 340
+        }
+      );
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      await signInLocal(emailInput.value, passwordInput.value);
+    });
+
+    forgotPasswordBtn.addEventListener('click', async () => {
+      await handleForgotPassword(emailInput.value);
+    });
+
+    resendVerifyBtn.addEventListener('click', async () => {
+      await resendVerificationForCurrentUser();
+    });
+
+    refreshVerifyBtn.addEventListener('click', async () => {
+      await refreshVerificationStatus();
+    });
+
+    goLandingBtn.addEventListener('click', () => {
+      window.location.href = 'landing.html';
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (AuthSystem.isAuthenticated() && AuthSystem.isSessionValid()) {
+        const current = AuthSystem.getCurrentUser();
+        if (current?.authProvider === 'google' || current?.emailVerified) {
+          window.location.href = 'index.html';
+          return;
+        }
+      }
+
+      initGoogleSignIn();
+      setMessage('Waiting for hunter credentials...', '');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>System Settings — HunterOS</title>
+<meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Manage your Hunter License preferences, Association settings, appearance, and recovery options.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    if (!AuthSystem.requireAuth()) {}
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html" aria-current="page"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="if (typeof AuthSystem !== 'undefined') { AuthSystem.logout(); } return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">SYSTEM CONTROL</div>
+        <h1>System Settings</h1>
+      </div>
+    </div>
+
+    <div class="grid grid-2">
+      <div class="card glow">
+        <h3 style="margin-bottom:14px">License Preferences</h3>
+        <p style="margin-bottom:18px;color:var(--text);opacity:.8;line-height:1.6">
+          Your Hunter License identity is locked. You can update operational settings here, including timezone and interface theme.
+        </p>
+
+        <div class="field">
+          <label>Hunter Name</label>
+          <input id="settingsDisplayName" placeholder="Licensed Hunter" disabled>
+        </div>
+
+        <div class="field">
+          <label>Registered Email</label>
+          <input id="settingsEmail" placeholder="hunter@license.net" disabled>
+        </div>
+
+        <div class="field">
+          <label>Association Timezone</label>
+          <select id="timezoneSelect">
+            <option value="UTC-12">UTC-12 (Baker Island)</option>
+            <option value="UTC-11">UTC-11 (Niue)</option>
+            <option value="UTC-10">UTC-10 (Hawaii)</option>
+            <option value="UTC-9">UTC-9 (Alaska)</option>
+            <option value="UTC-8">UTC-8 (Los Angeles)</option>
+            <option value="UTC-7">UTC-7 (Denver)</option>
+            <option value="UTC-6">UTC-6 (Chicago)</option>
+            <option value="UTC-5">UTC-5 (New York)</option>
+            <option value="UTC-4">UTC-4 (Santiago)</option>
+            <option value="UTC-3">UTC-3 (Buenos Aires)</option>
+            <option value="UTC-2">UTC-2 (South Georgia)</option>
+            <option value="UTC-1">UTC-1 (Azores)</option>
+            <option value="UTC">UTC (London)</option>
+            <option value="UTC+1">UTC+1 (Berlin)</option>
+            <option value="UTC+2">UTC+2 (Cairo)</option>
+            <option value="UTC+3">UTC+3 (Moscow)</option>
+            <option value="UTC+4">UTC+4 (Dubai)</option>
+            <option value="UTC+5">UTC+5 (Karachi)</option>
+            <option value="UTC+5:30">UTC+5:30 (India)</option>
+            <option value="UTC+6">UTC+6 (Dhaka)</option>
+            <option value="UTC+7">UTC+7 (Bangkok)</option>
+            <option value="UTC+8">UTC+8 (Singapore)</option>
+            <option value="UTC+9">UTC+9 (Tokyo)</option>
+            <option value="UTC+10">UTC+10 (Sydney)</option>
+            <option value="UTC+11">UTC+11 (Solomon Islands)</option>
+            <option value="UTC+12">UTC+12 (Auckland)</option>
+            <option value="UTC+13">UTC+13 (Nuku'alofa)</option>
+            <option value="UTC+14">UTC+14 (Kiritimati)</option>
+          </select>
+        </div>
+
+        <button class="btn primary" id="saveSettingsButton">Save Timezone</button>
+      </div>
+
+      <div class="card glow theme-card">
+        <h3 style="margin-bottom:14px">Interface Theme</h3>
+        <p style="margin-bottom:16px;color:var(--text);opacity:.8;line-height:1.6">
+          Choose the visual mode that follows you across all HunterOS screens and field systems.
+        </p>
+        <div class="row" style="gap:10px;flex-wrap:wrap">
+          <button class="btn theme-option" data-theme="hunter">Hunter</button>
+          <button class="btn theme-option" data-theme="shadow">Shadow</button>
+          <button class="btn theme-option" data-theme="solar">Monarch</button>
+          <button class="btn theme-option" data-theme="void">Void</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(56,189,248,.25);background:linear-gradient(135deg,rgba(56,189,248,.05),rgba(52,211,153,.03))">
+        <h3 style="margin-bottom:14px">Recovery & Export</h3>
+        <p style="margin-bottom:12px;font-size:13px">
+          Export your Hunter record and keep your verification code secured for account recovery.
+        </p>
+
+        <div style="padding:14px;background:rgba(56,189,248,.08);border-radius:10px;margin-bottom:14px;border:1px solid rgba(56,189,248,.18);">
+          <div style="font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Verification Code</div>
+          <div style="font-size:24px;font-weight:700;font-family:'JetBrains Mono',monospace;color:#8fdcff;letter-spacing:2px;" id="settingsCode">-----</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;">
+            Preserve this code. It may be required to restore account access from exported data.
+          </div>
+        </div>
+
+        <div class="row" style="gap:10px;flex-wrap:wrap">
+          <button class="btn primary" onclick="AuthSystem.exportToCSV()" style="flex:1">Export CSV Record</button>
+          <button class="btn" onclick="AuthSystem.exportToPDF()" style="flex:1">Export PDF Record</button>
+        </div>
+      </div>
+
+      <div class="card danger-card">
+        <h3 style="margin-bottom:14px;color:var(--danger)">License Termination</h3>
+        <p style="margin-bottom:12px;font-size:13px;color:var(--text);opacity:.8;line-height:1.6">
+          Wiping your profile removes your Hunter License record, trial history, progress data, recovery links, and saved preferences. This action cannot be reversed.
+        </p>
+        <button class="btn" id="wipeProfileButton" style="margin-top:12px;border-color:rgba(255,85,119,.4);color:var(--danger)">Wipe Hunter Record</button>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:14px">Session Exit</h3>
+        <p style="margin-bottom:12px;font-size:13px;color:var(--text);opacity:.8;line-height:1.6">
+          Sign out from HunterOS and leave the system without deleting your saved progress.
+        </p>
+        <button class="btn" style="border-color:rgba(255,107,157,.4);color:var(--danger)" onclick="AuthSystem.logout()">Sign Out</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="js/user.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return;
+
+    const user = AuthSystem.getCurrentUser();
+    if (!user) return;
+
+    const displayNameInput = document.getElementById('settingsDisplayName');
+    const emailInput = document.getElementById('settingsEmail');
+    const timezoneSelect = document.getElementById('timezoneSelect');
+    const codeDisplay = document.getElementById('settingsCode');
+    const saveButton = document.getElementById('saveSettingsButton');
+    const themeButtons = Array.from(document.querySelectorAll('.theme-option'));
+    const wipeButton = document.getElementById('wipeProfileButton');
+    const topbarAvatar = document.getElementById('topbarAvatar');
+
+    function getDisplayName(u) {
+      return (
+        (u && u.displayName && String(u.displayName).trim()) ||
+        (u && u.name && String(u.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name.trim().split(/\s+/).map(function(part) {
+        return part[0] || '';
+      }).slice(0, 2).join('').toUpperCase() || 'H';
+    }
+
+    if (displayNameInput) displayNameInput.value = getDisplayName(user);
+    if (emailInput) emailInput.value = user.email || '';
+    if (timezoneSelect) timezoneSelect.value = user.timezone || 'UTC';
+    if (codeDisplay && user.verificationCode) codeDisplay.textContent = user.verificationCode;
+    if (topbarAvatar) topbarAvatar.textContent = getInitials(getDisplayName(user));
+
+    function setActiveThemeButton(theme) {
+      themeButtons.forEach(function(button) {
+        button.classList.toggle('active', button.dataset.theme === theme);
+      });
+    }
+
+    const currentTheme = localStorage.getItem('siteTheme') || user.theme || 'hunter';
+    setActiveThemeButton(currentTheme);
+
+    if (AuthSystem.applyTheme) {
+      AuthSystem.applyTheme(currentTheme);
+    }
+
+    themeButtons.forEach(function(button) {
+      button.addEventListener('click', function () {
+        const selectedTheme = this.dataset.theme;
+        if (AuthSystem.setTheme) {
+          AuthSystem.setTheme(selectedTheme);
+        }
+        setActiveThemeButton(selectedTheme);
+      });
+    });
+
+    if (saveButton) {
+      saveButton.addEventListener('click', function () {
+        const timezone = timezoneSelect.value;
+        const result = AuthSystem.saveTimezone ? AuthSystem.saveTimezone(timezone) : { success: false };
+
+        if (result.success) {
+          alert('Association timezone saved. It will now appear across your Hunter record.');
+        } else {
+          alert(result.message || 'Unable to save timezone.');
+        }
+      });
+    }
+
+    if (wipeButton) {
+      wipeButton.addEventListener('click', function () {
+        if (AuthSystem.wipeProfileFlow) {
+          AuthSystem.wipeProfileFlow();
+        }
+      });
+    }
+  });
+</script>
+<script src="js/app.js"></script>
+</body>
+</html>

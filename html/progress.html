@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Advancement Log — HunterOS</title>
+<meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Track aura growth, ranks, streaks, and long-term advancement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    if (!AuthSystem.requireAuth()) {}
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html" aria-current="page"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="if (typeof AuthSystem !== 'undefined') { AuthSystem.logout(); } return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">TIMELINE</div>
+        <h1 id="progressHeading">Advancement Log</h1>
+      </div>
+    </div>
+
+    <div class="grid grid-4" style="margin-bottom:22px">
+      <div class="card stat">
+        <div class="label">Total Aura</div>
+        <div class="value" id="totalXpValue">0</div>
+        <div class="delta">All time</div>
+      </div>
+
+      <div class="card stat">
+        <div class="label">Rank</div>
+        <div class="value" id="rankValue">Examinee</div>
+        <div class="delta" id="rankDelta">Fresh account</div>
+      </div>
+
+      <div class="card stat">
+        <div class="label">Trials Done</div>
+        <div class="value" id="questsDoneValue">0</div>
+        <div class="delta" id="questsDoneDelta">No completions yet</div>
+      </div>
+
+      <div class="card stat">
+        <div class="label">Longest Streak</div>
+        <div class="value" id="longestStreakValue">0d</div>
+        <div class="delta" id="longestStreakDelta">Build momentum</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="eyebrow">RANK HISTORY</div>
+      <h2 style="margin-bottom:18px">Your Path</h2>
+
+      <div class="col" id="progressTimeline" style="gap:0;border-left:2px solid var(--border-strong);padding-left:18px;margin-left:8px"></div>
+    </div>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+<script>
+  (function () {
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name.trim().split(/\s+/).map(function (part) {
+        return part[0] || '';
+      }).slice(0, 2).join('').toUpperCase() || 'H';
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function getQuestsStorageKey(user) {
+      return 'ascendos-quests::' + getUserKey(user);
+    }
+
+    function getHourKey() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = String(now.getMonth() + 1).padStart(2, '0');
+      var d = String(now.getDate()).padStart(2, '0');
+      var h = String(now.getHours()).padStart(2, '0');
+      return y + '-' + m + '-' + d + '-' + h;
+    }
+
+    function xpRequiredForLevel(level) {
+      return 100 + ((level - 1) * 20);
+    }
+
+    function getDefaultMissions() {
+      return [
+        { id: 'hydration', title: 'Maintain hydration — 3L water', xp: 10, completed: false, tag: 'BODY' },
+        { id: 'focus', title: 'Zetsu focus session — 60 min', xp: 20, completed: false, tag: 'FOCUS' },
+        { id: 'reading', title: 'Study field material — 10 pages', xp: 15, completed: false, tag: 'MIND' },
+        { id: 'training', title: 'Physical conditioning — 30 min', xp: 20, completed: false, tag: 'BODY' },
+        { id: 'journal', title: 'Record field notes', xp: 10, completed: false, tag: 'SOUL' }
+      ];
+    }
+
+    function getDefaultDashboardState() {
+      return {
+        version: 2,
+        level: 1,
+        xpTotal: 0,
+        xpIntoCurrentLevel: 0,
+        streakDays: 0,
+        longestStreak: 0,
+        rank: 'Examinee',
+        path: 'discipline',
+        onboarded: false,
+        lastMissionResetHour: getHourKey(),
+        missions: getDefaultMissions(),
+        completedQuests: [],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function loadDashboardState(user) {
+      var key = getDashboardStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') throw new Error('Invalid dashboard state');
+        if (!Array.isArray(parsed.missions)) parsed.missions = getDefaultMissions();
+        if (!Array.isArray(parsed.completedQuests)) parsed.completedQuests = [];
+        if (!parsed.lastMissionResetHour) parsed.lastMissionResetHour = getHourKey();
+        if (typeof parsed.xpTotal !== 'number') parsed.xpTotal = 0;
+        if (typeof parsed.level !== 'number') parsed.level = 1;
+        if (typeof parsed.streakDays !== 'number') parsed.streakDays = 0;
+        if (typeof parsed.longestStreak !== 'number') parsed.longestStreak = parsed.streakDays || 0;
+        if (typeof parsed.rank !== 'string' || !parsed.rank) parsed.rank = 'Examinee';
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveDashboardState(user, state) {
+      localStorage.setItem(getDashboardStorageKey(user), JSON.stringify(state));
+    }
+
+    function getQuests(user) {
+      var raw = localStorage.getItem(getQuestsStorageKey(user));
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function ensureHourlyMissionReset(user, state) {
+      var currentHourKey = getHourKey();
+
+      if (state.lastMissionResetHour !== currentHourKey) {
+        state.missions = getDefaultMissions();
+        state.lastMissionResetHour = currentHourKey;
+        saveDashboardState(user, state);
+      }
+
+      return state;
+    }
+
+    function recalculateLevel(state) {
+      var totalXp = Math.max(0, Number(state.xpTotal) || 0);
+      var level = 1;
+      var remaining = totalXp;
+
+      while (remaining >= xpRequiredForLevel(level)) {
+        remaining -= xpRequiredForLevel(level);
+        level++;
+      }
+
+      state.level = level;
+      state.xpIntoCurrentLevel = remaining;
+      return state;
+    }
+
+    function getRankFromLevel(level) {
+      if (level >= 960) return 'Shadow Monarch';
+      if (level >= 880) return 'National Level';
+      if (level >= 800) return 'S-Rank Hunter';
+      if (level >= 720) return 'A-Rank Elite';
+      if (level >= 640) return 'A-Rank Initiate';
+      if (level >= 560) return 'B-Rank Elite';
+      if (level >= 480) return 'B-Rank Initiate';
+      if (level >= 400) return 'C-Rank Elite';
+      if (level >= 320) return 'C-Rank Initiate';
+      if (level >= 240) return 'D-Rank Elite';
+      if (level >= 160) return 'D-Rank Initiate';
+      if (level >= 80) return 'E-Rank Elite';
+      return 'Examinee';
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat('en-US').format(Number(value) || 0);
+    }
+
+    function getRankTimeline(level) {
+      var ranks = [
+        { min: 1, label: 'Examinee', note: 'Account forged. The climb began.' },
+        { min: 80, label: 'E-Rank Elite', note: 'You stopped being average.' },
+        { min: 160, label: 'D-Rank Initiate', note: 'Early growth became visible.' },
+        { min: 240, label: 'D-Rank Elite', note: 'Consistency started compounding.' },
+        { min: 320, label: 'C-Rank Initiate', note: 'Your system gained real shape.' },
+        { min: 400, label: 'C-Rank Elite', note: 'You became hard to ignore.' },
+        { min: 480, label: 'B-Rank Initiate', note: 'A serious ascent began.' },
+        { min: 560, label: 'B-Rank Elite', note: 'Execution became identity.' },
+        { min: 640, label: 'A-Rank Initiate', note: 'You entered upper-tier territory.' },
+        { min: 720, label: 'A-Rank Elite', note: 'Most people cannot keep up now.' },
+        { min: 800, label: 'S-Rank Hunter', note: 'You crossed into monster status.' },
+        { min: 880, label: 'National Level', note: 'Your ceiling moved far above normal.' },
+        { min: 960, label: 'Shadow Monarch', note: 'The system bends around your will.' }
+      ];
+
+      return ranks.filter(function (rank) {
+        return level >= rank.min;
+      }).reverse();
+    }
+
+    function renderTimeline(level, totalXp, questsDone, createdAt) {
+      var timeline = document.getElementById('progressTimeline');
+      if (!timeline) return;
+
+      timeline.innerHTML = '';
+
+      var milestones = getRankTimeline(level);
+
+      if (!milestones.length) {
+        milestones = [{
+          min: 1,
+          label: 'Examinee',
+          note: 'Account forged. The climb began.'
+        }];
+      }
+
+      milestones.forEach(function (item, index) {
+        var block = document.createElement('div');
+        var whenText = index === 0 ? 'Current' : 'Unlocked earlier';
+
+        if (item.label === 'Examinee' && createdAt) {
+          whenText = 'Since account creation';
+        }
+
+        var extra = '';
+        if (index === 0) {
+          extra = 'Current level: ' + level + ' · Total Aura: ' + formatNumber(totalXp) + ' · Trials done: ' + questsDone;
+        } else {
+          extra = 'Unlocked at level ' + item.min + '.';
+        }
+
+        block.style.position = 'relative';
+        block.style.padding = '8px 0 20px 16px';
+
+        block.innerHTML = `
+          <span style="position:absolute;left:-25px;top:14px;width:12px;height:12px;border-radius:50%;background:var(--primary);box-shadow:0 0 12px var(--primary)"></span>
+          <div style="font-family:var(--font-display);font-weight:600">${item.label}</div>
+          <div class="mono" style="font-size:12px;color:var(--primary-2);margin:2px 0 4px">${whenText}</div>
+          <p style="font-size:13px">${index === 0 ? extra : item.note + ' ' + extra}</p>
+        `;
+
+        timeline.appendChild(block);
+      });
+    }
+
+    function renderProgress(user) {
+      var dashboardState = loadDashboardState(user);
+      var quests = getQuests(user);
+
+      dashboardState = ensureHourlyMissionReset(user, dashboardState);
+      dashboardState = recalculateLevel(dashboardState);
+      dashboardState.rank = getRankFromLevel(dashboardState.level);
+
+      if (typeof dashboardState.longestStreak !== 'number') {
+        dashboardState.longestStreak = dashboardState.streakDays || 0;
+      }
+
+      saveDashboardState(user, dashboardState);
+
+      var name = getUserDisplayName(user);
+      var initials = getInitials(name);
+      var totalXp = Number(dashboardState.xpTotal) || 0;
+      var level = Number(dashboardState.level) || 1;
+      var currentRank = dashboardState.rank || 'Examinee';
+      var questsDone = Array.isArray(dashboardState.completedQuests) ? dashboardState.completedQuests.length : quests.filter(function (quest) { return !!quest.done; }).length;
+      var longestStreak = Number(dashboardState.longestStreak || dashboardState.streakDays || 0);
+
+      var topbarAvatar = document.getElementById('topbarAvatar');
+      var progressHeading = document.getElementById('progressHeading');
+      var totalXpValue = document.getElementById('totalXpValue');
+      var rankValue = document.getElementById('rankValue');
+      var rankDelta = document.getElementById('rankDelta');
+      var questsDoneValue = document.getElementById('questsDoneValue');
+      var questsDoneDelta = document.getElementById('questsDoneDelta');
+      var longestStreakValue = document.getElementById('longestStreakValue');
+      var longestStreakDelta = document.getElementById('longestStreakDelta');
+
+      if (topbarAvatar) topbarAvatar.textContent = initials;
+      if (progressHeading) progressHeading.textContent = name + "'s Advancement Log";
+      if (totalXpValue) totalXpValue.textContent = formatNumber(totalXp);
+      if (rankValue) rankValue.textContent = currentRank;
+      if (rankDelta) rankDelta.textContent = 'Level ' + level;
+      if (questsDoneValue) questsDoneValue.textContent = String(questsDone);
+      if (questsDoneDelta) questsDoneDelta.textContent = questsDone === 0 ? 'No completions yet' : 'Completed trials recorded';
+      if (longestStreakValue) longestStreakValue.textContent = longestStreak + 'd';
+      if (longestStreakDelta) longestStreakDelta.textContent = longestStreak === 0 ? 'Build momentum' : 'Personal best';
+
+      renderTimeline(level, totalXp, questsDone, dashboardState.createdAt);
+    }
+
+    function init() {
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          renderProgress(user);
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

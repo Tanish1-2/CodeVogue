@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hunter License — HunterOS</title>
+  <meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Track your Hunter License, Nen growth, Association standing, and field record.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .provider-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.18);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(74, 222, 128, 0.12));
+      color: #dff7ff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .provider-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #4ade80;
+      box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(250, 204, 21, 0.14);
+      background: rgba(250, 204, 21, 0.1);
+      color: #fde68a;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .license-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .license-meta-item {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(148, 163, 184, 0.06);
+      border: 1px solid rgba(148, 163, 184, 0.08);
+    }
+
+    .license-meta-label {
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+    }
+
+    .license-meta-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .profile-avatar-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 24px;
+      display: block;
+    }
+
+    .profile-avatar-wrap {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      flex: 0 0 auto;
+    }
+
+    .google-avatar-badge {
+      position: absolute;
+      right: -8px;
+      bottom: -8px;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(11, 13, 24, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+      z-index: 3;
+    }
+
+    .google-avatar-badge svg {
+      width: 22px;
+      height: 22px;
+      display: block;
+    }
+
+    .google-avatar-badge[hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 720px) {
+      .license-meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .google-avatar-badge {
+        width: 34px;
+        height: 34px;
+        right: -6px;
+        bottom: -6px;
+      }
+
+      .google-avatar-badge svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    AuthSystem.requireAuth();
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html" aria-current="page"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="if (typeof AuthSystem !== 'undefined') { AuthSystem.logout(); } return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="hunter card glow" style="margin-bottom:22px">
+      <div class="row" style="gap:24px;flex-wrap:wrap">
+        <div class="profile-avatar-wrap">
+          <div
+            id="profileAvatar"
+            style="width:120px;height:120px;border-radius:24px;background:conic-gradient(from 200deg,var(--primary),var(--primary-2),var(--accent),var(--primary));display:grid;place-items:center;font-family:var(--font-display);font-size:42px;font-weight:700;color:#0b0d18;box-shadow:var(--glow);overflow:hidden"
+          >H</div>
+
+          <div
+            id="googleAvatarBadge"
+            class="google-avatar-badge"
+            title="Signed in with Google"
+            aria-label="Signed in with Google"
+            hidden
+          >
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.239 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.959 3.041l5.657-5.657C34.053 6.053 29.277 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.651-.389-3.917z"/>
+              <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 16.108 19.001 12 24 12c3.059 0 5.842 1.154 7.959 3.041l5.657-5.657C34.053 6.053 29.277 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z"/>
+              <path fill="#4CAF50" d="M24 44c5.176 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.146 35.091 26.671 36 24 36c-5.218 0-9.62-3.317-11.283-7.946l-6.522 5.025C9.5 39.556 16.227 44 24 44z"/>
+              <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-.792 2.237-2.231 4.166-4.084 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.651-.389-3.917z"/>
+            </svg>
+          </div>
+        </div>
+
+        <div style="flex:1;min-width:240px">
+          <div class="eyebrow" style="margin-bottom:8px">LICENSE ID-<span id="profileID">0421</span></div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <h1 id="profileName" style="margin:0;">Hunter</h1>
+            <span id="providerBadge" class="provider-badge" style="display:none;">
+              <span class="provider-dot"></span>
+              <span id="providerBadgeText">Google Authenticated</span>
+            </span>
+            <span id="verifiedBadge" class="verified-badge" style="display:none;">✓ Verified Email</span>
+          </div>
+          <p id="profileTagline" style="margin-top:6px">"A Hunter grows sharper when discipline holds longer than mood."</p>
+
+          <div class="row" style="margin-top:14px;flex-wrap:wrap">
+            <span class="rank-badge" id="profileRank">◆ EXAMINEE</span>
+            <span class="chip" id="profileLevel">LEVEL 1</span>
+            <span class="chip" id="profileJoinedDays">LICENSED 0D AGO</span>
+            <span class="chip" id="profileTimezone">TIMEZONE UTC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="eyebrow">ASSOCIATION DATA</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;">
+          <div>
+            <div style="font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Total XP</div>
+            <div id="profileXP" style="font-size:24px;font-weight:700;color:#f6c76d;">0</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Registered Email</div>
+            <div id="profileEmail" style="font-size:13px;font-weight:600;word-break:break-word;color:#b9a8ff;">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">LICENSE RECORD</div>
+        <div style="display:grid;gap:12px;margin-top:14px;">
+          <div>
+            <div style="font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Member Since</div>
+            <div id="profileMemberSince" style="font-size:13px;font-weight:600;">—</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Last Login</div>
+            <div id="profileLastLogin" style="font-size:13px;font-weight:600;">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="eyebrow">STATUS</div>
+        <div style="display:grid;gap:12px;margin-top:14px;">
+          <div>
+            <div style="font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Session</div>
+            <div id="profileSessionStatus" style="font-size:13px;font-weight:600;color:#4ade80;">🟢 Active</div>
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">License Verification</div>
+            <div id="profileVerificationStatus" style="font-size:13px;font-weight:600;color:#4ade80;">✓ Verified</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <div class="eyebrow">AUTHENTICATION DOSSIER</div>
+      <div class="license-meta-grid">
+        <div class="license-meta-item">
+          <div class="license-meta-label">Authentication Provider</div>
+          <div class="license-meta-value" id="profileAuthProvider">Local Credentials</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Email Verification</div>
+          <div class="license-meta-value" id="profileEmailVerified">Verified</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Google Identity</div>
+          <div class="license-meta-value" id="profileGoogleId">Not linked</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Hunter Record Status</div>
+          <div class="license-meta-value" id="profileRecordStatus">Operational</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <div class="eyebrow">ONBOARDING DOSSIER</div>
+      <div class="license-meta-grid">
+        <div class="license-meta-item">
+          <div class="license-meta-label">Hunter Codename</div>
+          <div class="license-meta-value" id="profileHunterCodename">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Primary Path</div>
+          <div class="license-meta-value" id="profilePath">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Primary Goal</div>
+          <div class="license-meta-value" id="profilePrimaryGoal">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Experience Level</div>
+          <div class="license-meta-value" id="profileExperienceLevel">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Daily Schedule</div>
+          <div class="license-meta-value" id="profileDailySchedule">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Focus Style</div>
+          <div class="license-meta-value" id="profileFocusStyle">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Motivation Type</div>
+          <div class="license-meta-value" id="profileMotivationType">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Main Weakness</div>
+          <div class="license-meta-value" id="profileMainWeakness">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Training Style</div>
+          <div class="license-meta-value" id="profileTrainingStyle">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Aura Theme</div>
+          <div class="license-meta-value" id="profileAuraTheme">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <div class="eyebrow">PHYSICAL BASELINE</div>
+      <div class="license-meta-grid">
+        <div class="license-meta-item">
+          <div class="license-meta-label">Age Range</div>
+          <div class="license-meta-value" id="profileAgeRange">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Height</div>
+          <div class="license-meta-value" id="profileHeight">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Weight</div>
+          <div class="license-meta-value" id="profileWeight">—</div>
+        </div>
+        <div class="license-meta-item">
+          <div class="license-meta-label">Sleep Target</div>
+          <div class="license-meta-value" id="profileSleepTarget">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:22px;">
+      <div class="eyebrow">HUNTER INTENT</div>
+      <div class="license-meta-item" style="margin-top:14px;">
+        <div class="license-meta-label">Future Message</div>
+        <div class="license-meta-value" id="profileWhyJoined" style="line-height:1.8; white-space:pre-wrap;">—</div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+
+<script>
+  (function () {
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name
+        .trim()
+        .split(/\s+/)
+        .map(function (part) { return part[0] || ''; })
+        .slice(0, 2)
+        .join('')
+        .toUpperCase() || 'H';
+    }
+
+    function getLocalTimezoneLabel(user) {
+      if (user && user.timezone) return user.timezone;
+      try {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      } catch (e) {
+        return 'UTC';
+      }
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function loadDashboardState(user) {
+      try {
+        var raw = localStorage.getItem(getDashboardStorageKey(user));
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function getHunterRankFromLevel(level) {
+      level = Number(level) || 1;
+      if (level >= 1400) return 'Chairman-Class Hunter';
+      if (level >= 1200) return 'Zodiac-Class Hunter';
+      if (level >= 1050) return 'Triple-Star Hunter';
+      if (level >= 915) return 'Senior Double-Star Hunter';
+      if (level >= 790) return 'Double-Star Hunter';
+      if (level >= 675) return 'Senior Single-Star Hunter';
+      if (level >= 570) return 'Single-Star Hunter';
+      if (level >= 475) return 'Association Hunter';
+      if (level >= 390) return 'Master Hunter';
+      if (level >= 315) return 'Senior Hunter';
+      if (level >= 250) return 'Elite Hunter';
+      if (level >= 195) return 'Veteran Hunter';
+      if (level >= 150) return 'Skilled Hunter';
+      if (level >= 110) return 'Field Hunter';
+      if (level >= 80) return 'Contract Hunter';
+      if (level >= 55) return 'Licensed Hunter';
+      if (level >= 35) return 'Rookie Hunter';
+      if (level >= 20) return 'Candidate';
+      if (level >= 10) return 'Provisional Candidate';
+      return 'Examinee';
+    }
+
+    function normalizeLegacyRank(rank, level) {
+      var raw = String(rank || '').trim().toUpperCase();
+      if (raw === 'E' || raw === 'RANK E' || raw === 'EXAMINEE') return 'Examinee';
+      if (raw === 'D' || raw === 'RANK D' || raw === 'PROVISIONAL CANDIDATE') return 'Provisional Candidate';
+      if (raw === 'C' || raw === 'RANK C' || raw === 'CANDIDATE') return 'Candidate';
+      if (raw === 'B' || raw === 'RANK B' || raw === 'ROOKIE HUNTER') return 'Rookie Hunter';
+      if (raw === 'A' || raw === 'RANK A' || raw === 'LICENSED HUNTER') return 'Licensed Hunter';
+      if (raw === 'S' || raw === 'RANK S' || raw === 'ELITE HUNTER') return 'Elite Hunter';
+      return getHunterRankFromLevel(level);
+    }
+
+    function resolveProfileProgress(user) {
+      var dashboardState = loadDashboardState(user) || {};
+      var xp = Number(dashboardState.xpTotal);
+      if (!Number.isFinite(xp)) xp = Number(user && user.xp);
+      if (!Number.isFinite(xp)) xp = 0;
+
+      var level = Number(dashboardState.level);
+      if (!Number.isFinite(level) || level <= 0) level = Number(user && user.level);
+      if (!Number.isFinite(level) || level <= 0) level = 1;
+
+      var rank = dashboardState.rank || (user && user.rank) || '';
+      return {
+        xp: xp,
+        level: level,
+        rank: normalizeLegacyRank(rank, level)
+      };
+    }
+
+    function formatDate(value) {
+      if (!value) return '—';
+      var date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '—';
+      return date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function formatProvider(provider) {
+      var raw = String(provider || 'local').trim().toLowerCase();
+      if (raw === 'google') return 'Google Identity';
+      if (raw === 'local') return 'Local Credentials';
+      return raw.charAt(0).toUpperCase() + raw.slice(1);
+    }
+
+    function renderAvatar(el, user, fallbackInitials) {
+      if (!el) return;
+      var avatar = user && user.avatar ? String(user.avatar).trim() : '';
+      if (avatar) {
+        el.innerHTML = '<img src="' + avatar.replace(/"/g, '&quot;') + '" alt="Hunter avatar" class="profile-avatar-image">';
+      } else {
+        el.textContent = fallbackInitials || 'H';
+      }
+    }
+
+    function safeText(value, fallback) {
+      var text = String(value || '').trim();
+      return text || (fallback || '—');
+    }
+
+    function titleCase(value) {
+      var text = String(value || '').trim();
+      if (!text) return '—';
+      return text
+        .replace(/[-_]+/g, ' ')
+        .split(/\s+/)
+        .map(function (part) {
+          return part.charAt(0).toUpperCase() + part.slice(1);
+        })
+        .join(' ');
+    }
+
+    function setText(id, value, fallback) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = safeText(value, fallback);
+    }
+
+    function applyUser(user) {
+      if (!user) return;
+
+      var progress = resolveProfileProgress(user);
+
+      var displayName =
+        (user.displayName && String(user.displayName).trim()) ||
+        (user.name && String(user.name).trim()) ||
+        'Hunter';
+
+      var tagline =
+        (user.tagline && String(user.tagline).trim()) ||
+        '"A Hunter grows sharper when discipline holds longer than mood."';
+
+      var initials = getInitials(displayName);
+      var createdAt = user.createdAt ? new Date(user.createdAt) : new Date();
+      var now = new Date();
+      var daysSince = Math.max(0, Math.floor((now - createdAt) / (1000 * 60 * 60 * 24)));
+      var lastLogin = formatDate(user.loginTime);
+      var hunterID = user.email
+        ? String(user.email.split('@')[0]).slice(0, 4).toUpperCase().padEnd(4, '0')
+        : '0421';
+
+      var authProvider = String(user.authProvider || 'local').trim().toLowerCase();
+      var isGoogle = authProvider === 'google';
+      var isVerified = Boolean(user.emailVerified);
+      var googleId = user.googleId ? String(user.googleId) : 'Not linked';
+
+      var onboarding = user.onboardingProfile || {};
+      var hunterCodename = onboarding.hunterCodename || user.hunterCodename || '';
+      var path = onboarding.path || user.path || '';
+      var primaryGoal = onboarding.primaryGoal || user.primaryGoal || '';
+      var experienceLevel = onboarding.experienceLevel || '';
+      var dailySchedule = onboarding.dailySchedule || '';
+      var focusStyle = onboarding.focusStyle || '';
+      var motivationType = onboarding.motivationType || '';
+      var mainWeakness = onboarding.mainWeakness || user.mainWeakness || '';
+      var trainingStyle = onboarding.trainingStyle || '';
+      var auraTheme = onboarding.auraTheme || user.auraTheme || '';
+      var ageRange = onboarding.ageRange || '';
+      var heightCm = onboarding.heightCm || '';
+      var weightKg = onboarding.weightKg || '';
+      var sleepTarget = onboarding.sleepTarget || '';
+      var whyJoined = onboarding.whyJoined || '';
+
+      document.getElementById('profileName').textContent = displayName;
+      document.getElementById('profileTagline').textContent = tagline;
+      renderAvatar(document.getElementById('profileAvatar'), user, initials);
+      document.getElementById('topbarAvatar').textContent = initials;
+      document.getElementById('profileTimezone').textContent = 'TIMEZONE ' + getLocalTimezoneLabel(user);
+
+      document.getElementById('profileID').textContent = hunterID;
+      document.getElementById('profileRank').textContent = '◆ ' + String(progress.rank).toUpperCase();
+      document.getElementById('profileLevel').textContent = 'LEVEL ' + progress.level;
+      document.getElementById('profileJoinedDays').textContent = 'LICENSED ' + daysSince + 'D AGO';
+      document.getElementById('profileXP').textContent = progress.xp.toLocaleString();
+      document.getElementById('profileEmail').textContent = user.email || '—';
+      document.getElementById('profileMemberSince').textContent = formatDate(user.createdAt);
+      document.getElementById('profileLastLogin').textContent = lastLogin;
+
+      document.getElementById('profileAuthProvider').textContent = formatProvider(authProvider);
+      document.getElementById('profileEmailVerified').textContent = isVerified ? 'Verified' : 'Unverified';
+      document.getElementById('profileGoogleId').textContent = isGoogle ? googleId : 'Not linked';
+      document.getElementById('profileRecordStatus').textContent = isGoogle ? 'Federated Hunter Record' : 'Local Hunter Record';
+
+      document.getElementById('profileSessionStatus').textContent = '🟢 Active';
+      document.getElementById('profileVerificationStatus').textContent = isVerified ? '✓ Verified' : '⚠ Pending Verification';
+      document.getElementById('profileVerificationStatus').style.color = isVerified ? '#4ade80' : '#fbbf24';
+
+      var providerBadge = document.getElementById('providerBadge');
+      var providerBadgeText = document.getElementById('providerBadgeText');
+      if (isGoogle) {
+        providerBadge.style.display = 'inline-flex';
+        providerBadgeText.textContent = 'Google Authenticated';
+      } else {
+        providerBadge.style.display = 'inline-flex';
+        providerBadgeText.textContent = 'Local Authenticated';
+      }
+
+      var verifiedBadge = document.getElementById('verifiedBadge');
+      if (isVerified) {
+        verifiedBadge.style.display = 'inline-flex';
+      } else {
+        verifiedBadge.style.display = 'none';
+      }
+
+      var googleAvatarBadge = document.getElementById('googleAvatarBadge');
+      if (googleAvatarBadge) {
+        googleAvatarBadge.hidden = !isGoogle;
+      }
+
+      setText('profileHunterCodename', hunterCodename, 'None assigned');
+      setText('profilePath', titleCase(path));
+      setText('profilePrimaryGoal', titleCase(primaryGoal));
+      setText('profileExperienceLevel', titleCase(experienceLevel));
+      setText('profileDailySchedule', titleCase(dailySchedule));
+      setText('profileFocusStyle', titleCase(focusStyle));
+      setText('profileMotivationType', titleCase(motivationType));
+      setText('profileMainWeakness', titleCase(mainWeakness));
+      setText('profileTrainingStyle', titleCase(trainingStyle));
+      setText('profileAuraTheme', titleCase(auraTheme));
+
+      setText('profileAgeRange', ageRange);
+      setText('profileHeight', heightCm ? heightCm + ' cm' : '—');
+      setText('profileWeight', weightKg ? weightKg + ' kg' : '—');
+      setText('profileSleepTarget', sleepTarget ? sleepTarget + ' hours' : '—');
+      setText('profileWhyJoined', whyJoined);
+    }
+
+    function tryLoadUser() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return false;
+      var user = AuthSystem.getCurrentUser();
+      if (!user) return false;
+      applyUser(user);
+      return true;
+    }
+
+    function initProfile() {
+      if (tryLoadUser()) return;
+
+      var attempts = 0;
+      var maxAttempts = 20;
+      var timer = setInterval(function () {
+        attempts++;
+        if (tryLoadUser()) {
+          clearInterval(timer);
+          return;
+        }
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', initProfile);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

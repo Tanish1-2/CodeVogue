@@ -1,0 +1,951 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hunter Medals — HunterOS</title>
+<meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Build your Nen, sharpen your discipline, and rise through the Hunter Association.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .ach {
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 18px;
+    padding: 18px;
+    background: rgba(255,255,255,.03);
+    transition: transform .18s ease, opacity .18s ease, border-color .18s ease;
+  }
+
+  .ach:hover {
+    transform: translateY(-2px);
+    border-color: rgba(124,92,255,.28);
+  }
+
+  .ach.locked {
+    opacity: .52;
+    filter: grayscale(.15);
+  }
+
+  .medal {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: grid;
+    place-items: center;
+    font-size: 24px;
+    margin-bottom: 12px;
+    background: linear-gradient(135deg, rgba(124,92,255,.18), rgba(34,211,238,.08));
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
+  }
+
+  .ach-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .ach-note {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .ach-status {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 999px;
+    margin-top: 12px;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    border: 1px solid rgba(255,255,255,.08);
+    color: var(--muted);
+  }
+
+  .ach.unlocked .ach-status {
+    color: #b8f7ca;
+    border-color: rgba(74,222,128,.22);
+    background: rgba(74,222,128,.10);
+  }
+
+  .ach.locked .ach-status {
+    color: #ffb6c9;
+    border-color: rgba(255,107,157,.18);
+    background: rgba(255,107,157,.08);
+  }
+
+  @media (max-width: 1100px) {
+    .achievements-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 800px) {
+    .achievements-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 520px) {
+    .achievements-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    if (!AuthSystem.requireAuth()) {}
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // HUNTER LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Missions</a>
+      <a href="challenges.html"><span class="ico">◈</span>Hunter Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Growth</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html" aria-current="page"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>Settings</a>
+      <a href="#" onclick="if (typeof AuthSystem !== 'undefined') { AuthSystem.logout(); } return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(34,211,238,.06))">
+      <div class="eyebrow" style="margin-bottom:6px">HUNTER EXAM CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter License Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to improve your standing in the Hunter Association.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search missions, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">HUNTER RECORD</div>
+        <h1 id="achievementsHeading">Hunter Medals</h1>
+      </div>
+      <span class="chip on" id="achievementCountChip">0 / 0 unlocked</span>
+    </div>
+
+    <div class="achievements-grid" id="achievementsGrid"></div>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+<script>
+  (function () {
+    var refreshTimer = null;
+    var lastSignature = '';
+
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name.trim().split(/\s+/).map(function (part) {
+        return part[0] || '';
+      }).slice(0, 2).join('').toUpperCase() || 'H';
+    }
+
+    function normalizeUserKeyValue(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+
+    function getUserKey(user) {
+      return (user && (user.email || user.uid || user.id || user.displayName || user.name))
+        ? normalizeUserKeyValue(user.email || user.uid || user.id || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function getAchievementStorageKey(user) {
+      return 'hunteros-achievements::' + getUserKey(user);
+    }
+
+    function unique(arr) {
+      var seen = {};
+      return arr.filter(function (item) {
+        if (!item || seen[item]) return false;
+        seen[item] = true;
+        return true;
+      });
+    }
+
+    function getPossibleQuestStorageKeys(user) {
+      var rawUserKey = getUserKey(user);
+      var rawEmail = normalizeUserKeyValue(user && user.email);
+      var rawName = normalizeUserKeyValue((user && (user.displayName || user.name)) || '');
+
+      var keys = [
+        'quests_' + rawUserKey,
+        'ascendos-quests::' + rawUserKey
+      ];
+
+      if (rawEmail && rawEmail !== rawUserKey) {
+        keys.push('quests_' + rawEmail);
+        keys.push('ascendos-quests::' + rawEmail);
+      }
+
+      if (rawName && rawName !== rawUserKey) {
+        keys.push('quests_' + rawName);
+        keys.push('ascendos-quests::' + rawName);
+      }
+
+      return unique(keys);
+    }
+
+    function getPossibleMissionStorageKeys(user) {
+      var rawUserKey = getUserKey(user);
+      var rawEmail = normalizeUserKeyValue(user && user.email);
+      var rawName = normalizeUserKeyValue((user && (user.displayName || user.name)) || '');
+
+      var keys = [
+        'missions_' + rawUserKey,
+        'ascendos-missions::' + rawUserKey
+      ];
+
+      if (rawEmail && rawEmail !== rawUserKey) {
+        keys.push('missions_' + rawEmail);
+        keys.push('ascendos-missions::' + rawEmail);
+      }
+
+      if (rawName && rawName !== rawUserKey) {
+        keys.push('missions_' + rawName);
+        keys.push('ascendos-missions::' + rawName);
+      }
+
+      return unique(keys);
+    }
+
+    function getPossibleFocusStorageKeys(user) {
+      var rawUserKey = getUserKey(user);
+      var rawEmail = normalizeUserKeyValue(user && user.email);
+      var rawName = normalizeUserKeyValue((user && (user.displayName || user.name)) || '');
+
+      var keys = [
+        'focus_sessions_' + rawUserKey,
+        'ascendos-focus-sessions::' + rawUserKey
+      ];
+
+      if (rawEmail && rawEmail !== rawUserKey) {
+        keys.push('focus_sessions_' + rawEmail);
+        keys.push('ascendos-focus-sessions::' + rawEmail);
+      }
+
+      if (rawName && rawName !== rawUserKey) {
+        keys.push('focus_sessions_' + rawName);
+        keys.push('ascendos-focus-sessions::' + rawName);
+      }
+
+      return unique(keys);
+    }
+
+    function readAllArraysFromKeys(keys) {
+      var combined = [];
+
+      keys.forEach(function (key) {
+        var raw = localStorage.getItem(key);
+        if (!raw) return;
+
+        try {
+          var parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            combined = combined.concat(parsed);
+          }
+        } catch (e) {}
+      });
+
+      return combined;
+    }
+
+    function getQuests(user) {
+      return readAllArraysFromKeys(getPossibleQuestStorageKeys(user));
+    }
+
+    function getMissions(user) {
+      return readAllArraysFromKeys(getPossibleMissionStorageKeys(user));
+    }
+
+    function getFocusSessions(user) {
+      return readAllArraysFromKeys(getPossibleFocusStorageKeys(user));
+    }
+
+    function getHourKey() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = String(now.getMonth() + 1).padStart(2, '0');
+      var d = String(now.getDate()).padStart(2, '0');
+      var h = String(now.getHours()).padStart(2, '0');
+      return y + '-' + m + '-' + d + '-' + h;
+    }
+
+    function xpRequiredForLevel(level) {
+      return 100 + ((level - 1) * 20);
+    }
+
+    function getDefaultDashboardState() {
+      return {
+        version: 2,
+        level: 1,
+        xpTotal: 0,
+        xpIntoCurrentLevel: 0,
+        streakDays: 0,
+        longestStreak: 0,
+        rank: 'Examinee',
+        path: 'discipline',
+        onboarded: false,
+        lastMissionResetHour: getHourKey(),
+        missions: [
+          { id: 'hydration', title: 'Drink 3L water', xp: 10, completed: false, tag: 'BODY' },
+          { id: 'focus', title: 'Deep work block — 60 min', xp: 20, completed: false, tag: 'FOCUS' },
+          { id: 'reading', title: 'Read 10 pages', xp: 15, completed: false, tag: 'MIND' },
+          { id: 'training', title: 'Workout — 30 minutes', xp: 20, completed: false, tag: 'BODY' },
+          { id: 'journal', title: 'Evening reflection journal', xp: 10, completed: false, tag: 'SOUL' }
+        ],
+        completedQuests: [],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function loadDashboardState(user) {
+      var key = getDashboardStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') throw new Error('Invalid dashboard state');
+        if (!Array.isArray(parsed.missions)) parsed.missions = [];
+        if (!Array.isArray(parsed.completedQuests)) parsed.completedQuests = [];
+        if (!parsed.lastMissionResetHour) parsed.lastMissionResetHour = getHourKey();
+        if (typeof parsed.xpTotal !== 'number') parsed.xpTotal = Number(parsed.xpTotal) || 0;
+        if (typeof parsed.level !== 'number') parsed.level = Number(parsed.level) || 1;
+        if (typeof parsed.streakDays !== 'number') parsed.streakDays = Number(parsed.streakDays) || 0;
+        if (typeof parsed.longestStreak !== 'number') parsed.longestStreak = parsed.streakDays || 0;
+        if (typeof parsed.rank !== 'string' || !parsed.rank) parsed.rank = 'Examinee';
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveDashboardState(user, state) {
+      localStorage.setItem(getDashboardStorageKey(user), JSON.stringify(state));
+    }
+
+    function getDefaultAchievementState() {
+      return {
+        version: 3,
+        unlocked: {},
+        totalCompletedMissions: 0,
+        totalCompletedQuests: 0,
+        totalFocusSessions: 0,
+        seenMissionEvents: {},
+        seenQuestIds: {},
+        seenFocusIds: {},
+        legacyBackfillDone: false
+      };
+    }
+
+    function loadAchievementState(user) {
+      var key = getAchievementStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultAchievementState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') throw new Error('Invalid achievement state');
+
+        if (!parsed.unlocked || typeof parsed.unlocked !== 'object') parsed.unlocked = {};
+        if (typeof parsed.totalCompletedMissions !== 'number') parsed.totalCompletedMissions = 0;
+        if (typeof parsed.totalCompletedQuests !== 'number') parsed.totalCompletedQuests = 0;
+        if (typeof parsed.totalFocusSessions !== 'number') parsed.totalFocusSessions = 0;
+        if (!parsed.seenMissionEvents || typeof parsed.seenMissionEvents !== 'object') parsed.seenMissionEvents = {};
+        if (!parsed.seenQuestIds || typeof parsed.seenQuestIds !== 'object') parsed.seenQuestIds = {};
+        if (!parsed.seenFocusIds || typeof parsed.seenFocusIds !== 'object') parsed.seenFocusIds = {};
+        if (typeof parsed.legacyBackfillDone !== 'boolean') parsed.legacyBackfillDone = false;
+
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultAchievementState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveAchievementState(user, state) {
+      localStorage.setItem(getAchievementStorageKey(user), JSON.stringify(state));
+    }
+
+    function applyHourlyMissionReset(state) {
+      var currentHourKey = getHourKey();
+
+      if (state.lastMissionResetHour !== currentHourKey) {
+        state.missions = (state.missions || []).map(function (mission) {
+          return {
+            id: mission.id,
+            title: mission.title,
+            xp: mission.xp,
+            tag: mission.tag || 'MIND',
+            completed: false
+          };
+        });
+        state.lastMissionResetHour = currentHourKey;
+      }
+
+      return state;
+    }
+
+    function recalculateLevel(state, user) {
+      var explicitLevel = Number(state.level) || 1;
+      var totalXp = Math.max(
+        Number(state.xpTotal) || 0,
+        Number(user && user.xp) || 0,
+        Number(user && user.totalXP) || 0
+      );
+
+      var derivedLevel = 1;
+      var remaining = totalXp;
+
+      while (remaining >= xpRequiredForLevel(derivedLevel)) {
+        remaining -= xpRequiredForLevel(derivedLevel);
+        derivedLevel++;
+      }
+
+      state.level = Math.max(explicitLevel, derivedLevel, Number(user && user.level) || 1);
+      state.xpTotal = totalXp;
+      state.xpIntoCurrentLevel = remaining;
+      return state;
+    }
+
+    function getRankFromLevel(level) {
+      if (level >= 1400) return 'Chairman-Class Hunter';
+      if (level >= 1200) return 'Zodiac-Class Hunter';
+      if (level >= 1050) return 'Triple-Star Hunter';
+      if (level >= 915) return 'Senior Double-Star Hunter';
+      if (level >= 790) return 'Double-Star Hunter';
+      if (level >= 675) return 'Senior Single-Star Hunter';
+      if (level >= 570) return 'Single-Star Hunter';
+      if (level >= 475) return 'Association Hunter';
+      if (level >= 390) return 'Master Hunter';
+      if (level >= 315) return 'Senior Hunter';
+      if (level >= 250) return 'Elite Hunter';
+      if (level >= 195) return 'Veteran Hunter';
+      if (level >= 150) return 'Skilled Hunter';
+      if (level >= 110) return 'Field Hunter';
+      if (level >= 80) return 'Contract Hunter';
+      if (level >= 55) return 'Licensed Hunter';
+      if (level >= 35) return 'Rookie Hunter';
+      if (level >= 20) return 'Candidate';
+      if (level >= 10) return 'Provisional Candidate';
+      return 'Examinee';
+    }
+
+    function normalizeText(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+
+    function isQuestCompleted(quest) {
+      return !!(quest && (
+        quest.done === true ||
+        quest.completed === true ||
+        quest.isCompleted === true ||
+        Number(quest.pct) >= 100 ||
+        String(quest.status || '').toLowerCase() === 'completed'
+      ));
+    }
+
+    function isMissionCompleted(mission) {
+      return !!(mission && (
+        mission.done === true ||
+        mission.completed === true ||
+        mission.isCompleted === true ||
+        Number(mission.pct) >= 100 ||
+        String(mission.status || '').toLowerCase() === 'completed'
+      ));
+    }
+
+    function getQuestFingerprint(quest, index) {
+      if (!quest || typeof quest !== 'object') return 'quest_' + index;
+      if (quest.id) return 'id::' + String(quest.id);
+      if (quest.uid) return 'uid::' + String(quest.uid);
+      if (quest.createdAt) return 'createdAt::' + String(quest.createdAt);
+      if (quest.date) return 'date::' + String(quest.date);
+      return [
+        'title::' + normalizeText(quest.title),
+        'desc::' + normalizeText(quest.description),
+        'reward::' + String(quest.reward || ''),
+        'daily::' + String(!!quest.daily),
+        'index::' + index
+      ].join('|');
+    }
+
+    function getMissionFingerprint(mission, index) {
+      if (!mission || typeof mission !== 'object') return 'mission_' + index;
+      if (mission.id) return 'id::' + String(mission.id);
+      if (mission.uid) return 'uid::' + String(mission.uid);
+      if (mission.createdAt) return 'createdAt::' + String(mission.createdAt);
+      if (mission.date) return 'date::' + String(mission.date);
+      return [
+        'title::' + normalizeText(mission.title),
+        'xp::' + String(mission.xp || ''),
+        'tag::' + normalizeText(mission.tag || ''),
+        'index::' + index
+      ].join('|');
+    }
+
+    function getFocusFingerprint(session, index) {
+      if (!session || typeof session !== 'object') return 'focus_' + index;
+      if (session.id) return 'id::' + String(session.id);
+      if (session.uid) return 'uid::' + String(session.uid);
+      if (session.createdAt) return 'createdAt::' + String(session.createdAt);
+      if (session.date) return 'date::' + String(session.date);
+      return [
+        'minutes::' + String(session.minutes || session.duration || ''),
+        'type::' + normalizeText(session.type || session.mode || ''),
+        'started::' + normalizeText(session.startedAt || ''),
+        'index::' + index
+      ].join('|');
+    }
+
+    function extractCompletedQuestHistoryFromDashboard(dashboardState) {
+      if (!dashboardState || !Array.isArray(dashboardState.completedQuests)) return [];
+      return dashboardState.completedQuests.filter(function (item) { return !!item; });
+    }
+
+    function runLegacyBackfill(user, dashboardState, achievementState) {
+      if (achievementState.legacyBackfillDone) return achievementState;
+
+      var quests = getQuests(user);
+      var missions = getMissions(user);
+      var focusSessions = getFocusSessions(user);
+      var completedQuestHistory = extractCompletedQuestHistoryFromDashboard(dashboardState);
+
+      quests.forEach(function (quest, index) {
+        if (!isQuestCompleted(quest)) return;
+        var questId = getQuestFingerprint(quest, index);
+        if (!achievementState.seenQuestIds[questId]) {
+          achievementState.seenQuestIds[questId] = true;
+          achievementState.totalCompletedQuests += 1;
+        }
+      });
+
+      completedQuestHistory.forEach(function (quest, index) {
+        var questId = getQuestFingerprint(quest, index);
+        if (!achievementState.seenQuestIds[questId]) {
+          achievementState.seenQuestIds[questId] = true;
+          achievementState.totalCompletedQuests += 1;
+        }
+      });
+
+      missions.forEach(function (mission, index) {
+        if (!isMissionCompleted(mission)) return;
+        var missionId = 'legacy::' + getMissionFingerprint(mission, index);
+        if (!achievementState.seenMissionEvents[missionId]) {
+          achievementState.seenMissionEvents[missionId] = true;
+          achievementState.totalCompletedMissions += 1;
+        }
+      });
+
+      (dashboardState.missions || []).forEach(function (mission, index) {
+        if (!isMissionCompleted(mission)) return;
+        var missionId = 'dashboard::' + getMissionFingerprint(mission, index);
+        if (!achievementState.seenMissionEvents[missionId]) {
+          achievementState.seenMissionEvents[missionId] = true;
+          achievementState.totalCompletedMissions += 1;
+        }
+      });
+
+      focusSessions.forEach(function (session, index) {
+        var focusId = getFocusFingerprint(session, index);
+        if (!achievementState.seenFocusIds[focusId]) {
+          achievementState.seenFocusIds[focusId] = true;
+          achievementState.totalFocusSessions += 1;
+        }
+      });
+
+      achievementState.legacyBackfillDone = true;
+      saveAchievementState(user, achievementState);
+      return achievementState;
+    }
+
+    function syncLiveProgress(user, dashboardState, achievementState) {
+      var quests = getQuests(user);
+      var focusSessions = getFocusSessions(user);
+      var missionHourKey = dashboardState.lastMissionResetHour || getHourKey();
+
+      var currentCompletedMissions = Array.isArray(dashboardState.missions)
+        ? dashboardState.missions.filter(function (mission) { return !!mission.completed; })
+        : [];
+
+      currentCompletedMissions.forEach(function (mission, index) {
+        var eventKey = missionHourKey + '::' + (mission.id || ('mission_' + index));
+        if (!achievementState.seenMissionEvents[eventKey]) {
+          achievementState.seenMissionEvents[eventKey] = true;
+          achievementState.totalCompletedMissions += 1;
+        }
+      });
+
+      quests.forEach(function (quest, index) {
+        if (!isQuestCompleted(quest)) return;
+        var questId = getQuestFingerprint(quest, index);
+        if (!achievementState.seenQuestIds[questId]) {
+          achievementState.seenQuestIds[questId] = true;
+          achievementState.totalCompletedQuests += 1;
+        }
+      });
+
+      focusSessions.forEach(function (session, index) {
+        var focusId = getFocusFingerprint(session, index);
+        if (!achievementState.seenFocusIds[focusId]) {
+          achievementState.seenFocusIds[focusId] = true;
+          achievementState.totalFocusSessions += 1;
+        }
+      });
+
+      saveAchievementState(user, achievementState);
+      return achievementState;
+    }
+
+    function getAchievementDefinitions() {
+      return [
+        {
+          id: 'first_mission',
+          icon: '◇',
+          title: 'First Step',
+          note: 'Complete 1 mission.',
+          check: function (ctx) { return ctx.completedMissions >= 1; }
+        },
+        {
+          id: 'mission_10',
+          icon: '⚒',
+          title: 'Mission Grinder',
+          note: 'Complete 10 missions.',
+          check: function (ctx) { return ctx.completedMissions >= 10; }
+        },
+        {
+          id: 'mission_50',
+          icon: '🛡',
+          title: 'Daily Engine',
+          note: 'Complete 50 missions.',
+          check: function (ctx) { return ctx.completedMissions >= 50; }
+        },
+        {
+          id: 'first_quest',
+          icon: '⚔',
+          title: 'First Trial',
+          note: 'Complete 1 Hunter Trial.',
+          check: function (ctx) { return ctx.completedQuests >= 1; }
+        },
+        {
+          id: 'quest_5',
+          icon: '🗡',
+          title: 'Trial Hunter',
+          note: 'Complete 5 Hunter Trials.',
+          check: function (ctx) { return ctx.completedQuests >= 5; }
+        },
+        {
+          id: 'quest_10',
+          icon: '🏹',
+          title: 'Exam Challenger',
+          note: 'Complete 10 Hunter Trials.',
+          check: function (ctx) { return ctx.completedQuests >= 10; }
+        },
+        {
+          id: 'rank_licensed',
+          icon: '◎',
+          title: 'Licensed Hunter',
+          note: 'Reach Licensed Hunter rank.',
+          check: function (ctx) { return ctx.level >= 55; }
+        },
+        {
+          id: 'rank_single_star',
+          icon: '★',
+          title: 'Single-Star Hunter',
+          note: 'Reach Single-Star Hunter rank.',
+          check: function (ctx) { return ctx.level >= 570; }
+        },
+        {
+          id: 'rank_double_star',
+          icon: '★★',
+          title: 'Double-Star Hunter',
+          note: 'Reach Double-Star Hunter rank.',
+          check: function (ctx) { return ctx.level >= 790; }
+        },
+        {
+          id: 'rank_triple_star',
+          icon: '★★★',
+          title: 'Triple-Star Hunter',
+          note: 'Reach Triple-Star Hunter rank.',
+          check: function (ctx) { return ctx.level >= 1050; }
+        },
+        {
+          id: 'rank_zodiac',
+          icon: '♢',
+          title: 'Zodiac-Class Hunter',
+          note: 'Reach Zodiac-Class Hunter rank.',
+          check: function (ctx) { return ctx.level >= 1200; }
+        },
+        {
+          id: 'rank_chairman',
+          icon: '◈',
+          title: 'Chairman-Class Hunter',
+          note: 'Reach Chairman-Class Hunter rank.',
+          check: function (ctx) { return ctx.level >= 1400; }
+        },
+        {
+          id: 'streak_7',
+          icon: '7',
+          title: 'Week Locked In',
+          note: 'Reach a 7-day streak.',
+          check: function (ctx) { return ctx.longestStreak >= 7 || ctx.streakDays >= 7; }
+        },
+        {
+          id: 'streak_30',
+          icon: '30',
+          title: 'Hunter Discipline',
+          note: 'Reach a 30-day streak.',
+          check: function (ctx) { return ctx.longestStreak >= 30 || ctx.streakDays >= 30; }
+        },
+        {
+          id: 'focus_10',
+          icon: '◉',
+          title: 'Zetsu Initiate',
+          note: 'Log 10 focus sessions.',
+          check: function (ctx) { return ctx.focusSessions >= 10; }
+        },
+        {
+          id: 'focus_50',
+          icon: '⚡',
+          title: 'Silent Aura',
+          note: 'Log 50 focus sessions.',
+          check: function (ctx) { return ctx.focusSessions >= 50; }
+        }
+      ];
+    }
+
+    function buildAchievementContext(user) {
+      var dashboardState = loadDashboardState(user);
+      var achievementState = loadAchievementState(user);
+
+      dashboardState = applyHourlyMissionReset(dashboardState);
+      dashboardState = recalculateLevel(dashboardState, user);
+      dashboardState.rank = getRankFromLevel(dashboardState.level);
+
+      if (typeof dashboardState.longestStreak !== 'number') {
+        dashboardState.longestStreak = dashboardState.streakDays || 0;
+      }
+
+      achievementState = runLegacyBackfill(user, dashboardState, achievementState);
+      achievementState = syncLiveProgress(user, dashboardState, achievementState);
+
+      saveDashboardState(user, dashboardState);
+
+      return {
+        dashboardState: dashboardState,
+        achievementState: achievementState,
+        ctx: {
+          level: Number(dashboardState.level) || 1,
+          rank: dashboardState.rank || 'Examinee',
+          xpTotal: Number(dashboardState.xpTotal) || 0,
+          streakDays: Math.max(Number(dashboardState.streakDays) || 0, Number(user && user.streakDays) || 0),
+          longestStreak: Math.max(Number(dashboardState.longestStreak) || 0, Number(user && user.longestStreak) || 0),
+          completedMissions: Number(achievementState.totalCompletedMissions) || 0,
+          completedQuests: Number(achievementState.totalCompletedQuests) || 0,
+          focusSessions: Number(achievementState.totalFocusSessions) || 0
+        }
+      };
+    }
+
+    function unlockAchievementsForever(user, defs, ctx) {
+      var achievementState = loadAchievementState(user);
+
+      defs.forEach(function (def) {
+        if (achievementState.unlocked[def.id]) return;
+        if (def.check(ctx)) {
+          achievementState.unlocked[def.id] = true;
+        }
+      });
+
+      saveAchievementState(user, achievementState);
+      return achievementState;
+    }
+
+    function computeRenderSignature(user, ctx, achievementState) {
+      return JSON.stringify({
+        user: getUserKey(user),
+        level: ctx.level,
+        rank: ctx.rank,
+        streakDays: ctx.streakDays,
+        longestStreak: ctx.longestStreak,
+        completedMissions: ctx.completedMissions,
+        completedQuests: ctx.completedQuests,
+        focusSessions: ctx.focusSessions,
+        unlocked: achievementState.unlocked,
+        legacyBackfillDone: achievementState.legacyBackfillDone
+      });
+    }
+
+    function renderAchievements(user) {
+      var grid = document.getElementById('achievementsGrid');
+      var countChip = document.getElementById('achievementCountChip');
+      var heading = document.getElementById('achievementsHeading');
+      var avatar = document.getElementById('topbarAvatar');
+
+      if (!grid) return;
+
+      var name = getUserDisplayName(user);
+      var initials = getInitials(name);
+      var built = buildAchievementContext(user);
+      var ctx = built.ctx;
+      var defs = getAchievementDefinitions();
+      var achievementState = unlockAchievementsForever(user, defs, ctx);
+      var signature = computeRenderSignature(user, ctx, achievementState);
+
+      if (signature === lastSignature) return;
+      lastSignature = signature;
+
+      var unlockedCount = 0;
+      grid.innerHTML = '';
+
+      defs.forEach(function (def) {
+        var unlocked = !!achievementState.unlocked[def.id];
+        if (unlocked) unlockedCount++;
+
+        var card = document.createElement('div');
+        card.className = 'ach ' + (unlocked ? 'unlocked' : 'locked');
+
+        card.innerHTML = `
+          <div class="medal">${def.icon}</div>
+          <div class="ach-title">${def.title}</div>
+          <p class="ach-note">${def.note}</p>
+          <div class="ach-status">${unlocked ? 'Unlocked' : 'Locked'}</div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      if (countChip) countChip.textContent = unlockedCount + ' / ' + defs.length + ' unlocked';
+      if (heading) heading.textContent = name + "'s Hunter Medals";
+      if (avatar) avatar.textContent = initials;
+    }
+
+    function startLiveRefresh() {
+      if (refreshTimer) clearInterval(refreshTimer);
+      refreshTimer = setInterval(function () {
+        var user = getCurrentUserSafe();
+        if (user) renderAchievements(user);
+      }, 1000);
+    }
+
+    function init() {
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          renderAchievements(user);
+          startLiveRefresh();
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+
+      window.addEventListener('storage', function () {
+        var user = getCurrentUserSafe();
+        if (user) renderAchievements(user);
+      });
+
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) {
+          var user = getCurrentUserSafe();
+          if (user) renderAchievements(user);
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+<script src="js/app.js"></script>
+</body>
+</html>

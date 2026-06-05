@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Zetsu Focus — HunterOS</title>
+  <meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Train focus through Zetsu sessions, build aura, and rise through the Association.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .timer {
+    --p: 0%;
+    width: min(320px, 72vw);
+    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    position: relative;
+    background:
+      radial-gradient(circle at center, rgba(11, 16, 27, 0.96) 0 58%, transparent 59%),
+      conic-gradient(from -90deg, #38bdf8 0 var(--p), rgba(255,255,255,0.08) var(--p) 100%);
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 24px 60px rgba(0,0,0,0.35),
+      0 0 40px rgba(56,189,248,0.10);
+    transition: box-shadow 220ms ease, transform 220ms ease;
+  }
+
+  .timer::before {
+    content: "";
+    position: absolute;
+    inset: 16px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+
+  .timer.running {
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 24px 60px rgba(0,0,0,0.35),
+      0 0 56px rgba(52,211,153,0.16);
+    transform: translateY(-2px);
+  }
+
+  .timer.complete {
+    animation: timerPulse 1.8s ease-in-out infinite;
+  }
+
+  .timer .t {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1;
+  }
+
+  .timer small {
+    display: block;
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .preset-btn.primary {
+    border-color: rgba(56,189,248,0.34);
+    background: linear-gradient(135deg, rgba(56,189,248,0.18), rgba(52,211,153,0.12));
+  }
+
+  @keyframes timerPulse {
+    0% {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 24px 60px rgba(0,0,0,0.35),
+        0 0 30px rgba(52,211,153,0.12);
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 24px 60px rgba(0,0,0,0.35),
+        0 0 56px rgba(52,211,153,0.24);
+    }
+    100% {
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 24px 60px rgba(0,0,0,0.35),
+        0 0 30px rgba(52,211,153,0.12);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .timer,
+    .timer.complete {
+      transition: none;
+      animation: none;
+    }
+  }
+</style>
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    if (!AuthSystem.requireAuth()) {}
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html" aria-current="page"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="if (typeof AuthSystem !== 'undefined') { AuthSystem.logout(); } return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">DEEP WORK CHAMBER</div>
+        <h1 id="focusHeading">Zetsu Focus</h1>
+      </div>
+    </div>
+
+    <div class="grid" style="grid-template-columns:1.4fr 1fr;gap:22px">
+      <div class="card" style="text-align:center;padding:40px">
+        <div class="eyebrow" style="margin-bottom:18px">SESSION // ZETSU LOCK</div>
+
+        <div class="timer" id="timerRing" style="--p:0%">
+          <div>
+            <div class="t" id="focusTimer">00:00</div>
+            <small id="focusState">Idle</small>
+          </div>
+        </div>
+
+        <div class="row" style="justify-content:center;margin-top:30px;gap:10px">
+          <button id="pauseBtn" class="btn" disabled>⏸ Pause</button>
+          <button id="resumeBtn" class="btn primary">▶ Start</button>
+          <button id="endBtn" class="btn ghost" disabled>■ End</button>
+        </div>
+
+        <p style="margin-top:22px;max-width:380px;margin-left:auto;margin-right:auto">
+          Phones silenced. Tabs sealed. Aura grows when your attention stops leaking.
+        </p>
+
+        <div class="row" style="justify-content:center;gap:12px;flex-wrap:wrap;margin-top:16px">
+          <span class="chip on" id="sessionXpChip">Session Aura: 0</span>
+          <span class="chip" id="sessionTicksChip">30s ticks: 0</span>
+        </div>
+      </div>
+
+      <div class="col" style="gap:18px">
+        <div class="card">
+          <div class="eyebrow">TODAY'S DEPTH</div>
+          <h2 style="margin:6px 0 14px" id="todayDepthValue">0h 00m</h2>
+          <div class="xp-bar"><div class="xp-fill" id="todayDepthFill" style="width:0%"></div></div>
+          <div class="xp-meta">
+            <span>Goal: 5h</span>
+            <span id="todayDepthPct">0%</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:12px">Session Presets</h3>
+          <div class="col" style="gap:8px">
+            <button class="btn preset-btn" data-minutes="25" style="justify-content:space-between;width:100%">
+              <span>Sprint · 25m</span><span class="muted mono">+50 AURA max</span>
+            </button>
+            <button class="btn preset-btn" data-minutes="60" style="justify-content:space-between;width:100%">
+              <span>Shadow Hour · 60m</span><span class="muted mono">+120 AURA max</span>
+            </button>
+            <button class="btn preset-btn" data-minutes="90" style="justify-content:space-between;width:100%">
+              <span>Deep Block · 90m</span><span class="muted mono">+180 AURA max</span>
+            </button>
+            <button class="btn preset-btn" data-minutes="120" style="justify-content:space-between;width:100%">
+              <span>Cathedral · 120m</span><span class="muted mono">+240 AURA max</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">SESSION LOG</div>
+          <h3 style="margin:6px 0 14px">Recent Zetsu Runs</h3>
+          <div class="col" id="focusLog" style="gap:10px"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+<script>
+  (function () {
+    var timerEl = document.getElementById('focusTimer');
+    var stateEl = document.getElementById('focusState');
+    var pauseBtn = document.getElementById('pauseBtn');
+    var resumeBtn = document.getElementById('resumeBtn');
+    var endBtn = document.getElementById('endBtn');
+    var timerRing = document.getElementById('timerRing');
+    var sessionXpChip = document.getElementById('sessionXpChip');
+    var sessionTicksChip = document.getElementById('sessionTicksChip');
+    var todayDepthValue = document.getElementById('todayDepthValue');
+    var todayDepthFill = document.getElementById('todayDepthFill');
+    var todayDepthPct = document.getElementById('todayDepthPct');
+    var focusLog = document.getElementById('focusLog');
+    var focusHeading = document.getElementById('focusHeading');
+    var topbarAvatar = document.getElementById('topbarAvatar');
+    var presetButtons = document.querySelectorAll('.preset-btn');
+
+    var seconds = 0;
+    var interval = null;
+    var running = false;
+    var selectedPresetMinutes = 0;
+    var earnedTicksThisSession = 0;
+    var sessionStartedAt = null;
+
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name.trim().split(/\s+/).map(function (part) {
+        return part[0] || '';
+      }).slice(0, 2).join('').toUpperCase() || 'H';
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getFocusStorageKey(user) {
+      return 'ascendos-focus-sessions::' + getUserKey(user);
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function getHourKey() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = String(now.getMonth() + 1).padStart(2, '0');
+      var d = String(now.getDate()).padStart(2, '0');
+      var h = String(now.getHours()).padStart(2, '0');
+      return y + '-' + m + '-' + d + '-' + h;
+    }
+
+    function getDefaultDashboardState() {
+      return {
+        version: 2,
+        level: 1,
+        xpTotal: 0,
+        xpIntoCurrentLevel: 0,
+        streakDays: 0,
+        longestStreak: 0,
+        rank: 'Examinee',
+        path: 'discipline',
+        onboarded: false,
+        lastMissionResetHour: getHourKey(),
+        missions: [
+          { id: 'hydration', title: 'Maintain hydration — 3L water', xp: 10, completed: false, tag: 'BODY' },
+          { id: 'focus', title: 'Zetsu focus session — 60 min', xp: 20, completed: false, tag: 'FOCUS' },
+          { id: 'reading', title: 'Study field material — 10 pages', xp: 15, completed: false, tag: 'MIND' },
+          { id: 'training', title: 'Physical conditioning — 30 min', xp: 20, completed: false, tag: 'BODY' },
+          { id: 'journal', title: 'Record field notes', xp: 10, completed: false, tag: 'SOUL' }
+        ],
+        completedQuests: [],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function loadDashboardState(user) {
+      var key = getDashboardStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') throw new Error('Invalid dashboard state');
+        if (typeof parsed.xpTotal !== 'number') parsed.xpTotal = 0;
+        if (typeof parsed.focusXpTotal !== 'number') parsed.focusXpTotal = 0;
+        if (typeof parsed.level !== 'number') parsed.level = 1;
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveDashboardState(user, state) {
+      localStorage.setItem(getDashboardStorageKey(user), JSON.stringify(state));
+    }
+
+    function loadFocusSessions(user) {
+      var raw = localStorage.getItem(getFocusStorageKey(user));
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveFocusSessions(user, sessions) {
+      localStorage.setItem(getFocusStorageKey(user), JSON.stringify(sessions));
+    }
+
+    function formatTime(totalSeconds) {
+      var m = Math.floor(totalSeconds / 60);
+      var s = totalSeconds % 60;
+      return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    }
+
+    function formatDurationWords(totalSeconds) {
+      var totalMinutes = Math.floor(totalSeconds / 60);
+      var hours = Math.floor(totalMinutes / 60);
+      var minutes = totalMinutes % 60;
+
+      if (hours <= 0) return minutes + 'm';
+      return hours + 'h ' + String(minutes).padStart(2, '0') + 'm';
+    }
+
+    function getTodayKey() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = String(now.getMonth() + 1).padStart(2, '0');
+      var d = String(now.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + d;
+    }
+
+    function getTodaySeconds(sessions) {
+      var today = getTodayKey();
+
+      return sessions.reduce(function (sum, session) {
+        if (!session || !session.startedAt) return sum;
+        var key = String(session.startedAt).slice(0, 10);
+        if (key !== today) return sum;
+        return sum + (Number(session.durationSec) || 0);
+      }, 0);
+    }
+
+    function renderTodayDepth(user) {
+      var sessions = loadFocusSessions(user);
+      var todaySeconds = getTodaySeconds(sessions);
+      var goalSeconds = 5 * 60 * 60;
+      var pct = Math.max(0, Math.min(100, Math.round((todaySeconds / goalSeconds) * 100)));
+
+      todayDepthValue.textContent = formatDurationWords(todaySeconds);
+      todayDepthFill.style.width = pct + '%';
+      todayDepthPct.textContent = pct + '%';
+    }
+
+    function renderLog(user) {
+      var sessions = loadFocusSessions(user);
+      focusLog.innerHTML = '';
+
+      if (!sessions.length) {
+        focusLog.innerHTML = '<p style="font-size:13px;color:var(--muted)">No Zetsu runs logged yet.</p>';
+        return;
+      }
+
+      sessions.slice(0, 6).forEach(function (session) {
+        var item = document.createElement('div');
+        item.className = 'row';
+        item.style.justifyContent = 'space-between';
+        item.style.gap = '12px';
+        item.style.padding = '12px 14px';
+        item.style.border = '1px solid rgba(255,255,255,.08)';
+        item.style.borderRadius = '14px';
+        item.style.background = 'rgba(255,255,255,.02)';
+
+        var started = new Date(session.startedAt);
+        var xp = Number(session.xpEarned) || 0;
+
+        item.innerHTML = `
+          <div>
+            <div style="font-family:var(--font-display);font-weight:600">Zetsu Session</div>
+            <div class="muted mono" style="font-size:12px;margin-top:4px">${started.toLocaleString()}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:600">${formatDurationWords(Number(session.durationSec) || 0)}</div>
+            <div class="muted mono" style="font-size:12px;margin-top:4px">+${xp} AURA</div>
+          </div>
+        `;
+
+        focusLog.appendChild(item);
+      });
+    }
+
+    function updateSessionChips() {
+      sessionXpChip.textContent = 'Session Aura: ' + earnedTicksThisSession;
+      sessionTicksChip.textContent = '30s ticks: ' + earnedTicksThisSession;
+    }
+
+    function updateRing() {
+      if (!selectedPresetMinutes || selectedPresetMinutes <= 0) {
+        timerRing.style.setProperty('--p', '0%');
+        timerRing.classList.remove('complete');
+        return;
+      }
+
+      var totalPresetSeconds = selectedPresetMinutes * 60;
+      var pct = Math.max(0, Math.min(100, Math.round((seconds / totalPresetSeconds) * 100)));
+      timerRing.style.setProperty('--p', pct + '%');
+
+      if (pct >= 100) {
+        timerRing.classList.add('complete');
+      } else {
+        timerRing.classList.remove('complete');
+      }
+    }
+
+    function setStateLabel(text) {
+      stateEl.textContent = text;
+    }
+
+    function awardTickXp(user) {
+      if (!user) return;
+
+      var dashboardState = loadDashboardState(user);
+      dashboardState.xpTotal = (Number(dashboardState.xpTotal) || 0) + 1;
+      dashboardState.focusXpTotal = (Number(dashboardState.focusXpTotal) || 0) + 1;
+      saveDashboardState(user, dashboardState);
+
+      earnedTicksThisSession += 1;
+      updateSessionChips();
+    }
+
+    function startTimer() {
+      if (interval) return;
+
+      var user = getCurrentUserSafe();
+      if (!user) return;
+
+      if (!sessionStartedAt) {
+        sessionStartedAt = new Date().toISOString();
+      }
+
+      running = true;
+      timerRing.classList.add('running');
+      setStateLabel('Locked in');
+
+      pauseBtn.disabled = false;
+      endBtn.disabled = false;
+      resumeBtn.textContent = '▶ Running';
+
+      interval = setInterval(function () {
+        seconds += 1;
+        timerEl.textContent = formatTime(seconds);
+        updateRing();
+
+        if (seconds > 0 && seconds % 30 === 0) {
+          awardTickXp(user);
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+      running = false;
+      timerRing.classList.remove('running');
+      setStateLabel('Paused');
+      resumeBtn.textContent = '▶ Resume';
+    }
+
+    function endTimer() {
+      var user = getCurrentUserSafe();
+
+      if (interval) {
+        clearInterval(interval);
+        interval = null;
+      }
+
+      if (user && seconds > 0) {
+        var sessions = loadFocusSessions(user);
+        sessions.unshift({
+          startedAt: sessionStartedAt || new Date().toISOString(),
+          durationSec: seconds,
+          xpEarned: earnedTicksThisSession,
+          presetMinutes: selectedPresetMinutes || null
+        });
+        saveFocusSessions(user, sessions);
+      }
+
+      running = false;
+      timerRing.classList.remove('running');
+      pauseBtn.disabled = true;
+      endBtn.disabled = true;
+      resumeBtn.textContent = '▶ Start';
+      setStateLabel(seconds > 0 ? 'Session logged' : 'Idle');
+
+      seconds = 0;
+      earnedTicksThisSession = 0;
+      sessionStartedAt = null;
+      timerEl.textContent = '00:00';
+      updateSessionChips();
+      updateRing();
+
+      if (user) {
+        renderTodayDepth(user);
+        renderLog(user);
+      }
+    }
+
+    function applyPreset(minutes) {
+      selectedPresetMinutes = Number(minutes) || 0;
+      updateRing();
+
+      Array.prototype.forEach.call(presetButtons, function (btn) {
+        btn.classList.remove('primary');
+      });
+
+      var active = document.querySelector('.preset-btn[data-minutes="' + minutes + '"]');
+      if (active) active.classList.add('primary');
+    }
+
+    function initUserUI(user) {
+      var name = getUserDisplayName(user);
+      var initials = getInitials(name);
+
+      if (topbarAvatar) topbarAvatar.textContent = initials;
+      if (focusHeading) focusHeading.textContent = name + "'s Zetsu Focus";
+    }
+
+    resumeBtn.addEventListener('click', function () {
+      if (!running) {
+        startTimer();
+      }
+    });
+
+    pauseBtn.addEventListener('click', function () {
+      pauseTimer();
+    });
+
+    endBtn.addEventListener('click', function () {
+      endTimer();
+    });
+
+    Array.prototype.forEach.call(presetButtons, function (btn) {
+      btn.addEventListener('click', function () {
+        applyPreset(btn.getAttribute('data-minutes'));
+      });
+    });
+
+    function init() {
+      timerEl.textContent = '00:00';
+      setStateLabel('Idle');
+      updateSessionChips();
+      updateRing();
+
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          initUserUI(user);
+          renderTodayDepth(user);
+          renderLog(user);
+          applyPreset(60);
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

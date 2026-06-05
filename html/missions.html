@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Daily Contracts — HunterOS</title>
+  <meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Complete daily contracts, build aura, and rise through the Association.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .mission-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 10, 20, 0.78);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .mission-modal-backdrop.open {
+      display: flex;
+    }
+
+    .mission-modal {
+      width: min(100%, 520px);
+      background: linear-gradient(180deg, rgba(17, 22, 38, 0.98), rgba(10, 14, 25, 0.98));
+      border: 1px solid rgba(56, 189, 248, 0.24);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .mission-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .mission-modal-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .mission-modal-sub {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .mission-modal-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .mission-modal-body {
+      padding: 20px;
+    }
+
+    .mission-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .mission-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mission-label {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .mission-input,
+    .mission-select {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+      font: inherit;
+    }
+
+    .mission-input:focus,
+    .mission-select:focus {
+      border-color: rgba(56, 189, 248, 0.72);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+    }
+
+    .mission-help {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .mission-error {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255, 82, 120, 0.1);
+      border: 1px solid rgba(255, 82, 120, 0.2);
+      color: #ff8db0;
+      font-size: 13px;
+    }
+
+    .mission-error.show {
+      display: block;
+    }
+
+    .mission-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 20px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .mission-empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed rgba(255,255,255,0.08);
+      border-radius: 16px;
+    }
+
+    .mission.done .check {
+      cursor: pointer;
+    }
+
+    .mission .check {
+      cursor: pointer;
+      user-select: none;
+    }
+  </style>
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (!AuthSystem.requireAuth()) {}
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html" aria-current="page"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="AuthSystem.logout(); return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">SYSTEM // DAILY CONTRACT BOARD</div>
+        <h1 id="missionsHeading">Daily Contracts</h1>
+      </div>
+      <button class="btn primary" id="newMissionBtn" type="button">＋ New Contract</button>
+    </div>
+
+    <div class="row" style="margin-bottom:18px;flex-wrap:wrap">
+      <span class="chip on" id="allCountChip">All · 0</span>
+      <span class="chip" id="bodyCountChip">Body · 0</span>
+      <span class="chip" id="mindCountChip">Mind · 0</span>
+      <span class="chip" id="soulCountChip">Soul · 0</span>
+      <span class="chip" id="focusCountChip">Focus · 0</span>
+    </div>
+
+    <div class="card">
+      <div class="col" id="missionsList" style="gap:10px"></div>
+    </div>
+  </main>
+</div>
+
+<div class="mission-modal-backdrop" id="missionModalBackdrop" aria-hidden="true">
+  <div class="mission-modal" role="dialog" aria-modal="true" aria-labelledby="missionModalTitle">
+    <div class="mission-modal-header">
+      <div>
+        <h2 class="mission-modal-title" id="missionModalTitle">Forge a new contract</h2>
+        <p class="mission-modal-sub">Create a real task. Aura rewards are capped and controlled by the system.</p>
+      </div>
+      <button class="mission-modal-close" id="missionModalClose" type="button" aria-label="Close modal">✕</button>
+    </div>
+
+    <form class="mission-form" id="missionForm">
+      <div class="mission-modal-body">
+        <div class="mission-error" id="missionFormError"></div>
+
+        <div class="mission-field">
+          <label class="mission-label" for="missionTitleInput">Contract title</label>
+          <input class="mission-input" id="missionTitleInput" name="title" type="text" maxlength="80" placeholder="Example: Read 10 pages" required>
+          <p class="mission-help">Make it specific enough that it feels like a real objective.</p>
+        </div>
+
+        <div class="mission-field">
+          <label class="mission-label" for="missionTagSelect">Category</label>
+          <select class="mission-select" id="missionTagSelect" name="tag" required>
+            <option value="BODY">BODY</option>
+            <option value="MIND">MIND</option>
+            <option value="FOCUS">FOCUS</option>
+            <option value="SOUL">SOUL</option>
+          </select>
+        </div>
+
+        <div class="mission-field">
+          <label class="mission-label" for="missionXpSelect">Aura reward</label>
+          <select class="mission-select" id="missionXpSelect" name="xp" required>
+            <option value="5">5 AURA</option>
+            <option value="10" selected>10 AURA</option>
+            <option value="20">20 AURA</option>
+          </select>
+          <p class="mission-help">Maximum reward per single contract is 20 aura.</p>
+        </div>
+      </div>
+
+      <div class="mission-modal-footer">
+        <button class="btn ghost" id="cancelMissionBtn" type="button">Cancel</button>
+        <button class="btn primary" type="submit">Create Contract</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/user.js"></script>
+
+<script>
+  (function () {
+    var hourlyResetWatcherStarted = false;
+
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name
+        .trim()
+        .split(/\s+/)
+        .map(function (part) { return part[0] || ''; })
+        .slice(0, 2)
+        .join('')
+        .toUpperCase() || 'H';
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getMissionsStorageKey(user) {
+      return 'ascendos-missions::' + getUserKey(user);
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function getMissionResetMetaKey(user) {
+      return 'ascendos-missions-reset-meta::' + getUserKey(user);
+    }
+
+    function getCurrentHourStamp() {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = String(now.getMonth() + 1).padStart(2, '0');
+      var d = String(now.getDate()).padStart(2, '0');
+      var h = String(now.getHours()).padStart(2, '0');
+      return y + '-' + m + '-' + d + '-' + h;
+    }
+
+    function getDefaultMissions() {
+      return [
+        { id: 'hydration', title: 'Maintain hydration — 3L water', tag: 'BODY', xp: 10, done: false, reset: 'resets hourly' },
+        { id: 'focus', title: 'Zetsu focus session — 60 min', tag: 'FOCUS', xp: 20, done: false, reset: 'resets hourly' },
+        { id: 'reading', title: 'Study field material — 10 pages', tag: 'MIND', xp: 15, done: false, reset: 'resets hourly' },
+        { id: 'training', title: 'Physical conditioning — 30 min', tag: 'BODY', xp: 20, done: false, reset: 'resets hourly' },
+        { id: 'journal', title: 'Record field notes', tag: 'SOUL', xp: 10, done: false, reset: 'resets hourly' }
+      ];
+    }
+
+    function loadMissions(user) {
+      var key = getMissionsStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var defaults = getDefaultMissions();
+        localStorage.setItem(key, JSON.stringify(defaults));
+        return defaults;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error('Invalid missions data');
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultMissions();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveMissions(user, missions) {
+      localStorage.setItem(getMissionsStorageKey(user), JSON.stringify(missions));
+    }
+
+    function getDefaultDashboardState() {
+      return {
+        version: 1,
+        level: 1,
+        xpTotal: 0,
+        streakDays: 0,
+        missions: [
+          { id: 'hydration', title: 'Maintain hydration — 3L water', xp: 10, completed: false },
+          { id: 'focus', title: 'Zetsu focus session — 60 min', xp: 20, completed: false },
+          { id: 'reading', title: 'Study field material — 10 pages', xp: 15, completed: false },
+          { id: 'training', title: 'Physical conditioning — 30 min', xp: 20, completed: false },
+          { id: 'journal', title: 'Record field notes', xp: 10, completed: false }
+        ],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function loadDashboardState(user) {
+      var key = getDashboardStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.missions)) throw new Error('Invalid dashboard state');
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveDashboardState(user, state) {
+      localStorage.setItem(getDashboardStorageKey(user), JSON.stringify(state));
+    }
+
+    function xpRequiredForLevel(level) {
+      return 100 + ((level - 1) * 20);
+    }
+
+    function recalculateLevel(state) {
+      var totalXp = Math.max(0, Number(state.xpTotal) || 0);
+      var level = 1;
+      var remaining = totalXp;
+
+      while (remaining >= xpRequiredForLevel(level)) {
+        remaining -= xpRequiredForLevel(level);
+        level++;
+      }
+
+      state.level = level;
+      state.xpIntoCurrentLevel = remaining;
+      return state;
+    }
+
+    function rebuildDashboardMissionsFromCurrent(user, missions) {
+      var state = loadDashboardState(user);
+      var previousXpTotal = Number(state.xpTotal) || 0;
+
+      state.missions = missions.map(function (mission) {
+        return {
+          id: mission.id,
+          title: mission.title,
+          xp: mission.xp,
+          completed: !!mission.done
+        };
+      });
+
+      state.xpTotal = previousXpTotal;
+      recalculateLevel(state);
+      saveDashboardState(user, state);
+    }
+
+    function ensureMissionExistsInDashboard(user, mission) {
+      var state = loadDashboardState(user);
+      var found = state.missions.find(function (m) { return m.id === mission.id; });
+
+      if (!found) {
+        state.missions.push({
+          id: mission.id,
+          title: mission.title,
+          xp: mission.xp,
+          completed: !!mission.done
+        });
+
+        recalculateLevel(state);
+        saveDashboardState(user, state);
+      }
+    }
+
+    function syncMissionCompletion(user, mission) {
+      var state = loadDashboardState(user);
+      var existing = state.missions.find(function (m) { return m.id === mission.id; });
+
+      if (!existing) {
+        existing = {
+          id: mission.id,
+          title: mission.title,
+          xp: mission.xp,
+          completed: false
+        };
+        state.missions.push(existing);
+      }
+
+      var wasCompleted = existing.completed;
+      existing.title = mission.title;
+      existing.xp = mission.xp;
+      existing.completed = !!mission.done;
+
+      if (mission.done && !wasCompleted) {
+        state.xpTotal = (Number(state.xpTotal) || 0) + (Number(mission.xp) || 0);
+      }
+
+      recalculateLevel(state);
+      saveDashboardState(user, state);
+    }
+
+    function performHourlyMissionReset(user) {
+      var missions = loadMissions(user);
+
+      missions.forEach(function (mission) {
+        mission.done = false;
+        mission.reset = 'resets hourly';
+      });
+
+      saveMissions(user, missions);
+      rebuildDashboardMissionsFromCurrent(user, missions);
+      localStorage.setItem(getMissionResetMetaKey(user), getCurrentHourStamp());
+    }
+
+    function ensureHourlyMissionReset(user) {
+      var metaKey = getMissionResetMetaKey(user);
+      var lastHour = localStorage.getItem(metaKey);
+      var currentHour = getCurrentHourStamp();
+      var missions = loadMissions(user);
+      var needsSave = false;
+
+      missions.forEach(function (mission) {
+        if (mission.reset !== 'resets hourly') {
+          mission.reset = 'resets hourly';
+          needsSave = true;
+        }
+      });
+
+      if (needsSave) {
+        saveMissions(user, missions);
+      }
+
+      if (!lastHour) {
+        localStorage.setItem(metaKey, currentHour);
+        return false;
+      }
+
+      if (lastHour !== currentHour) {
+        performHourlyMissionReset(user);
+        return true;
+      }
+
+      return false;
+    }
+
+    function updateTopbar(user) {
+      var topbarAvatar = document.getElementById('topbarAvatar');
+      var heading = document.getElementById('missionsHeading');
+      var name = getUserDisplayName(user);
+
+      if (topbarAvatar) topbarAvatar.textContent = getInitials(name);
+      if (heading) heading.textContent = name + "'s Daily Contracts";
+    }
+
+    function updateCategoryCounts(missions) {
+      var all = missions.length;
+      var body = missions.filter(function (m) { return m.tag === 'BODY'; }).length;
+      var mind = missions.filter(function (m) { return m.tag === 'MIND'; }).length;
+      var soul = missions.filter(function (m) { return m.tag === 'SOUL'; }).length;
+      var focus = missions.filter(function (m) { return m.tag === 'FOCUS'; }).length;
+
+      var allCountChip = document.getElementById('allCountChip');
+      var bodyCountChip = document.getElementById('bodyCountChip');
+      var mindCountChip = document.getElementById('mindCountChip');
+      var soulCountChip = document.getElementById('soulCountChip');
+      var focusCountChip = document.getElementById('focusCountChip');
+
+      if (allCountChip) allCountChip.textContent = 'All · ' + all;
+      if (bodyCountChip) bodyCountChip.textContent = 'Body · ' + body;
+      if (mindCountChip) mindCountChip.textContent = 'Mind · ' + mind;
+      if (soulCountChip) soulCountChip.textContent = 'Soul · ' + soul;
+      if (focusCountChip) focusCountChip.textContent = 'Focus · ' + focus;
+    }
+
+    function createMissionElement(user, mission, missions) {
+      var el = document.createElement('div');
+      el.className = 'mission' + (mission.done ? ' done' : '');
+      el.setAttribute('data-id', mission.id);
+      el.setAttribute('data-xp', mission.xp);
+
+      el.innerHTML = `
+        <div class="check" role="button" tabindex="0" aria-label="Toggle contract complete">${mission.done ? '✓' : '○'}</div>
+        <div class="col" style="gap:2px;flex:1">
+          <div class="title"></div>
+          <div class="row"><span class="tag"></span><span class="xp">+${mission.xp} AURA</span></div>
+        </div>
+        <span class="muted mono" style="font-size:12px">${mission.reset || 'resets hourly'}</span>
+      `;
+
+      el.querySelector('.title').textContent = mission.title;
+      el.querySelector('.tag').textContent = mission.tag;
+
+      var check = el.querySelector('.check');
+
+      function toggleMission() {
+        mission.done = !mission.done;
+        saveMissions(user, missions);
+        syncMissionCompletion(user, mission);
+        render(user);
+      }
+
+      check.addEventListener('click', toggleMission);
+      check.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggleMission();
+        }
+      });
+
+      return el;
+    }
+
+    function render(user) {
+      var listEl = document.getElementById('missionsList');
+      if (!listEl) return;
+
+      ensureHourlyMissionReset(user);
+
+      var missions = loadMissions(user);
+      listEl.innerHTML = '';
+
+      if (!missions.length) {
+        listEl.innerHTML = '<div class="mission-empty">No contracts forged yet. Create one and begin the climb.</div>';
+      } else {
+        missions.forEach(function (mission) {
+          ensureMissionExistsInDashboard(user, mission);
+          listEl.appendChild(createMissionElement(user, mission, missions));
+        });
+      }
+
+      updateCategoryCounts(missions);
+      updateTopbar(user);
+    }
+
+    function isMeaningfulQuestTitle(value) {
+      if (!value) return false;
+      var text = value.trim();
+
+      if (text.length < 4) return false;
+      if (/^\d+$/.test(text)) return false;
+      if (/^[^a-zA-Z]+$/.test(text)) return false;
+
+      var badValues = ['hello', 'hi', 'test', 'abc', '123', 'nothing', 'quest', 'mission', 'contract'];
+      if (badValues.includes(text.toLowerCase())) return false;
+
+      return /[a-zA-Z]/.test(text);
+    }
+
+    function openMissionModal() {
+      var backdrop = document.getElementById('missionModalBackdrop');
+      var titleInput = document.getElementById('missionTitleInput');
+      var errorEl = document.getElementById('missionFormError');
+      var form = document.getElementById('missionForm');
+
+      if (form) form.reset();
+      if (titleInput) titleInput.setCustomValidity('');
+      if (errorEl) {
+        errorEl.textContent = '';
+        errorEl.classList.remove('show');
+      }
+      if (backdrop) {
+        backdrop.classList.add('open');
+        backdrop.setAttribute('aria-hidden', 'false');
+      }
+      if (titleInput) {
+        setTimeout(function () { titleInput.focus(); }, 30);
+      }
+    }
+
+    function closeMissionModal() {
+      var backdrop = document.getElementById('missionModalBackdrop');
+      if (backdrop) {
+        backdrop.classList.remove('open');
+        backdrop.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    function showMissionError(message) {
+      var errorEl = document.getElementById('missionFormError');
+      var titleInput = document.getElementById('missionTitleInput');
+      if (!errorEl) return;
+      errorEl.textContent = message;
+      errorEl.classList.add('show');
+      if (titleInput) {
+        titleInput.setCustomValidity(message);
+        titleInput.reportValidity();
+      }
+    }
+
+    function clearMissionError() {
+      var errorEl = document.getElementById('missionFormError');
+      var titleInput = document.getElementById('missionTitleInput');
+      if (errorEl) {
+        errorEl.textContent = '';
+        errorEl.classList.remove('show');
+      }
+      if (titleInput) {
+        titleInput.setCustomValidity('');
+      }
+    }
+
+    function addNewMissionFromForm(user) {
+      var titleInput = document.getElementById('missionTitleInput');
+      var tagSelect = document.getElementById('missionTagSelect');
+      var xpSelect = document.getElementById('missionXpSelect');
+
+      var title = titleInput ? titleInput.value.trim() : '';
+      var tag = tagSelect ? String(tagSelect.value || 'MIND').trim().toUpperCase() : 'MIND';
+      var xp = xpSelect ? parseInt(xpSelect.value, 10) : 10;
+
+      clearMissionError();
+
+      if (!isMeaningfulQuestTitle(title)) {
+        showMissionError('NPC detected. Enter a real contract title like "Read 10 pages".');
+        return;
+      }
+
+      if (![5, 10, 20].includes(xp)) {
+        showMissionError('Invalid aura reward detected. Choose 5, 10, or 20 only.');
+        return;
+      }
+
+      if (!['BODY', 'MIND', 'FOCUS', 'SOUL'].includes(tag)) {
+        tag = 'MIND';
+      }
+
+      var missions = loadMissions(user);
+
+      var newMission = {
+        id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        title: title,
+        tag: tag,
+        xp: xp,
+        done: false,
+        reset: 'resets hourly'
+      };
+
+      missions.unshift(newMission);
+      saveMissions(user, missions);
+      ensureMissionExistsInDashboard(user, newMission);
+      closeMissionModal();
+      render(user);
+    }
+
+    function bindModal(user) {
+      var openBtn = document.getElementById('newMissionBtn');
+      var closeBtn = document.getElementById('missionModalClose');
+      var cancelBtn = document.getElementById('cancelMissionBtn');
+      var backdrop = document.getElementById('missionModalBackdrop');
+      var form = document.getElementById('missionForm');
+      var titleInput = document.getElementById('missionTitleInput');
+
+      if (openBtn) {
+        openBtn.addEventListener('click', openMissionModal);
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeMissionModal);
+      }
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeMissionModal);
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener('click', function (e) {
+          if (e.target === backdrop) closeMissionModal();
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeMissionModal();
+      });
+
+      if (titleInput) {
+        titleInput.addEventListener('input', function () {
+          clearMissionError();
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          addNewMissionFromForm(user);
+        });
+      }
+    }
+
+    function startHourlyResetWatcher(user) {
+      if (hourlyResetWatcherStarted) return;
+      hourlyResetWatcherStarted = true;
+
+      setInterval(function () {
+        if (ensureHourlyMissionReset(user)) {
+          render(user);
+        }
+      }, 30000);
+    }
+
+    function initMissionsPage() {
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          render(user);
+          bindModal(user);
+          startHourlyResetWatcher(user);
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', initMissionsPage);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

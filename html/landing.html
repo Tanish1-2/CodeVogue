@@ -33,6 +33,7 @@
         
         input[type=range] {
             -webkit-appearance: none;
+            appearance: none;
             background: #333;
             border-radius: 5px;
             height: 4px;
@@ -91,6 +92,47 @@
             background: rgba(var(--accent-glow-rgb, 189,82,235), 0.2);
             color: var(--accent-glow);
             padding-left: 20px;
+        }
+
+        .search-results {
+            display: grid;
+            gap: 10px;
+            max-height: 100%;
+        }
+        .search-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 14px 16px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .search-card:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(124, 58, 237, 0.6);
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.15);
+        }
+        .search-card a {
+            color: #7c3aed;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.05rem;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            line-height: 1.3;
+            transition: color 0.2s ease;
+        }
+        .search-card:hover a {
+            color: #a78bfa;
+            text-decoration: underline;
+        }
+        .search-card p {
+            color: #999;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            margin: 6px 0 0 0;
         }
 
         * { cursor: none !important; }
@@ -309,6 +351,13 @@
         <div class="os-icon hover-target" ondblclick="openWindow('assetVaultWindow')" onclick="if(window.innerWidth <= 768) openWindow('assetVaultWindow')">
             <div class="os-icon-img" style="color: #eab308;">📦</div>
             <span class="os-icon-text">AssetVault.exe</span>
+        </div>
+
+        <div class="os-icon hover-target" style="cursor:pointer;">
+            <a href="index.html" onclick="checkAuthAndGo('index.html'); return false;" style="display:flex;flex-direction:column;align-items:center;text-decoration:none;color:inherit;">
+                <div class="os-icon-img" style="color: #7c3aed;">🚀</div>
+                <span class="os-icon-text">HunterOS.app</span>
+            </a>
         </div>
 
         <div class="os-icon hover-target" ondblclick="openWindow('settingsWindow')" onclick="if(window.innerWidth <= 768) openWindow('settingsWindow')">
@@ -599,6 +648,11 @@
             </div>
 
             <audio id="osAudioPlayer" style="display:none;"></audio>
+        </div>
+    </div>
+
+    
+
         </div>
     </div>
 
@@ -1355,7 +1409,7 @@
             }
         });
 
-        function playPause() {
+function playPause() {
             if (currentPlaylist.length === 0) return;
             if (audio.paused) {
                 audio.play().then(() => {
@@ -2515,6 +2569,16 @@ if (document.readyState === 'loading') {
             };
             input.click();
         });
+
+        // Authentication check before navigating to HunterOS
+        function checkAuthAndGo(page) {
+            const user = JSON.parse(localStorage.getItem('ascendos_user') || 'null');
+            if (!user || !user.token) {
+                window.location.href = 'signin.html';
+                return;
+            }
+            window.location.href = page;
+        }
 
     </script>
     

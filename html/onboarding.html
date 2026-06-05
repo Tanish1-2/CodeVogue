@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Onboarding — HunterOS</title>
+  <meta name="description" content="HunterOS by CodeVogue — system calibration and first-time hunter initiation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #070812;
+      --bg-2: #0d1020;
+      --text: #eef4ff;
+      --muted: #94a3b8;
+      --soft: #cbd5e1;
+      --cyan: #22d3ee;
+      --cyan-2: #38bdf8;
+      --blue: #5b7cfa;
+      --violet: #7c3aed;
+      --violet-2: #a855f7;
+      --ok: #4ade80;
+      --warn: #f59e0b;
+      --error: #f87171;
+      --radius: 28px;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(56,189,248,.08), transparent 0 22%),
+        radial-gradient(circle at 86% 16%, rgba(168,85,247,.18), transparent 0 22%),
+        radial-gradient(circle at 68% 82%, rgba(217,70,239,.10), transparent 0 18%),
+        linear-gradient(180deg, #04050a 0%, #090b14 48%, #111327 100%);
+      color: var(--text);
+      font-family: "Inter", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 36px 36px;
+      opacity: 0.18;
+      mask-image: radial-gradient(circle at center, black 50%, transparent 96%);
+    }
+
+    .onboard-shell {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .onboard-card {
+      width: min(760px, 100%);
+      min-height: 640px;
+      border-radius: 30px;
+      background: linear-gradient(180deg, rgba(12,14,27,.94), rgba(18,20,38,.98));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .onboard-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top right, rgba(180,92,255,.10), transparent 24%),
+        radial-gradient(circle at bottom left, rgba(34,211,238,.06), transparent 22%);
+      pointer-events: none;
+    }
+
+    .onboard-top {
+      position: relative;
+      z-index: 1;
+      padding: 24px 24px 0;
+      display: grid;
+      gap: 16px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #c4b5fd;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c4b5fd);
+      display: inline-block;
+    }
+
+    .onboard-progress {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.06);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+
+    .onboard-progress > i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #a855f7, #c084fc, #38bdf8);
+      box-shadow: 0 0 20px rgba(168,85,247,.28);
+      transition: width .28s ease;
+    }
+
+    .onboard-body {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: grid;
+      align-content: center;
+      padding: 8px 24px 24px;
+    }
+
+    .onboard-step {
+      display: none;
+      gap: 18px;
+      animation: fadeUp .35s ease;
+    }
+
+    .onboard-step.active {
+      display: grid;
+    }
+
+    .onboard-kicker {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: #b69cff;
+    }
+
+    .onboard-title {
+      margin: 0;
+      font-family: "Orbitron", sans-serif;
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.05;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .onboard-quote {
+      max-width: 52ch;
+      margin: 0;
+      color: #d8ccff;
+      font-size: 15px;
+      line-height: 1.8;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(168,85,247,.08);
+      border: 1px solid rgba(168,85,247,.16);
+    }
+
+    .onboard-input,
+    .onboard-select,
+    .onboard-textarea {
+      width: 100%;
+      min-height: 56px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      color: #f8fafc;
+      padding: 0 16px;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+      font-size: 15px;
+    }
+
+    .onboard-textarea {
+      min-height: 130px;
+      padding: 16px;
+      resize: vertical;
+    }
+
+    .onboard-input:focus,
+    .onboard-select:focus,
+    .onboard-textarea:focus {
+      border-color: rgba(180,92,255,.55);
+      box-shadow: 0 0 0 4px rgba(180,92,255,.12);
+      background: rgba(255,255,255,.06);
+    }
+
+    .onboard-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .onboard-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .onboard-option-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .onboard-option {
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      padding: 16px;
+      cursor: pointer;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .onboard-option:hover {
+      transform: translateY(-2px);
+      border-color: rgba(180,92,255,.34);
+    }
+
+    .onboard-option.active {
+      border-color: rgba(180,92,255,.74);
+      background: linear-gradient(135deg, rgba(168,85,247,.16), rgba(56,189,248,.06));
+      box-shadow: 0 0 0 1px rgba(180,92,255,.20), 0 14px 34px rgba(168,85,247,.12);
+    }
+
+    .onboard-option strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .onboard-option span {
+      display: block;
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .onboard-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      font: inherit;
+      cursor: pointer;
+      border: none;
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-weight: 800;
+      letter-spacing: .04em;
+    }
+
+    .btn.primary {
+      color: #04111a;
+      background: linear-gradient(135deg, #a855f7, #38bdf8);
+      box-shadow: 0 18px 40px rgba(168, 85, 247, 0.22);
+    }
+
+    .btn.ghost {
+      color: #e5edf9;
+      background: rgba(255,255,255,0.045);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .onboard-error {
+      display: none;
+      color: #fda4af;
+      font-size: 13px;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 720px) {
+      .onboard-shell { padding: 14px; }
+      .onboard-card { min-height: unset; }
+      .onboard-grid.two,
+      .onboard-option-grid { grid-template-columns: 1fr; }
+
+      .onboard-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .onboard-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="onboard-shell">
+    <section class="onboard-card">
+      <div class="onboard-top">
+        <div class="eyebrow" id="onboardStepText">SYSTEM CALIBRATION // STEP 1 OF 6</div>
+        <div class="onboard-progress"><i id="onboardProgressFill"></i></div>
+      </div>
+
+      <div class="onboard-body">
+        <div class="onboard-step active" data-step="0">
+          <div class="onboard-kicker">Identity intake</div>
+          <h1 class="onboard-title">What should the system call you?</h1>
+          <p class="onboard-quote">A name carries more than sound. It becomes the mark your effort answers to.</p>
+          <div class="onboard-grid">
+            <input class="onboard-input" id="fullName" type="text" placeholder="Enter your full name">
+            <input class="onboard-input" id="hunterCodename" type="text" placeholder="Optional codename, title, or alias">
+          </div>
+        </div>
+
+        <div class="onboard-step" data-step="1">
+          <div class="onboard-kicker">Physical baseline</div>
+          <h1 class="onboard-title">Measure the vessel</h1>
+          <p class="onboard-quote">Clarity begins with the truth of where you stand now, not where you wish you already were.</p>
+          <div class="onboard-grid two">
+            <input class="onboard-input" id="ageRange" type="text" placeholder="Age or age range">
+            <input class="onboard-input" id="heightCm" type="number" placeholder="Height in cm">
+            <input class="onboard-input" id="weightKg" type="number" placeholder="Weight in kg">
+            <input class="onboard-input" id="sleepTarget" type="number" placeholder="Sleep target in hours">
+          </div>
+        </div>
+
+        <div class="onboard-step" data-step="2">
+          <div class="onboard-kicker">Mission direction</div>
+          <h1 class="onboard-title">What are you trying to become?</h1>
+          <p class="onboard-quote">Effort without direction burns loudly and disappears. Direction turns repetition into visible ascent.</p>
+          <div class="onboard-grid two">
+            <select class="onboard-select" id="primaryGoal">
+              <option value="">Choose primary goal</option>
+              <option value="discipline">Discipline</option>
+              <option value="fitness">Fitness</option>
+              <option value="study">Study</option>
+              <option value="focus">Focus</option>
+              <option value="balance">Balance</option>
+              <option value="confidence">Confidence</option>
+            </select>
+
+            <select class="onboard-select" id="experienceLevel">
+              <option value="">Choose experience level</option>
+              <option value="beginner">Beginner</option>
+              <option value="restarting">Restarting</option>
+              <option value="consistent">Consistent</option>
+              <option value="advanced">Advanced</option>
+            </select>
+
+            <select class="onboard-select" id="dailySchedule">
+              <option value="">Choose schedule type</option>
+              <option value="student">Student</option>
+              <option value="builder">Builder</option>
+              <option value="creator">Creator</option>
+              <option value="athlete">Athlete</option>
+              <option value="mixed">Mixed</option>
+            </select>
+
+            <select class="onboard-select" id="focusStyle">
+              <option value="">Choose focus style</option>
+              <option value="sprints">Short sprints</option>
+              <option value="deep-work">Deep work</option>
+              <option value="adaptive">Adaptive flow</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="onboard-step" data-step="3">
+          <div class="onboard-kicker">Internal friction</div>
+          <h1 class="onboard-title">Where do you lose ground most often?</h1>
+          <p class="onboard-quote">What you can name without flinching, you can train without lying to yourself.</p>
+          <div class="onboard-grid two">
+            <select class="onboard-select" id="motivationType">
+              <option value="">Main motivation source</option>
+              <option value="mastery">Mastery</option>
+              <option value="rank">Rank</option>
+              <option value="structure">Structure</option>
+              <option value="streaks">Streaks</option>
+              <option value="self-respect">Self-respect</option>
+            </select>
+
+            <select class="onboard-select" id="mainWeakness">
+              <option value="">Main weakness</option>
+              <option value="distraction">Distraction</option>
+              <option value="inconsistency">Inconsistency</option>
+              <option value="overthinking">Overthinking</option>
+              <option value="low-energy">Low energy</option>
+              <option value="delay">Delay / procrastination</option>
+            </select>
+
+            <select class="onboard-select" id="trainingStyle">
+              <option value="">Training style</option>
+              <option value="intense">Intense</option>
+              <option value="balanced">Balanced</option>
+              <option value="strategic">Strategic</option>
+            </select>
+
+            <select class="onboard-select" id="auraTheme">
+              <option value="">Aura theme</option>
+              <option value="violet">Violet</option>
+              <option value="indigo">Indigo</option>
+              <option value="cyan">Cyan</option>
+              <option value="crimson">Crimson</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="onboard-step" data-step="4">
+          <div class="onboard-kicker">Operating path</div>
+          <h1 class="onboard-title">Choose your first path</h1>
+          <p class="onboard-quote">You do not become everything at once. The first path is simply where your pressure begins.</p>
+          <div class="onboard-option-grid" id="pathOptions">
+            <div class="onboard-option active" data-path="discipline" data-primary-stat="discipline">
+              <strong>◆ Discipline Path</strong>
+              <span>Build routines, execution, and steadiness under pressure.</span>
+            </div>
+            <div class="onboard-option" data-path="body" data-primary-stat="strength">
+              <strong>▲ Body Path</strong>
+              <span>Rebuild physical capacity, training quality, and recovery.</span>
+            </div>
+            <div class="onboard-option" data-path="mind" data-primary-stat="intellect">
+              <strong>❖ Mind Path</strong>
+              <span>Sharpen learning, memory, and strategic output.</span>
+            </div>
+            <div class="onboard-option" data-path="focus" data-primary-stat="willpower">
+              <strong>◉ Focus Path</strong>
+              <span>Reclaim attention, reduce noise, and move with intent.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="onboard-step" data-step="5">
+          <div class="onboard-kicker">Final calibration</div>
+          <h1 class="onboard-title">Leave a message for your future self</h1>
+          <p class="onboard-quote">The system can guide your structure. The decision to rise still belongs to you.</p>
+          <div class="onboard-grid">
+            <textarea class="onboard-textarea" id="whyJoined" placeholder="Why are you here? What do you want this system to help you become?"></textarea>
+            <div style="padding:16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#cbd5e1;line-height:1.8">
+              Your setup will shape your identity card, starter state, and first session inside HunterOS.
+            </div>
+          </div>
+        </div>
+
+        <div class="onboard-actions">
+          <button id="onboardBack" class="btn ghost" type="button">← Back</button>
+          <div id="onboardError" class="onboard-error"></div>
+          <button id="onboardNext" class="btn primary" type="button">Complete →</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    (function () {
+      var onboardingSeed = null;
+      try {
+        onboardingSeed = JSON.parse(sessionStorage.getItem('hunteros_onboarding_seed') || 'null');
+      } catch (e) {
+        onboardingSeed = null;
+      }
+
+      if (!onboardingSeed || !onboardingSeed.email) {
+        window.location.href = 'signup.html';
+        return;
+      }
+
+      var currentStep = 0;
+      var totalSteps = 6;
+      var selectedPath = 'discipline';
+      var selectedPrimaryStat = 'discipline';
+
+      var stepEls = Array.from(document.querySelectorAll('.onboard-step'));
+      var progressFill = document.getElementById('onboardProgressFill');
+      var stepText = document.getElementById('onboardStepText');
+      var nextBtn = document.getElementById('onboardNext');
+      var backBtn = document.getElementById('onboardBack');
+      var errorEl = document.getElementById('onboardError');
+      var pathOptions = Array.from(document.querySelectorAll('.onboard-option'));
+
+      document.getElementById('fullName').value = onboardingSeed.displayName || '';
+
+      function getAccount(email) {
+        var accountKey = AuthSystem.getAccountKey(email);
+        return AuthSystem.safeParse(localStorage.getItem(accountKey), null);
+      }
+
+      function saveAccount(email, account) {
+        localStorage.setItem(AuthSystem.getAccountKey(email), JSON.stringify(account));
+      }
+
+      function getUserStorageKeys(email) {
+        return AuthSystem.getUserStorageKeys(AuthSystem.normalizeEmail(email));
+      }
+
+      function getDefaultDashboardState(path) {
+        return {
+          version: 2,
+          level: 1,
+          xpTotal: 0,
+          xpIntoCurrentLevel: 0,
+          streakDays: 0,
+          rank: 'Examinee',
+          path: path || 'discipline',
+          onboarded: true,
+          tutorialCompleted: false,
+          createdAt: new Date().toISOString(),
+          missions: [
+            { id: 'hydration', title: 'Maintain hydration — 3L water', xp: 10, completed: false, tag: 'BODY' },
+            { id: 'focus', title: 'Zetsu focus session — 60 min', xp: 20, completed: false, tag: 'FOCUS' },
+            { id: 'reading', title: 'Study field material — 10 pages', xp: 15, completed: false, tag: 'MIND' },
+            { id: 'training', title: 'Physical conditioning — 30 min', xp: 20, completed: false, tag: 'BODY' },
+            { id: 'journal', title: 'Record field notes', xp: 10, completed: false, tag: 'SOUL' }
+          ],
+          completedQuests: []
+        };
+      }
+
+      function getDefaultStatsState(primaryStat, path) {
+        function makeAttr(label, desc) {
+          return { label: label, roman: 'I', points: 0, base: 0, progress: 0, desc: desc };
+        }
+
+        var state = {
+          version: 1,
+          appliedQuestIds: [],
+          path: path || 'discipline',
+          attributes: {
+            strength: makeAttr('Enhancement', 'Direct reinforcement of body, action, and force.'),
+            endurance: makeAttr('Emission', 'Output sustained across distance, time, and effort.'),
+            intellect: makeAttr('Conjuration', 'Systems thinking, structure, and precision.'),
+            discipline: makeAttr('Manipulation', 'Control over intent, routine, and execution.'),
+            charisma: makeAttr('Transmutation', 'Adaptive expression, creativity, and style.'),
+            vitality: makeAttr('Vitality', 'Recovery, sleep, energy, and baseline condition.'),
+            willpower: makeAttr('Willpower', 'Resistance against distraction and impulse.'),
+            creativity: makeAttr('Specialization', 'Unique patterning and unconventional growth.'),
+            wisdom: makeAttr('Wisdom', 'Experience refined into judgment.')
+          }
+        };
+
+        if (primaryStat && state.attributes[primaryStat]) {
+          state.attributes[primaryStat].progress = 5;
+        }
+
+        return state;
+      }
+
+      function showError(message) {
+        errorEl.textContent = message || 'Please complete this step.';
+        errorEl.style.display = 'block';
+      }
+
+      function clearError() {
+        errorEl.textContent = '';
+        errorEl.style.display = 'none';
+      }
+
+      function updateStepUI() {
+        stepEls.forEach(function (step, index) {
+          step.classList.toggle('active', index === currentStep);
+        });
+
+        progressFill.style.width = (((currentStep + 1) / totalSteps) * 100) + '%';
+        stepText.textContent = 'SYSTEM CALIBRATION // STEP ' + (currentStep + 1) + ' OF ' + totalSteps;
+        backBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+        nextBtn.textContent = currentStep === totalSteps - 1 ? 'Complete calibration →' : 'Continue →';
+        clearError();
+      }
+
+      function getValue(id) {
+        var el = document.getElementById(id);
+        return el ? String(el.value || '').trim() : '';
+      }
+
+      function validateStep(step) {
+        if (step === 0 && !getValue('fullName')) {
+          showError('Enter your name so the system can identify you.');
+          return false;
+        }
+        if (step === 1 && (!getValue('heightCm') || !getValue('weightKg'))) {
+          showError('Height and weight are required for the first baseline.');
+          return false;
+        }
+        if (step === 2 && (!getValue('primaryGoal') || !getValue('experienceLevel'))) {
+          showError('Choose your current goal and experience level.');
+          return false;
+        }
+        if (step === 3 && (!getValue('motivationType') || !getValue('mainWeakness'))) {
+          showError('Choose what drives you and what fights you back.');
+          return false;
+        }
+        if (step === 5 && !getValue('whyJoined')) {
+          showError('Leave at least one sentence for your future self.');
+          return false;
+        }
+        clearError();
+        return true;
+      }
+
+      function persistOnboarding() {
+        var email = AuthSystem.normalizeEmail(onboardingSeed.email);
+        var account = getAccount(email);
+
+        if (!account || !account.user) {
+          showError('Hunter record not found. Please sign up again.');
+          return false;
+        }
+
+        var fullName = getValue('fullName') || account.user.displayName || 'Hunter';
+        var profile = {
+          fullName: fullName,
+          hunterCodename: getValue('hunterCodename'),
+          ageRange: getValue('ageRange'),
+          heightCm: getValue('heightCm'),
+          weightKg: getValue('weightKg'),
+          sleepTarget: getValue('sleepTarget'),
+          primaryGoal: getValue('primaryGoal'),
+          experienceLevel: getValue('experienceLevel'),
+          dailySchedule: getValue('dailySchedule'),
+          focusStyle: getValue('focusStyle'),
+          motivationType: getValue('motivationType'),
+          mainWeakness: getValue('mainWeakness'),
+          trainingStyle: getValue('trainingStyle'),
+          auraTheme: getValue('auraTheme') || 'violet',
+          path: selectedPath,
+          primaryStat: selectedPrimaryStat,
+          whyJoined: getValue('whyJoined'),
+          completedAt: new Date().toISOString()
+        };
+
+        var nextUser = AuthSystem.normalizeUser({
+          ...account.user,
+          displayName: fullName,
+          path: selectedPath,
+          onboarded: true,
+          onboardingCompleted: true,
+          tutorialCompleted: false,
+          tutorialSeen: false,
+          onboardingProfile: profile,
+          hunterCodename: profile.hunterCodename,
+          auraTheme: profile.auraTheme,
+          primaryGoal: profile.primaryGoal,
+          mainWeakness: profile.mainWeakness,
+          rank: account.user.rank || 'Examinee',
+          xp: account.user.xp || 0,
+          level: account.user.level || 1
+        });
+
+        saveAccount(email, {
+          password: account.password ?? null,
+          user: nextUser
+        });
+
+        var currentUser = AuthSystem.getCurrentUser ? AuthSystem.getCurrentUser() : null;
+        if (currentUser && AuthSystem.normalizeEmail(currentUser.email) === email) {
+          localStorage.setItem(AuthSystem.storageKey, JSON.stringify(nextUser));
+        }
+
+        var keys = getUserStorageKeys(email);
+        localStorage.setItem(keys.dashboard, JSON.stringify(getDefaultDashboardState(selectedPath)));
+        localStorage.setItem('ascendos-stats::' + email, JSON.stringify(getDefaultStatsState(selectedPrimaryStat, selectedPath)));
+
+        sessionStorage.removeItem('hunteros_onboarding_seed');
+        return true;
+      }
+
+      pathOptions.forEach(function (option) {
+        option.addEventListener('click', function () {
+          pathOptions.forEach(function (item) { item.classList.remove('active'); });
+          option.classList.add('active');
+          selectedPath = option.getAttribute('data-path') || 'discipline';
+          selectedPrimaryStat = option.getAttribute('data-primary-stat') || 'discipline';
+        });
+      });
+
+      nextBtn.addEventListener('click', function () {
+        if (!validateStep(currentStep)) return;
+
+        if (currentStep < totalSteps - 1) {
+          currentStep += 1;
+          updateStepUI();
+          return;
+        }
+
+        if (!persistOnboarding()) return;
+
+        nextBtn.disabled = true;
+        nextBtn.textContent = 'Calibration saved…';
+        setTimeout(function () {
+          window.location.href = 'signin.html';
+        }, 900);
+      });
+
+      backBtn.addEventListener('click', function () {
+        if (currentStep <= 0) return;
+        currentStep -= 1;
+        updateStepUI();
+      });
+
+      updateStepUI();
+    })();
+  </script>
+</body>
+</html>

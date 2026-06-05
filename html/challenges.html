@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Trials — HunterOS</title>
+  <meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Take on long-form trials, build aura, and rise through the Association.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .quest-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 10, 20, 0.78);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .quest-modal-backdrop.open {
+      display: flex;
+    }
+
+    .quest-modal {
+      width: min(100%, 560px);
+      background: linear-gradient(180deg, rgba(17, 22, 38, 0.98), rgba(10, 14, 25, 0.98));
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 20px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+
+    .quest-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .quest-modal-title {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .quest-modal-sub {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .quest-modal-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+    .quest-modal-body {
+      padding: 20px;
+    }
+
+    .quest-form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .quest-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .quest-label {
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .quest-input,
+    .quest-select,
+    .quest-textarea {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      padding: 12px 14px;
+      outline: none;
+      font: inherit;
+    }
+
+    .quest-textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .quest-input:focus,
+    .quest-select:focus,
+    .quest-textarea:focus {
+      border-color: rgba(56, 189, 248, 0.7);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+    }
+
+    .quest-help {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .quest-error {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255,82,120,0.1);
+      border: 1px solid rgba(255,82,120,0.2);
+      color: #ff8db0;
+      font-size: 13px;
+    }
+
+    .quest-error.show {
+      display: block;
+    }
+
+    .quest-modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 20px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .quest-card-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .quest-empty {
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed rgba(255,255,255,0.08);
+      border-radius: 16px;
+      grid-column: 1 / -1;
+    }
+
+    .xp-bar {
+      position: relative;
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .xp-fill {
+      position: relative;
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #38bdf8 0%, #34d399 55%, #22c55e 100%);
+      transition: width 700ms cubic-bezier(0.16, 1, 0.3, 1), background 250ms ease, box-shadow 250ms ease, filter 250ms ease;
+      will-change: width;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.18);
+    }
+
+    .xp-fill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0) 0%,
+        rgba(255,255,255,0.16) 35%,
+        rgba(255,255,255,0.35) 50%,
+        rgba(255,255,255,0.16) 65%,
+        rgba(255,255,255,0) 100%
+      );
+      transform: translateX(-130%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .xp-fill.complete-glow {
+      background: linear-gradient(90deg, #22c55e 0%, #34d399 45%, #67e8f9 100%);
+      box-shadow:
+        0 0 10px rgba(34, 197, 94, 0.45),
+        0 0 22px rgba(52, 211, 153, 0.42),
+        0 0 36px rgba(103, 232, 249, 0.28);
+      animation: completedBarPulse 1.8s ease-in-out infinite;
+      filter: saturate(1.18);
+    }
+
+    .xp-fill.complete-glow::after {
+      opacity: 1;
+      animation: completedBarShine 2.2s linear infinite;
+    }
+
+    .npc-popup {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      width: min(92vw, 470px);
+      padding: 18px 18px 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(165, 39, 39, 0.98), rgba(133, 27, 27, 0.98));
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      color: #ffe9e9;
+      z-index: 10050;
+      opacity: 0;
+      transform: translateY(-10px) scale(.98);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .npc-popup.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .npc-popup-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .npc-popup-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff3f3;
+      letter-spacing: .02em;
+    }
+
+    .npc-popup-close {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,0.72);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .npc-popup-close:hover {
+      color: #ffffff;
+    }
+
+    .npc-popup-body {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #ffe1e1;
+      white-space: normal;
+    }
+
+    @keyframes completedBarPulse {
+      0% {
+        box-shadow:
+          0 0 10px rgba(34, 197, 94, 0.35),
+          0 0 18px rgba(52, 211, 153, 0.28),
+          0 0 28px rgba(103, 232, 249, 0.16);
+        filter: saturate(1.08) brightness(1);
+      }
+      50% {
+        box-shadow:
+          0 0 14px rgba(34, 197, 94, 0.62),
+          0 0 28px rgba(52, 211, 153, 0.56),
+          0 0 46px rgba(103, 232, 249, 0.34);
+        filter: saturate(1.28) brightness(1.08);
+      }
+      100% {
+        box-shadow:
+          0 0 10px rgba(34, 197, 94, 0.35),
+          0 0 18px rgba(52, 211, 153, 0.28),
+          0 0 28px rgba(103, 232, 249, 0.16);
+        filter: saturate(1.08) brightness(1);
+      }
+    }
+
+    @keyframes completedBarShine {
+      0% {
+        transform: translateX(-130%);
+      }
+      100% {
+        transform: translateX(130%);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .xp-fill {
+        transition: none;
+      }
+
+      .xp-fill.complete-glow,
+      .xp-fill.complete-glow::after {
+        animation: none;
+      }
+
+      .npc-popup {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (!AuthSystem.requireAuth()) {}
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html" aria-current="page"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="AuthSystem.logout(); return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">LONG-FORM OBJECTIVES</div>
+        <h1 id="questsHeading">Active Trials</h1>
+      </div>
+      <button id="newQuestBtn" class="btn primary" type="button">＋ Forge Trial</button>
+    </div>
+
+    <div class="grid grid-2" id="questsList"></div>
+  </main>
+</div>
+
+<div class="quest-modal-backdrop" id="questModalBackdrop" aria-hidden="true">
+  <div class="quest-modal" role="dialog" aria-modal="true" aria-labelledby="questModalTitle">
+    <div class="quest-modal-header">
+      <div>
+        <h2 class="quest-modal-title" id="questModalTitle">Forge a new trial</h2>
+        <p class="quest-modal-sub">Long-form objectives should feel earned, not spammed.</p>
+      </div>
+      <button class="quest-modal-close" id="questModalClose" type="button" aria-label="Close modal">✕</button>
+    </div>
+
+    <form class="quest-form" id="questForm">
+      <div class="quest-modal-body">
+        <div class="quest-error" id="questFormError"></div>
+
+        <div class="quest-field">
+          <label class="quest-label" for="questTitleInput">Trial title</label>
+          <input class="quest-input" id="questTitleInput" name="title" type="text" maxlength="80" placeholder="Example: Iron Mind Protocol" required>
+        </div>
+
+        <div class="quest-field">
+          <label class="quest-label" for="questTagSelect">Category</label>
+          <select class="quest-select" id="questTagSelect" name="tag" required>
+            <option value="MIND">MIND</option>
+            <option value="BODY">BODY</option>
+            <option value="SOUL">SOUL</option>
+            <option value="FOCUS">FOCUS</option>
+          </select>
+        </div>
+
+        <div class="quest-field">
+          <label class="quest-label" for="questDescInput">Description</label>
+          <textarea class="quest-textarea" id="questDescInput" name="description" maxlength="180" placeholder="Example: 21 days of no social media, no junk, no excuses." required></textarea>
+        </div>
+
+        <div class="quest-field">
+          <label class="quest-label" for="questRewardSelect">Aura reward</label>
+          <select class="quest-select" id="questRewardSelect" name="reward" required>
+            <option value="100">100 AURA</option>
+            <option value="250" selected>250 AURA</option>
+            <option value="500">500 AURA</option>
+          </select>
+          <p class="quest-help">Trial rewards are controlled by the system, not typed by the user.</p>
+        </div>
+      </div>
+
+      <div class="quest-modal-footer">
+        <button class="btn ghost" id="cancelQuestBtn" type="button">Cancel</button>
+        <button class="btn primary" type="submit">Create Trial</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/user.js"></script>
+
+<script>
+  (function () {
+    var npcPopupTimer = null;
+
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name
+        .trim()
+        .split(/\s+/)
+        .map(function (part) { return part[0] || ''; })
+        .slice(0, 2)
+        .join('')
+        .toUpperCase() || 'H';
+    }
+
+    function getUserKey(user) {
+      return (user && (user.uid || user.id || user.email || user.displayName || user.name))
+        ? String(user.uid || user.id || user.email || user.displayName || user.name)
+        : 'guest';
+    }
+
+    function getQuestStorageKey(user) {
+      return 'ascendos-quests::' + getUserKey(user);
+    }
+
+    function getQuestResetMetaKey(user) {
+      return 'ascendos-quests-reset-meta::' + getUserKey(user);
+    }
+
+    function getDashboardStorageKey(user) {
+      return 'ascendos-dashboard-state::' + getUserKey(user);
+    }
+
+    function getCurrentMonthStamp() {
+      var now = new Date();
+      return String(now.getFullYear()) + '-' + String(now.getMonth() + 1).padStart(2, '0');
+    }
+
+    function xpRequiredForLevel(level) {
+      return 100 + ((level - 1) * 20);
+    }
+
+    function recalculateLevel(state) {
+      var totalXp = Math.max(0, Number(state.xpTotal) || 0);
+      var level = 1;
+      var remaining = totalXp;
+
+      while (remaining >= xpRequiredForLevel(level)) {
+        remaining -= xpRequiredForLevel(level);
+        level++;
+      }
+
+      state.level = level;
+      state.xpIntoCurrentLevel = remaining;
+      return state;
+    }
+
+    function getDefaultDashboardState() {
+      return {
+        version: 1,
+        level: 1,
+        xpTotal: 0,
+        streakDays: 0,
+        missions: [
+          { id: 'hydration', title: 'Drink 3L water', xp: 10, completed: false },
+          { id: 'focus', title: 'Deep work block — 60 min', xp: 20, completed: false },
+          { id: 'reading', title: 'Read 10 pages', xp: 15, completed: false },
+          { id: 'training', title: 'Workout — 30 minutes', xp: 20, completed: false },
+          { id: 'journal', title: 'Evening reflection journal', xp: 10, completed: false }
+        ],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function loadDashboardState(user) {
+      var key = getDashboardStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var fresh = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(fresh));
+        return fresh;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!parsed || !Array.isArray(parsed.missions)) throw new Error('Invalid dashboard state');
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultDashboardState();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveDashboardState(user, state) {
+      localStorage.setItem(getDashboardStorageKey(user), JSON.stringify(state));
+    }
+
+    function syncQuestRewardToDashboard(user, quest) {
+      var state = loadDashboardState(user);
+
+      if (!Array.isArray(state.completedQuests)) {
+        state.completedQuests = [];
+      }
+
+      var alreadyCompleted = state.completedQuests.includes(quest.id);
+
+      if (quest.done && !alreadyCompleted) {
+        state.completedQuests.push(quest.id);
+        state.xpTotal = (Number(state.xpTotal) || 0) + (Number(quest.reward) || 0);
+      }
+
+      recalculateLevel(state);
+      saveDashboardState(user, state);
+    }
+
+    function getDefaultQuests() {
+      return [
+        {
+          id: 'quest_iron_mind',
+          title: 'Iron Mind Protocol',
+          tag: 'MIND',
+          reward: 500,
+          pct: 0,
+          done: false,
+          description: '30-day meditation gauntlet. Mind cannot break what it has trained.',
+          meta: '500 AURA · Title: Stoic'
+        },
+        {
+          id: 'quest_phantom_runner',
+          title: 'Phantom Runner',
+          tag: 'BODY',
+          reward: 500,
+          pct: 0,
+          done: false,
+          description: 'Run 100km this season without missing 2 days in a row.',
+          meta: '500 AURA · Skin: Shadow Trail'
+        },
+        {
+          id: 'quest_titan_cycle',
+          title: 'Titan Strength Cycle',
+          tag: 'BODY',
+          reward: 500,
+          pct: 0,
+          done: false,
+          description: 'Complete a 12-session strength block focused on compound lifts, progressive overload, and recovery discipline.',
+          meta: '500 AURA · Rank boost'
+        },
+        {
+          id: 'quest_monk_mode',
+          title: 'Monk Mode: 21',
+          tag: 'SOUL',
+          reward: 500,
+          pct: 0,
+          done: false,
+          description: '21 days no social media, no junk, no excuses.',
+          meta: '500 AURA · Title: Untouchable'
+        },
+        {
+          id: 'quest_iron_body',
+          title: 'Iron Body Saga',
+          tag: 'BODY',
+          reward: 500,
+          pct: 0,
+          done: false,
+          description: '12-week hypertrophy program with weekly checkpoints.',
+          meta: '500 AURA · Aura: Titan'
+        },
+        {
+          id: 'quest_wordsmith',
+          title: 'Wordsmith Trials',
+          tag: 'MIND',
+          reward: 250,
+          pct: 0,
+          done: false,
+          description: 'Write 6,000 words. Any form, any topic.',
+          meta: '250 AURA · Badge: Scribe'
+        }
+      ];
+    }
+
+    function loadQuests(user) {
+      var key = getQuestStorageKey(user);
+      var raw = localStorage.getItem(key);
+
+      if (!raw) {
+        var defaults = getDefaultQuests();
+        localStorage.setItem(key, JSON.stringify(defaults));
+        return defaults;
+      }
+
+      try {
+        var parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) throw new Error('Invalid quest data');
+        return parsed;
+      } catch (e) {
+        var repaired = getDefaultQuests();
+        localStorage.setItem(key, JSON.stringify(repaired));
+        return repaired;
+      }
+    }
+
+    function saveQuests(user, quests) {
+      localStorage.setItem(getQuestStorageKey(user), JSON.stringify(quests));
+    }
+
+    function resetQuestsForNewMonth(user, quests) {
+      quests.forEach(function (quest) {
+        quest.pct = 0;
+        quest.done = false;
+      });
+
+      saveQuests(user, quests);
+      localStorage.setItem(getQuestResetMetaKey(user), getCurrentMonthStamp());
+    }
+
+    function ensureMonthlyQuestReset(user) {
+      var currentMonth = getCurrentMonthStamp();
+      var resetKey = getQuestResetMetaKey(user);
+      var lastResetMonth = localStorage.getItem(resetKey);
+      var quests = loadQuests(user);
+
+      if (!lastResetMonth) {
+        localStorage.setItem(resetKey, currentMonth);
+        return quests;
+      }
+
+      if (lastResetMonth !== currentMonth) {
+        resetQuestsForNewMonth(user, quests);
+        quests = loadQuests(user);
+      }
+
+      return quests;
+    }
+
+    function updateTopbar(user) {
+      var topbarAvatar = document.getElementById('topbarAvatar');
+      var heading = document.getElementById('questsHeading');
+      var name = getUserDisplayName(user);
+
+      if (topbarAvatar) topbarAvatar.textContent = getInitials(name);
+      if (heading) heading.textContent = name + "'s Active Trials";
+    }
+
+    function animateProgressBar(fillEl, targetPct, shouldGlow) {
+      fillEl.classList.remove('complete-glow');
+      fillEl.style.width = targetPct + '%';
+
+      if (shouldGlow) {
+        var onEnd = function (e) {
+          if (e.propertyName !== 'width') return;
+          fillEl.classList.add('complete-glow');
+          fillEl.removeEventListener('transitionend', onEnd);
+        };
+        fillEl.addEventListener('transitionend', onEnd);
+      }
+    }
+
+    function createQuestCard(user, quest, quests) {
+      var el = document.createElement('div');
+      el.className = 'card glow';
+
+      el.innerHTML = `
+        <div class="row" style="justify-content:space-between;align-items:start">
+          <div>
+            <span class="tag" style="background:rgba(56,189,248,.15);color:#93ddff;font-family:var(--font-mono);font-size:11px;padding:3px 8px;border-radius:99px"></span>
+            <h3 style="margin-top:10px"></h3>
+          </div>
+          <span class="reward"></span>
+        </div>
+        <p style="margin:10px 0 16px"></p>
+        <div class="xp-bar"><div class="xp-fill"></div></div>
+        <div class="xp-meta"><span class="pct-label"></span><span class="meta-label"></span></div>
+        <div class="quest-card-actions">
+          <button class="btn ghost progressBtn" type="button">＋10% Progress</button>
+          <button class="btn primary completeBtn" type="button">Mark Complete</button>
+        </div>
+      `;
+
+      var tagEl = el.querySelector('.tag');
+      var titleEl = el.querySelector('h3');
+      var rewardEl = el.querySelector('.reward');
+      var descEl = el.querySelector('p');
+      var fillEl = el.querySelector('.xp-fill');
+      var pctLabel = el.querySelector('.pct-label');
+      var metaLabel = el.querySelector('.meta-label');
+      var completeBtn = el.querySelector('.completeBtn');
+      var progressBtn = el.querySelector('.progressBtn');
+
+      tagEl.textContent = quest.tag;
+      titleEl.textContent = quest.title;
+      rewardEl.textContent = '⬢ ' + quest.reward + ' AURA';
+      descEl.textContent = quest.description || '';
+      fillEl.setAttribute('data-pct', String(quest.pct));
+      fillEl.style.width = quest.pct + '%';
+      pctLabel.textContent = quest.pct + '% complete';
+      metaLabel.textContent = quest.meta || (quest.reward + ' AURA reward');
+
+      if (quest.done || Number(quest.pct) >= 100) {
+        fillEl.classList.add('complete-glow');
+      }
+
+      function updateButtons() {
+        pctLabel.textContent = quest.pct + '% complete';
+
+        if (quest.done) {
+          completeBtn.textContent = 'Completed ✓';
+          completeBtn.disabled = true;
+          progressBtn.disabled = true;
+        } else {
+          completeBtn.textContent = 'Mark Complete';
+          completeBtn.disabled = false;
+          progressBtn.disabled = false;
+        }
+      }
+
+      progressBtn.addEventListener('click', function () {
+        if (quest.done) return;
+
+        var nextPct = Math.min(100, (Number(quest.pct) || 0) + 10);
+        quest.pct = nextPct;
+        fillEl.setAttribute('data-pct', String(quest.pct));
+        animateProgressBar(fillEl, quest.pct, quest.pct >= 100);
+        updateButtons();
+        saveQuests(user, quests);
+      });
+
+      completeBtn.addEventListener('click', function () {
+        if (quest.done) return;
+
+        quest.done = true;
+        quest.pct = 100;
+        fillEl.setAttribute('data-pct', '100');
+        animateProgressBar(fillEl, 100, true);
+        updateButtons();
+        saveQuests(user, quests);
+        syncQuestRewardToDashboard(user, quest);
+      });
+
+      updateButtons();
+      return el;
+    }
+
+    function render(user) {
+      var container = document.getElementById('questsList');
+      if (!container) return;
+
+      var quests = ensureMonthlyQuestReset(user);
+      container.innerHTML = '';
+
+      if (!quests.length) {
+        container.innerHTML = '<div class="quest-empty">No forged trials yet. Create one long-form objective and earn it.</div>';
+      } else {
+        quests.forEach(function (quest) {
+          container.appendChild(createQuestCard(user, quest, quests));
+        });
+      }
+
+      updateTopbar(user);
+    }
+
+    function isMeaningfulQuestTitle(value) {
+      if (!value) return false;
+      var text = value.trim();
+      var lower = text.toLowerCase();
+
+      if (text.length < 4) return false;
+      if (/^\d+$/.test(text)) return false;
+      if (/^[^a-zA-Z]+$/.test(text)) return false;
+      if (!/[a-zA-Z]/.test(text)) return false;
+      if (/^(.)\1{2,}$/.test(lower)) return false;
+
+      var badValues = [
+        'hello', 'hi', 'test', 'abc', '123', 'nothing', 'quest', 'trial',
+        'hehe', 'hmm', 'idk', 'random', 'whatever', 'none', 'na', 'n/a',
+        'aaa', 'aaaa', 'asdf', 'qwerty', 'lol'
+      ];
+
+      if (badValues.includes(lower)) return false;
+      if (text.split(/\s+/).length === 1 && text.length < 6) return false;
+
+      return true;
+    }
+
+    function ensureNpcPopup() {
+      var popup = document.getElementById('npcQuestPopup');
+      if (popup) return popup;
+
+      popup = document.createElement('div');
+      popup.id = 'npcQuestPopup';
+      popup.className = 'npc-popup';
+      popup.innerHTML = `
+        <div class="npc-popup-head">
+          <div class="npc-popup-title">
+            <span>🔥</span>
+            <span>Quest Rejected</span>
+          </div>
+          <button class="npc-popup-close" type="button" aria-label="Close popup">×</button>
+        </div>
+        <div class="npc-popup-body"></div>
+      `;
+
+      document.body.appendChild(popup);
+
+      var closeBtn = popup.querySelector('.npc-popup-close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', function () {
+          hideNpcPopup();
+        });
+      }
+
+      return popup;
+    }
+
+    function showNpcPopup(message) {
+      var popup = ensureNpcPopup();
+      var body = popup.querySelector('.npc-popup-body');
+      if (body) body.textContent = message;
+
+      if (npcPopupTimer) {
+        clearTimeout(npcPopupTimer);
+        npcPopupTimer = null;
+      }
+
+      popup.classList.add('show');
+
+      npcPopupTimer = setTimeout(function () {
+        hideNpcPopup();
+      }, 5200);
+    }
+
+    function hideNpcPopup() {
+      var popup = document.getElementById('npcQuestPopup');
+      if (!popup) return;
+      popup.classList.remove('show');
+    }
+
+    function openQuestModal() {
+      var backdrop = document.getElementById('questModalBackdrop');
+      var form = document.getElementById('questForm');
+      var titleInput = document.getElementById('questTitleInput');
+      var errorEl = document.getElementById('questFormError');
+
+      if (form) form.reset();
+      if (errorEl) {
+        errorEl.textContent = '';
+        errorEl.classList.remove('show');
+      }
+      hideNpcPopup();
+
+      if (backdrop) {
+        backdrop.classList.add('open');
+        backdrop.setAttribute('aria-hidden', 'false');
+      }
+      if (titleInput) {
+        setTimeout(function () { titleInput.focus(); }, 30);
+      }
+    }
+
+    function closeQuestModal() {
+      var backdrop = document.getElementById('questModalBackdrop');
+      if (backdrop) {
+        backdrop.classList.remove('open');
+        backdrop.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    function showQuestError(message) {
+      showNpcPopup(message);
+    }
+
+    function clearQuestError() {
+      hideNpcPopup();
+      var errorEl = document.getElementById('questFormError');
+      if (!errorEl) return;
+      errorEl.textContent = '';
+      errorEl.classList.remove('show');
+    }
+
+    function createQuestFromForm(user) {
+      var titleInput = document.getElementById('questTitleInput');
+      var tagSelect = document.getElementById('questTagSelect');
+      var descInput = document.getElementById('questDescInput');
+      var rewardSelect = document.getElementById('questRewardSelect');
+
+      var title = titleInput ? titleInput.value.trim() : '';
+      var tag = tagSelect ? String(tagSelect.value || 'MIND').trim().toUpperCase() : 'MIND';
+      var description = descInput ? descInput.value.trim() : '';
+      var reward = rewardSelect ? parseInt(rewardSelect.value, 10) : 250;
+
+      clearQuestError();
+
+      if (!isMeaningfulQuestTitle(title)) {
+        showQuestError("You came here to level up or become a level 1 NPC? That 'quest' is less than a placeholder, it's a cry for help. Put some actual thought into what you want to achieve and try again. What's next, 'breathe air' as a quest?");
+        return;
+      }
+
+      if (description.length < 10) {
+        showQuestError("That description is embarrassingly weak. A Hunter trial needs a real objective, not random filler typed by someone running on zero aura.");
+        return;
+      }
+
+      if (![100, 250, 500].includes(reward)) {
+        showQuestError("Nice try. The Association does not approve fake reward values. Pick 100, 250, or 500 AURA.");
+        return;
+      }
+
+      if (!['MIND', 'BODY', 'SOUL', 'FOCUS'].includes(tag)) {
+        tag = 'MIND';
+      }
+
+      var quests = ensureMonthlyQuestReset(user);
+
+      var quest = {
+        id: 'q_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7),
+        title: title,
+        tag: tag,
+        reward: reward,
+        pct: 0,
+        done: false,
+        description: description,
+        meta: reward + ' AURA · Forged by system'
+      };
+
+      quests.unshift(quest);
+      saveQuests(user, quests);
+      closeQuestModal();
+      render(user);
+    }
+
+    function bindModal(user) {
+      var openBtn = document.getElementById('newQuestBtn');
+      var closeBtn = document.getElementById('questModalClose');
+      var cancelBtn = document.getElementById('cancelQuestBtn');
+      var backdrop = document.getElementById('questModalBackdrop');
+      var form = document.getElementById('questForm');
+      var titleInput = document.getElementById('questTitleInput');
+      var descInput = document.getElementById('questDescInput');
+
+      if (openBtn) {
+        openBtn.addEventListener('click', openQuestModal);
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', closeQuestModal);
+      }
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeQuestModal);
+      }
+
+      if (backdrop) {
+        backdrop.addEventListener('click', function (e) {
+          if (e.target === backdrop) closeQuestModal();
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+          closeQuestModal();
+          hideNpcPopup();
+        }
+      });
+
+      if (titleInput) {
+        titleInput.addEventListener('input', clearQuestError);
+      }
+
+      if (descInput) {
+        descInput.addEventListener('input', clearQuestError);
+      }
+
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          createQuestFromForm(user);
+        });
+      }
+    }
+
+    function initQuestsPage() {
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          render(user);
+          bindModal(user);
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', initQuestsPage);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

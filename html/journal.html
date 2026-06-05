@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Field Notes — HunterOS</title>
+<meta name="description" content="HunterOS by CodeVogue — tactical hunter license system. Record field notes, reflect on training, and strengthen your Nen through daily review.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<script src="js/auth.js"></script>
+<script>
+  if (typeof AuthSystem !== 'undefined') {
+    if (!AuthSystem.requireAuth()) {}
+  }
+</script>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div>
+        <div class="brand-name">HUNTER<span>OS</span></div>
+        <div style="font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:2px">v2.6 // LICENSE SYSTEM</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-section">Command</div>
+      <a href="index.html"><span class="ico">◆</span>Command Center</a>
+      <a href="missions.html"><span class="ico">◇</span>Daily Contracts</a>
+      <a href="challenges.html"><span class="ico">◈</span>Trials</a>
+      <a href="focus.html"><span class="ico">◉</span>Zetsu Focus</a>
+
+      <div class="nav-section">Advancement</div>
+      <a href="stats.html"><span class="ico">▲</span>Nen Attributes</a>
+      <a href="progress.html"><span class="ico">▣</span>Advancement Log</a>
+      <a href="achievements.html"><span class="ico">★</span>Hunter Medals</a>
+      <a href="journal.html" aria-current="page"><span class="ico">❖</span>Field Notes</a>
+      <a href="calendar.html"><span class="ico">▦</span>Exam Calendar</a>
+
+      <div class="nav-section">System</div>
+      <a href="profile.html"><span class="ico">◍</span>Hunter License</a>
+      <a href="settings.html"><span class="ico">⚙</span>System Settings</a>
+      <a href="#" onclick="if (typeof AuthSystem !== 'undefined') { AuthSystem.logout(); } return false;" style="color:#ff6b9d;"><span class="ico">⏻</span>Sign Out</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <div class="card" style="padding:14px;background:linear-gradient(135deg,rgba(56,189,157,.18),rgba(148,163,184,.08))">
+      <div class="eyebrow" style="margin-bottom:6px">ASSOCIATION CYCLE 03</div>
+      <div style="font-family:var(--font-display);font-weight:600;font-size:14px">Hunter Advancement Trials</div>
+      <p style="font-size:12px;margin-top:6px">18 days remaining to secure your next license promotion.</p>
+    </div>
+  </aside>
+
+  <div class="scrim"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="icon-btn menu-toggle" aria-label="Menu">≡</button>
+      <div class="search">
+        <span style="color:var(--muted)">⌕</span>
+        <input placeholder="Search contracts, trials, field notes…">
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="spacer hide-mobile"></div>
+      <a class="icon-btn hide-mobile" href="focus.html" title="Zetsu Focus">◉</a>
+      <a class="avatar" id="topbarAvatar" href="profile.html">H</a>
+    </div>
+
+    <div class="section-head">
+      <div>
+        <div class="eyebrow">FIELD RECORD</div>
+        <h1 id="journalHeading">Field Notes</h1>
+      </div>
+      <button id="newEntryBtn" class="btn primary">＋ New Entry</button>
+    </div>
+
+    <div class="card" style="margin-bottom:22px">
+      <div class="field">
+        <label>Today's Field Note</label>
+        <textarea id="journalText" rows="4" placeholder="What sharpened today? What leaked focus? What improved your Nen control?"></textarea>
+      </div>
+      <div class="row" style="justify-content:space-between">
+        <div class="row">
+          <span class="chip">Mindset · Focused</span>
+          <span class="chip">Energy · 7/10</span>
+        </div>
+        <button id="saveEntryBtn" class="btn primary">Save Note · +25 XP</button>
+      </div>
+    </div>
+
+    <div id="entriesList"></div>
+  </main>
+</div>
+
+<script src="js/user.js"></script>
+<script>
+  (function(){
+    var newBtn = document.getElementById('newEntryBtn');
+    var saveBtn = document.getElementById('saveEntryBtn');
+    var text = document.getElementById('journalText');
+    var entriesList = document.getElementById('entriesList');
+    var topbarAvatar = document.getElementById('topbarAvatar');
+    var journalHeading = document.getElementById('journalHeading');
+
+    function getCurrentUserSafe() {
+      if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return null;
+      return AuthSystem.getCurrentUser();
+    }
+
+    function getUserDisplayName(user) {
+      return (
+        (user && user.displayName && String(user.displayName).trim()) ||
+        (user && user.name && String(user.name).trim()) ||
+        'Hunter'
+      );
+    }
+
+    function getInitials(name) {
+      if (!name) return 'H';
+      return name.trim().split(/\s+/).map(function (part) {
+        return part[0] || '';
+      }).slice(0, 2).join('').toUpperCase() || 'H';
+    }
+
+    function getJournalStorageKey(user) {
+      if (!user) return 'journal_guest';
+      return 'journal_' + (user.email || user.uid || user.id || 'guest');
+    }
+
+    function initUserUI(user) {
+      var name = getUserDisplayName(user);
+      var initials = getInitials(name);
+
+      if (topbarAvatar) topbarAvatar.textContent = initials;
+      if (journalHeading) journalHeading.textContent = name + "'s Field Notes";
+    }
+
+    function loadEntries() {
+      var user = getCurrentUserSafe();
+      var key = getJournalStorageKey(user);
+      var raw = localStorage.getItem(key);
+      if (!raw) return [];
+      try {
+        var parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveEntries(entries) {
+      var user = getCurrentUserSafe();
+      var key = getJournalStorageKey(user);
+      localStorage.setItem(key, JSON.stringify(entries));
+    }
+
+    function renderEntries() {
+      entriesList.innerHTML = '';
+      var list = loadEntries();
+
+      if (!list.length) {
+        entriesList.innerHTML = '<div class="muted">No field notes recorded yet.</div>';
+        return;
+      }
+
+      list.forEach(function(entry) {
+        var d = new Date(entry.date);
+        var el = document.createElement('div');
+        el.className = 'entry';
+        el.innerHTML = '<div class="date">' + d.toDateString().toUpperCase().slice(4) + '</div><p>' + entry.text + '</p>';
+        entriesList.appendChild(el);
+      });
+    }
+
+    if (newBtn) {
+      newBtn.addEventListener('click', function() {
+        text.focus();
+      });
+    }
+
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function() {
+        var val = text.value.trim();
+        if (!val) {
+          alert('Field note cannot be empty.');
+          return;
+        }
+
+        var list = loadEntries();
+        var entry = {
+          date: new Date().toISOString(),
+          text: val
+        };
+
+        list.unshift(entry);
+        saveEntries(list);
+
+        var user = getCurrentUserSafe();
+        if (user && typeof AuthSystem !== 'undefined' && AuthSystem.updateProfile) {
+          AuthSystem.updateProfile(null, { xp: (user.xp || 0) + 25 });
+          if (typeof UserUI !== 'undefined' && UserUI.populateUI) {
+            UserUI.populateUI();
+          }
+        }
+
+        text.value = '';
+        alert('Field note saved and 25 XP awarded.');
+        renderEntries();
+      });
+    }
+
+    function init() {
+      var attempts = 0;
+      var maxAttempts = 20;
+
+      var timer = setInterval(function () {
+        var user = getCurrentUserSafe();
+
+        if (user) {
+          clearInterval(timer);
+          initUserUI(user);
+          renderEntries();
+        }
+
+        attempts++;
+        if (attempts >= maxAttempts) {
+          clearInterval(timer);
+          renderEntries();
+        }
+      }, 250);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>

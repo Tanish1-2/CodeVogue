@@ -453,6 +453,53 @@ createUnverifiedLocalAccount(email, password, displayName) {
     }
   },
 
+  getAccountByEmail(email) {
+    const normalizedEmail = this.normalizeEmail(email);
+    if (!normalizedEmail) return null;
+
+    const stored = localStorage.getItem(this.getAccountKey(normalizedEmail));
+    return this.safeParse(stored, null);
+  },
+
+  verifyCsvLogin(email, code, fileText = '') {
+    const normalizedEmail = this.normalizeEmail(email);
+    if (!normalizedEmail) {
+      return { success: false, message: 'Email is required for CSV login.' };
+    }
+
+    const account = this.getAccountByEmail(normalizedEmail);
+    if (!account || !account.user) {
+      return { success: false, message: 'Account not found. Please sign up first.' };
+    }
+
+    const user = this.normalizeUser(account.user);
+    const expectedCode = String(user.verificationCode || '').trim();
+    const enteredCode = String(code || '').trim();
+
+    if (!/^[0-9]{5}$/.test(enteredCode)) {
+      return { success: false, message: 'Enter the 5-digit verification code from your CSV/PDF export.' };
+    }
+
+    if (!expectedCode) {
+      return { success: false, message: 'No verification code is assigned to this account.' };
+    }
+
+    if (enteredCode !== expectedCode) {
+      return { success: false, message: 'Incorrect verification code.' };
+    }
+
+    if (fileText && !String(fileText).includes(expectedCode)) {
+      return { success: false, message: 'Uploaded file does not include the assigned verification code.' };
+    }
+
+    user.loginTime = new Date().toISOString();
+    user.sessionExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    this.persistUser(user, account.password);
+    this.initUserStorage(normalizedEmail);
+
+    return { success: true, user };
+  },
+
   requireAuth() {
     if (!this.isAuthenticated()) {
       window.location.href = this.redirectPath;

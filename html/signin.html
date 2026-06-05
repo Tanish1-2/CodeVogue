@@ -275,6 +275,28 @@
       transform: translateY(-1px);
     }
 
+    .csv-login-panel {
+      margin-top: 12px;
+      padding: 16px 0 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .csv-file-control {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .csv-filename {
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .primary-btn,
     .ghost-btn,
     .link-btn {
@@ -466,7 +488,7 @@
       <div class="auth-shell">
         <h2 class="auth-title">Sign In</h2>
         <p class="auth-subtitle">
-          Access your HunterOS identity using Google or your local email and password.
+          Access your HunterOS identity using Google, local email/password, or Sign in with CSV/PDF.
         </p>
 
         <div id="authStatus" class="status">
@@ -486,6 +508,28 @@
 
           <button id="signinBtn" class="primary-btn" type="submit">Enter HunterOS</button>
         </form>
+
+        <div class="field">
+          <button id="csvSignInBtn" class="ghost-btn" type="button">Sign in with CSV</button>
+        </div>
+
+        <div id="csvLoginPanel" class="csv-login-panel" style="display:none;">
+          <div class="field">
+            <label for="csvFile">Upload CSV / PDF</label>
+            <div class="csv-file-control">
+              <button id="csvUploadBtn" class="ghost-btn" type="button">Choose file</button>
+              <span id="csvFileName" class="csv-filename">No file selected</span>
+            </div>
+            <input id="csvFile" type="file" accept=".csv,application/pdf" style="display:none" />
+          </div>
+
+          <div class="field">
+            <label for="csvCode">5-digit verification code</label>
+            <input id="csvCode" name="csvCode" type="text" placeholder="Enter your code" inputmode="numeric" maxlength="5" />
+          </div>
+
+          <button id="csvSigninBtn" class="primary-btn" type="button">Continue with CSV</button>
+        </div>
 
         <div class="divider">Or continue with</div>
 
@@ -542,6 +586,13 @@
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const signinBtn = document.getElementById('signinBtn');
+    const csvSignInBtn = document.getElementById('csvSignInBtn');
+    const csvLoginPanel = document.getElementById('csvLoginPanel');
+    const csvUploadBtn = document.getElementById('csvUploadBtn');
+    const csvFileInput = document.getElementById('csvFile');
+    const csvFileName = document.getElementById('csvFileName');
+    const csvCodeInput = document.getElementById('csvCode');
+    const csvSigninBtn = document.getElementById('csvSigninBtn');
     const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
     const resendVerifyBtn = document.getElementById('resendVerifyBtn');
     const refreshVerifyBtn = document.getElementById('refreshVerifyBtn');
@@ -558,6 +609,7 @@
     function setBusy(isBusy) {
       authShell.classList.toggle('loading', isBusy);
       signinBtn.disabled = isBusy;
+      csvSigninBtn.disabled = isBusy;
       forgotPasswordBtn.disabled = isBusy;
       resendVerifyBtn.disabled = isBusy;
       refreshVerifyBtn.disabled = isBusy;
@@ -700,6 +752,44 @@
       }
     }
 
+    function readFileAsText(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onerror = () => reject(reader.error || new Error('Failed to read file.'));
+
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+          reader.onload = () => {
+            const buffer = reader.result;
+            const text = new TextDecoder('latin1').decode(buffer);
+            resolve(text);
+          };
+          reader.readAsArrayBuffer(file);
+          return;
+        }
+
+        reader.onload = () => resolve(String(reader.result || ''));
+        reader.readAsText(file, 'UTF-8');
+      });
+    }
+
+    async function signInWithCsv(email, code, file) {
+      if (!email) {
+        return { success: false, message: 'Enter your email before using CSV login.' };
+      }
+      if (!file) {
+        return { success: false, message: 'Upload a valid CSV or PDF file first.' };
+      }
+      const allowed = ['.csv', '.pdf'];
+      const fileName = String(file.name || '').toLowerCase();
+      if (!allowed.some(ext => fileName.endsWith(ext))) {
+        return { success: false, message: 'Only .csv and .pdf files are allowed for CSV login.' };
+      }
+      const fileText = await readFileAsText(file);
+      const result = AuthSystem.verifyCsvLogin(email, code, fileText);
+      return result;
+    }
+
     function handleGoogleResponse(response) {
       try {
         setBusy(true);
@@ -757,6 +847,61 @@
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       await signInLocal(emailInput.value, passwordInput.value);
+    });
+
+    csvSignInBtn.addEventListener('click', () => {
+      csvLoginPanel.style.display = csvLoginPanel.style.display === 'block' ? 'none' : 'block';
+      if (csvLoginPanel.style.display === 'block') {
+        setMessage('Select your CSV or PDF file and enter the assigned 5-digit code.', 'warn');
+      }
+    });
+
+    csvUploadBtn.addEventListener('click', () => {
+      csvFileInput.click();
+    });
+
+    csvFileInput.addEventListener('change', () => {
+      const file = csvFileInput.files && csvFileInput.files[0];
+      csvFileName.textContent = file ? file.name : 'No file selected';
+    });
+
+    csvSigninBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      const code = csvCodeInput.value.trim();
+      const file = csvFileInput.files && csvFileInput.files[0];
+
+      if (!email) {
+        setMessage('Enter your email first.', 'error');
+        return;
+      }
+      if (!file) {
+        setMessage('You must upload a CSV or PDF file containing your assigned code.', 'error');
+        return;
+      }
+      if (!/^[0-9]{5}$/.test(code)) {
+        setMessage('Enter the 5-digit code exactly as shown in your CSV/PDF export.', 'error');
+        return;
+      }
+
+      try {
+        setBusy(true);
+        setMessage('Validating your CSV/PDF login file...', 'warn');
+        const result = await signInWithCsv(email, code, file);
+
+        if (!result.success) {
+          setMessage(result.message || 'CSV authentication failed.', 'error');
+          return;
+        }
+
+        setMessage('CSV login accepted. Entering HunterOS...', 'ok');
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 650);
+      } catch (error) {
+        setMessage(error?.message || 'Unable to read the uploaded file. Use a valid CSV or PDF.', 'error');
+      } finally {
+        setBusy(false);
+      }
     });
 
     forgotPasswordBtn.addEventListener('click', async () => {

@@ -4,352 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CodeVogue | Digital Excellence</title>
-
+    <!-- Glowing Purple Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23050507'/%3E%3Ctext x='50' y='65' font-family='monospace' font-size='50' font-weight='bold' fill='%23BD52EB' text-anchor='middle'%3E%26lt;/%26gt;%3C/text%3E%3C/svg%3E">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
+    <!-- ðŸ“± HYPER-RESPONSIVE INJECTION -->
     <style>
+        /* Base fallback for structural integrity */
         * { box-sizing: border-box; }
         html { overflow-x: hidden; width: 100vw; }
         body { overflow-x: hidden; width: 100vw; line-height: 1.6; }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem 5%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            width: 100%;
+        
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 5%; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; width: 100%; }
+        .nav-links { list-style: none; display: flex; gap: 2rem; margin: 0; padding: 0; margin-left: auto; }
+        .hamburger-btn { display: none; background: transparent; border: none; cursor: pointer; flex-direction: column; gap: 6px; z-index: 1001; padding: 10px; min-width: 44px; min-height: 44px; justify-content: center; }
+        .hamburger-btn span { display: block; width: 30px; height: 2px; background-color: var(--accent-glow, #BD52EB); transition: all 0.3s ease-in-out; }
+        
+        /* Layout Grids */
+        .container { padding: 0 5%; max-width: 1400px; margin: 0 auto; width: 100%; }
+        
+        /* =========================================
+           EXACT BLUEPRINT BENTO GRID CSS
+           ========================================= */
+        .bento-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            /* 3 equal rows so the right-side blocks stack perfectly */
+            grid-auto-rows: minmax(140px, auto); 
+            gap: 24px; 
+            margin-top: 3rem; 
         }
 
-        .nav-links {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-            margin: 0 0 0 auto;
-            padding: 0;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-        }
-
-        .hamburger-btn {
-            display: none;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 6px;
-            z-index: 1001;
-            padding: 10px;
-            min-width: 44px;
-            min-height: 44px;
-            justify-content: center;
-        }
-
-        .hamburger-btn span {
-            display: block;
-            width: 30px;
-            height: 2px;
-            background-color: var(--accent-glow, #BD52EB);
-            transition: all 0.3s ease-in-out;
-        }
-
-        .container {
-            padding: 0 5%;
-            max-width: 1400px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .terminal-launch-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 44px;
-            padding: 0.85rem 1.2rem;
-            border-radius: 999px;
-            border: 1px solid rgba(189, 82, 235, 0.3);
-            background: rgba(189, 82, 235, 0.08);
-            color: var(--text-main, #fff);
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            cursor: pointer;
-            transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-            box-shadow: 0 10px 30px rgba(189, 82, 235, 0.12);
-            text-decoration: none;
-            white-space: nowrap;
-        }
-
-        .terminal-launch-btn:hover {
-            transform: translateY(-2px);
-            background: rgba(189, 82, 235, 0.14);
-            border-color: rgba(189, 82, 235, 0.45);
-            box-shadow: 0 14px 34px rgba(189, 82, 235, 0.18);
-        }
-
-        .terminal-launch-btn--hero {
-            margin-top: 0.5rem;
-        }
-
-        .hero-terminal-cta {
-            margin-top: 1.8rem;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.85rem;
-        }
-
-        .hero-terminal-note {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            max-width: 560px;
-        }
-
-        .admin-terminal {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .admin-terminal.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .admin-terminal__backdrop {
-            position: absolute;
-            inset: 0;
-            background: rgba(2, 6, 23, 0.72);
-            backdrop-filter: blur(14px);
-        }
-
-        .admin-terminal__window {
-            position: relative;
-            width: min(920px, calc(100vw - 32px));
-            height: min(78vh, 760px);
-            margin: 7vh auto 0;
-            border-radius: 28px;
-            overflow: hidden;
-            background: linear-gradient(180deg, rgba(7, 10, 20, 0.96), rgba(3, 6, 16, 0.98));
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(189, 82, 235, 0.08);
-            transform: translateY(24px) scale(0.98);
-            transition: transform 0.3s ease;
-        }
-
-        .admin-terminal.active .admin-terminal__window {
-            transform: translateY(0) scale(1);
-        }
-
-        .admin-terminal__header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-            padding: 1rem 1.25rem;
-            background: rgba(15, 23, 42, 0.9);
-            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
-        }
-
-        .admin-terminal__traffic {
-            display: flex;
-            gap: 0.45rem;
-        }
-
-        .admin-terminal__traffic span {
-            width: 11px;
-            height: 11px;
-            border-radius: 50%;
-            display: block;
-        }
-
-        .admin-terminal__traffic span:nth-child(1) { background: #fb7185; }
-        .admin-terminal__traffic span:nth-child(2) { background: #facc15; }
-        .admin-terminal__traffic span:nth-child(3) { background: #4ade80; }
-
-        .admin-terminal__title-wrap {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .admin-terminal__eyebrow {
-            margin: 0;
-            font-size: 0.72rem;
-            text-transform: uppercase;
-            letter-spacing: 0.16em;
-            color: rgba(148, 163, 184, 0.85);
-        }
-
-        .admin-terminal__title {
-            margin: 0.15rem 0 0;
-            font-size: 1rem;
-            color: #f8fafc;
-            letter-spacing: 0.02em;
-        }
-
-        .admin-terminal__close {
-            width: 42px;
-            height: 42px;
-            border-radius: 14px;
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            background: rgba(255, 255, 255, 0.05);
-            color: #f8fafc;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: transform 0.25s ease, background 0.25s ease, border-color 0.25s ease;
-        }
-
-        .admin-terminal__close:hover {
-            transform: scale(1.04);
-            background: rgba(239, 68, 68, 0.12);
-            border-color: rgba(239, 68, 68, 0.35);
-        }
-
-        .admin-terminal__meta {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-            padding: 0.9rem 1.25rem;
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
-            background: rgba(9, 12, 24, 0.82);
-        }
-
-        .terminal-status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
-        }
-
-        .terminal-meta-divider {
-            width: 1px;
-            height: 14px;
-            background: rgba(148, 163, 184, 0.22);
-        }
-
-        .admin-terminal__body {
-            height: calc(100% - 116px);
-            overflow-y: auto;
-            padding: 1.2rem 1.25rem 1.4rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.95rem;
-            background:
-                radial-gradient(circle at top right, rgba(189, 82, 235, 0.08), transparent 24%),
-                linear-gradient(180deg, rgba(2, 6, 23, 0.92), rgba(0, 0, 0, 0.96));
-        }
-
-        .admin-terminal .terminal-line {
-            color: #dbeafe;
-            font-family: "Fira Code", "Space Grotesk", monospace;
-            font-size: 0.96rem;
-            line-height: 1.8;
-            word-break: break-word;
-        }
-
-        .terminal-line--system {
-            color: #86efac !important;
-        }
-
-        .terminal-line--muted {
-            color: #94a3b8 !important;
-        }
-
-        .terminal-chip-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.7rem;
-            margin: 0.2rem 0 0.5rem;
-        }
-
-        .terminal-chip {
-            border: 1px solid rgba(148, 163, 184, 0.16);
-            background: rgba(255, 255, 255, 0.05);
-            color: #e2e8f0;
-            border-radius: 999px;
-            padding: 0.6rem 0.95rem;
-            cursor: pointer;
-            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-        }
-
-        .terminal-chip:hover {
-            transform: translateY(-1px);
-            background: rgba(189, 82, 235, 0.14);
-            border-color: rgba(189, 82, 235, 0.35);
-        }
-
-        .terminal-input-line {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            margin-top: auto;
-            padding: 0.95rem 1rem;
-            border-radius: 20px;
-            border: 1px solid rgba(148, 163, 184, 0.14);
-            background: rgba(255, 255, 255, 0.04);
-        }
-
-        .terminal-prompt {
-            color: #38bdf8;
-            font-weight: 700;
-            font-size: 1rem;
-            font-family: "Fira Code", monospace;
-        }
-
-        .terminal-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: #f8fafc;
-            font-size: 1rem;
-            font-family: "Fira Code", "Space Grotesk", monospace;
-        }
-
-        .terminal-input::placeholder {
-            color: rgba(148, 163, 184, 0.72);
-        }
-
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-auto-rows: minmax(140px, auto);
-            gap: 24px;
-            margin-top: 3rem;
-        }
-
-        .bento-main {
-            grid-column: span 2;
+        /* 1. Pure Performance (Left side, spans 2 cols wide, 2 rows tall) */
+        .bento-main { 
+            grid-column: span 2; 
             grid-row: span 2;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
             align-items: center;
             text-align: center;
         }
 
+        /* 2. Explore Work (Left side, under Performance, spans 2 cols wide, 1 row tall) */
         .bento-cta {
             grid-column: span 2;
             grid-row: span 1;
@@ -358,6 +59,7 @@
             justify-content: center;
         }
 
+        /* 3. Tanish (Right side, top) */
         .bento-founder-1 {
             grid-column: 3;
             grid-row: 1;
@@ -368,6 +70,7 @@
             text-align: center;
         }
 
+        /* 4. Aditya (Right side, middle) */
         .bento-founder-2 {
             grid-column: 3;
             grid-row: 2;
@@ -378,6 +81,7 @@
             text-align: center;
         }
 
+        /* 5. Clock (Right side, bottom) */
         .bento-clock {
             grid-column: 3;
             grid-row: 3;
@@ -387,21 +91,22 @@
             text-align: center;
         }
 
-        .bento-box {
-            padding: 2.5rem 2rem;
-            border-radius: 24px;
+        .bento-box { 
+            padding: 2.5rem 2rem; 
+            border-radius: 24px; /* Matches your sketch curves */
             background: var(--surface);
-            border: 2px solid var(--border-color);
-            transition: transform 0.3s ease, background 0.3s ease;
-            height: 100%;
+            border: 2px solid var(--border-color); 
+            transition: transform 0.3s ease, background 0.3s ease; 
+            height: 100%; 
         }
-
-        .bento-box:hover {
-            background: rgba(189, 82, 235, 0.05);
-            border-color: rgba(189, 82, 235, 0.3);
-            transform: translateY(-3px);
+        
+        .bento-box:hover { 
+            background: rgba(189, 82, 235, 0.05); 
+            border-color: rgba(189, 82, 235, 0.3); 
+            transform: translateY(-3px); 
         }
-
+        
+        /* Interactive command console showcase */
         .showcase-section { margin-top: 5rem; padding: 4rem 0 1rem; }
         .showcase-panel {
             position: relative;
@@ -414,18 +119,14 @@
             box-shadow: 0 40px 110px rgba(0,0,0,0.3);
             backdrop-filter: blur(26px);
         }
-
         .showcase-panel::before {
             content: '';
             position: absolute;
             inset: 0;
-            background:
-                radial-gradient(circle at top left, rgba(79,70,229,0.15), transparent 20%),
-                radial-gradient(circle at bottom right, rgba(16,185,129,0.16), transparent 25%);
+            background: radial-gradient(circle at top left, rgba(79,70,229,0.15), transparent 20%), radial-gradient(circle at bottom right, rgba(16,185,129,0.16), transparent 25%);
             pointer-events: none;
             z-index: 1;
         }
-
         .console-split {
             display: grid;
             grid-template-columns: 1.05fr 0.95fr;
@@ -434,18 +135,15 @@
             position: relative;
             z-index: 2;
         }
-
         .console-terminal, .console-preview {
             border-radius: 32px;
             overflow: hidden;
             box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
         }
-
         .console-terminal {
             background: #0f172a;
             border: 1px solid rgba(148,163,184,0.16);
         }
-
         .terminal-header {
             display: flex;
             align-items: center;
@@ -454,7 +152,6 @@
             background: rgba(30,41,59,0.94);
             border-bottom: 1px solid rgba(148,163,184,0.12);
         }
-
         .terminal-circle {
             width: 12px;
             height: 12px;
@@ -462,10 +159,8 @@
             background: #f97316;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
         }
-
         .terminal-circle:nth-child(2) { background: #facc15; }
         .terminal-circle:nth-child(3) { background: #22c55e; }
-
         .terminal-title {
             color: #e2e8f0;
             font-size: 0.9rem;
@@ -474,14 +169,12 @@
             opacity: 0.8;
             flex: 1;
         }
-
-        .console-terminal .terminal-body {
+        .terminal-body {
             padding: 1.6rem 1.4rem 1.5rem;
             display: grid;
             gap: 0.95rem;
         }
-
-        .console-terminal .terminal-line {
+        .terminal-line {
             position: relative;
             color: #e2e8f0;
             font-family: 'Fira Code', monospace;
@@ -489,25 +182,21 @@
             line-height: 1.8;
             white-space: pre-wrap;
         }
-
-        .console-terminal .terminal-line span {
+        .terminal-line span {
             color: #38bdf8;
         }
-
-        .console-terminal .terminal-line.typed {
+        .terminal-line.typed {
             max-width: 100%;
             overflow: hidden;
             border-right: 2px solid rgba(255,255,255,0.8);
             animation: typing 3s steps(40,end) 0.4s 1 forwards, blink-caret 0.75s step-end infinite;
             white-space: nowrap;
         }
-
-        .console-terminal .terminal-line::before {
+        .terminal-line::before {
             content: '$ ';
             color: #94a3b8;
             margin-right: 0.45rem;
         }
-
         .terminal-tags {
             display: flex;
             flex-wrap: wrap;
@@ -516,7 +205,6 @@
             border-top: 1px solid rgba(148,163,184,0.14);
             background: rgba(15,23,42,0.9);
         }
-
         .terminal-tag {
             display: inline-flex;
             align-items: center;
@@ -527,7 +215,6 @@
             font-size: 0.82rem;
             letter-spacing: 0.02em;
         }
-
         .console-preview {
             background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(30,41,59,0.93));
             border: 1px solid rgba(148,163,184,0.12);
@@ -535,7 +222,6 @@
             display: grid;
             gap: 1rem;
         }
-
         .preview-header {
             display: flex;
             justify-content: space-between;
@@ -546,7 +232,6 @@
             border-radius: 28px;
             border: 1px solid rgba(255,255,255,0.08);
         }
-
         .preview-title {
             color: #f8fafc;
             font-size: 0.95rem;
@@ -554,7 +239,6 @@
             text-transform: uppercase;
             opacity: 0.85;
         }
-
         .preview-box {
             position: relative;
             padding: 1.5rem;
@@ -565,18 +249,15 @@
             display: grid;
             gap: 1rem;
         }
-
         .preview-block {
             border-radius: 24px;
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.08);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
         }
-
         .preview-block.large { height: 180px; grid-column: span 2; }
         .preview-block.small { height: 90px; }
         .preview-block-inline { height: 46px; width: 100%; }
-
         .preview-meta {
             display: flex;
             align-items: center;
@@ -585,13 +266,11 @@
             color: #cbd5e1;
             font-size: 0.88rem;
         }
-
         .preview-meta span {
             display: inline-flex;
             gap: 0.4rem;
             align-items: center;
         }
-
         .preview-chip {
             display: inline-flex;
             align-items: center;
@@ -603,7 +282,6 @@
             color: #e2e8f0;
             font-size: 0.78rem;
         }
-
         .preview-decor {
             position: absolute;
             width: 90px;
@@ -614,7 +292,6 @@
             top: -30px;
             right: -40px;
         }
-
         .preview-decor:nth-child(2) {
             background: rgba(16,185,129,0.18);
             top: 140px;
@@ -622,7 +299,6 @@
             width: 70px;
             height: 70px;
         }
-
         .showcase-caption {
             position: relative;
             z-index: 2;
@@ -634,23 +310,8 @@
             background: rgba(15,23,42,0.96);
             backdrop-filter: blur(20px);
         }
-
-        .showcase-label {
-            margin: 0;
-            font-size: clamp(2rem, 2.2vw, 2.5rem);
-            font-weight: 800;
-            letter-spacing: -0.04em;
-            color: #f8fafc;
-        }
-
-        .showcase-description {
-            margin: 0.6rem 0 0;
-            color: #cbd5e1;
-            font-size: 1rem;
-            line-height: 1.8;
-            max-width: 580px;
-        }
-
+        .showcase-label { margin: 0; font-size: clamp(2rem, 2.2vw, 2.5rem); font-weight: 800; letter-spacing: -0.04em; color: #f8fafc; }
+        .showcase-description { margin: 0.6rem 0 0; color: #cbd5e1; font-size: 1rem; line-height: 1.8; max-width: 580px; }
         .showcase-button {
             display: inline-flex;
             align-items: center;
@@ -663,251 +324,98 @@
             font-weight: 700;
             transition: transform 0.25s ease, filter 0.25s ease;
         }
-
-        .showcase-button:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.06);
-        }
-
+        .showcase-button:hover { transform: translateY(-2px); filter: brightness(1.06); }
         @keyframes typing {
             from { width: 0; }
             to { width: 100%; }
         }
-
         @keyframes blink-caret {
             50% { border-color: transparent; }
         }
 
-        .cap-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 3rem;
-        }
+        /* Capabilities and Footer Grid */
+        .cap-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 3rem; }
+        .cap-card { padding: 2.5rem 2rem; background: var(--surface); border: 1px solid var(--border-color); border-radius: 20px; transition: all 0.3s ease; }
+        .cap-card:hover { border-color: rgba(189, 82, 235, 0.3); transform: translateY(-3px); }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; padding: 4rem 5%; }
+        .footer-bottom-bar { display: flex; justify-content: space-between; padding: 2rem 5%; border-top: 1px solid rgba(255,255,255,0.1); }
 
-        .cap-card {
-            padding: 2.5rem 2rem;
-            background: var(--surface);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
+        /* Typography Fluidity */
+        .hero { padding: 6rem 0 4rem; text-align: left; }
+        .hero h1 { font-size: clamp(3rem, 10vw, 8rem); line-height: 0.9; margin: 1rem 0; letter-spacing: -0.02em; }
+        .hero-desc { font-size: clamp(1.1rem, 2vw, 1.3rem); max-width: 700px; color: var(--text-muted); }
+        .footer-cta { font-size: clamp(2.5rem, 10vw, 8rem); line-height: 1; word-break: break-word; color: var(--text-main); }
+        .bento-title { font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 0.5rem; line-height: 1.2; text-transform: uppercase; color: var(--text-main); }
 
-        .cap-card:hover {
-            border-color: rgba(189, 82, 235, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 40px;
-            padding: 4rem 5%;
-        }
-
-        .footer-bottom-bar {
-            display: flex;
-            justify-content: space-between;
-            padding: 2rem 5%;
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .hero {
-            padding: 6rem 0 4rem;
-            text-align: left;
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 10vw, 8rem);
-            line-height: 0.9;
-            margin: 1rem 0;
-            letter-spacing: -0.02em;
-        }
-
-        .hero-desc {
-            font-size: clamp(1.1rem, 2vw, 1.3rem);
-            max-width: 700px;
-            color: var(--text-muted);
-        }
-
-        .footer-cta {
-            font-size: clamp(2.5rem, 10vw, 8rem);
-            line-height: 1;
-            word-break: break-word;
-            color: var(--text-main);
-        }
-
-        .bento-title {
-            font-family: 'Syne', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            line-height: 1.2;
-            text-transform: uppercase;
-            color: var(--text-main);
-        }
-
+        /* ====== TABLET MEDIA QUERY (Max Width: 1024px) ====== */
         @media screen and (max-width: 1024px) {
-            .nav-links { gap: 1.25rem; }
+            .nav-links { gap: 1.5rem; }
             .nav-links a { font-size: 0.9rem; }
-
+            
+            /* Bento Grid becomes 2x2 */
             .bento-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
             .bento-main { grid-column: span 2; grid-row: span 1; }
             .bento-cta { grid-column: span 2; grid-row: auto; }
             .bento-founder-1, .bento-founder-2 { grid-column: span 1; grid-row: auto; }
             .bento-clock { grid-column: span 2; grid-row: auto; }
-
+            
+            /* Capabilities Grid becomes 2 columns */
             .cap-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .console-split { grid-template-columns: 1fr; }
-            .showcase-caption { grid-template-columns: 1fr; }
         }
 
+        /* ====== MOBILE MEDIA QUERY (Max Width: 768px) ====== */
         @media screen and (max-width: 768px) {
+            /* Navigation & Hamburger Toggle */
             .hamburger-btn { display: flex; }
-
             .hamburger-btn.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
             .hamburger-btn.active span:nth-child(2) { opacity: 0; }
             .hamburger-btn.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-
-            .nav-actions {
-                margin-left: auto;
-            }
-
+            
             .nav-links {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100dvh;
-                background: rgba(5, 5, 7, 0.98);
-                backdrop-filter: blur(15px);
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                gap: 2.5rem;
-                transform: translateX(100%);
-                transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
-                z-index: 999;
+                position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; 
+                background: rgba(5, 5, 7, 0.98); backdrop-filter: blur(15px);
+                flex-direction: column; justify-content: center; align-items: center;
+                gap: 2.5rem; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1);
             }
-
             .nav-links.active { transform: translateX(0); }
-            .nav-links li a {
-                font-size: 1.8rem;
-                font-weight: 600;
-                padding: 10px 20px;
-                display: block;
-            }
+            .nav-links li a { font-size: 1.8rem; font-weight: 600; padding: 10px 20px; display: block; }
 
-            .terminal-launch-btn {
-                padding: 0.8rem 1rem;
-                font-size: 0.92rem;
-            }
+            /* Hero Section */
+            .hero { padding: 4rem 0 2rem; text-align: center; }
+            .hero h1 { font-size: clamp(2.5rem, 13vw, 5rem); } 
+            .hero-sub { justify-content: center; }
+            .hero-sub::before { display: none; } 
+            .hero-desc { font-size: 1.05rem; padding: 0; margin: 2rem auto; text-align: center; }
 
-            .hero {
-                padding: 4rem 0 2rem;
-                text-align: center;
+            /* Bento Grid - Full Stack */
+            .bento-grid { grid-template-columns: 1fr; gap: 16px; margin-top: 2rem; }
+            .bento-main, .bento-clock, .bento-founder-1, .bento-founder-2, .bento-cta { 
+                grid-column: span 1; 
+                grid-row: auto; 
             }
+            .bento-box { padding: 1.75rem; border-radius: 16px; }
 
-            .hero h1 {
-                font-size: clamp(2.5rem, 13vw, 5rem);
-            }
+            /* Capabilities Grid - Full Stack */
+            .cap-grid { grid-template-columns: 1fr; gap: 16px; }
+            .cap-card { padding: 2rem 1.5rem; text-align: left; }
 
-            .hero-sub {
-                justify-content: center;
-            }
+            /* Footer */
+            .footer-grid { grid-template-columns: 1fr; text-align: center; gap: 40px; padding: 3rem 5%; }
+            .footer-bottom-bar { flex-direction: column; text-align: center; gap: 15px; }
 
-            .hero-sub::before {
-                display: none;
+            /* Developer Terminal Adjustments */
+            #dev-terminal { max-width: 95vw; }
+            #dev-terminal.active { 
+                width: 95vw; left: 2.5vw; transform: none; top: 5dvh; height: 80dvh; font-size: 0.8rem; 
             }
-
-            .hero-desc {
-                font-size: 1.05rem;
-                padding: 0;
-                margin: 2rem auto;
-                text-align: center;
-            }
-
-            .hero-terminal-cta {
-                align-items: center;
-            }
-
-            .hero-terminal-note {
-                text-align: center;
-            }
-
-            .bento-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-                margin-top: 2rem;
-            }
-
-            .bento-main,
-            .bento-clock,
-            .bento-founder-1,
-            .bento-founder-2,
-            .bento-cta {
-                grid-column: span 1;
-                grid-row: auto;
-            }
-
-            .bento-box {
-                padding: 1.75rem;
-                border-radius: 16px;
-            }
-
-            .cap-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .cap-card {
-                padding: 2rem 1.5rem;
-                text-align: left;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 40px;
-                padding: 3rem 5%;
-            }
-
-            .footer-bottom-bar {
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
-            }
-
-            .admin-terminal__window {
-                width: calc(100vw - 16px);
-                height: 86vh;
-                margin-top: 4vh;
-                border-radius: 22px;
-            }
-
-            .admin-terminal__header,
-            .admin-terminal__meta,
-            .admin-terminal__body {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-
-            .terminal-input-line {
-                align-items: flex-start;
-                flex-direction: row;
-            }
-
-            .admin-terminal__title {
-                font-size: 0.94rem;
-            }
-
-            .admin-terminal .terminal-line {
-                font-size: 0.9rem;
-            }
+            .terminal-input-line { flex-wrap: wrap; }
+            .terminal-input { width: calc(100% - 20px); font-size: 1rem; } 
         }
     </style>
 </head>
 <body>
 
+    <!-- ðŸš€ CYBERPUNK PRELOADER -->
     <div id="preloader">
         <div class="preloader-content">
             <div class="preloader-text">> INITIALIZING CODEVOGUE_</div>
@@ -915,67 +423,31 @@
         </div>
     </div>
 
-    <div id="dev-terminal" class="admin-terminal" aria-hidden="true">
-        <div class="admin-terminal__backdrop" id="terminal-backdrop"></div>
-
-        <section class="admin-terminal__window" role="dialog" aria-modal="true" aria-labelledby="terminal-title">
-            <div class="admin-terminal__header">
-                <div class="admin-terminal__traffic">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-
-                <div class="admin-terminal__title-wrap">
-                    <p class="admin-terminal__eyebrow">CodeVogue Interface</p>
-                    <h3 id="terminal-title" class="admin-terminal__title">Admin Terminal</h3>
-                </div>
-
-                <button class="admin-terminal__close hover-target" id="close-terminal" type="button" aria-label="Close terminal">×</button>
+    <!-- ðŸ’» DEVELOPER TERMINAL EASTER EGG -->
+    <div id="dev-terminal">
+        <div class="terminal-header">
+            <span>root@codevogue:~</span>
+            <span class="terminal-close" id="close-terminal">[X]</span>
+        </div>
+        <div class="terminal-body" id="terminal-output">
+            <div>CodeVogue OS v2.0 (Type 'help' for commands)</div>
+            <div class="terminal-input-line">
+                <span>></span>
+                <input type="text" id="terminal-input" class="terminal-input" autocomplete="off" spellcheck="false" autofocus>
             </div>
-
-            <div class="admin-terminal__meta">
-                <span class="terminal-status-dot"></span>
-                <span>Secure session ready</span>
-                <span class="terminal-meta-divider"></span>
-                <span>Type <strong>help</strong> to begin</span>
-            </div>
-
-            <div class="admin-terminal__body" id="terminal-output">
-                <div class="terminal-line terminal-line--system">CodeVogue Admin Terminal v3.0 initialized.</div>
-                <div class="terminal-line terminal-line--muted">Ask anything about CodeVogue, projects, services, contact, or the build process.</div>
-
-                <div class="terminal-chip-row">
-                    <button type="button" class="terminal-chip hover-target" data-terminal-command="help">help</button>
-                    <button type="button" class="terminal-chip hover-target" data-terminal-command="whoami">whoami</button>
-                    <button type="button" class="terminal-chip hover-target" data-terminal-command="contact">contact</button>
-                    <button type="button" class="terminal-chip hover-target" data-terminal-command="ask what does CodeVogue do">about</button>
-                </div>
-
-                <div class="terminal-input-line">
-                    <span class="terminal-prompt">></span>
-                    <input
-                        type="text"
-                        id="terminal-input"
-                        class="terminal-input"
-                        autocomplete="off"
-                        spellcheck="false"
-                        placeholder="Type a command or ask a question..."
-                    />
-                </div>
-            </div>
-        </section>
+        </div>
     </div>
 
     <div class="ambient-glow"></div>
-
+    
+    <!-- ðŸ•¸ï¸ DYNAMIC NEURAL NETWORK BACKGROUND -->
     <canvas id="cyber-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; opacity: 0.4; pointer-events: none;"></canvas>
 
     <div class="cursor" aria-hidden="true"><span class="cursor-text"></span></div>
 
+    <!-- NAVBAR WITH HAMBURGER -->
     <nav>
         <div class="logo magnetic hover-target">CODE<span style="color: var(--accent-glow, #BD52EB); font-weight: 800;">&gt;</span>OGUE</div>
-
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html" class="magnetic hover-target" style="color: var(--accent-glow, #BD52EB);">Home</a></li>
             <li><a href="html/projects.html" class="magnetic hover-target">Work</a></li>
@@ -983,21 +455,9 @@
             <li><a href="html/contact.html" class="magnetic hover-target">Contact</a></li>
             <li><a href="html/landing.html" class="magnetic hover-target">CodeVOS</a></li>
         </ul>
-
-        <div class="nav-actions">
-            <button
-                type="button"
-                id="open-terminal"
-                class="terminal-launch-btn hover-target magnetic"
-                aria-label="Open admin terminal"
-            >
-                Open Terminal
-            </button>
-
-            <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
+        <button class="hamburger-btn hover-target" id="hamburgerBtn" aria-label="Toggle Menu">
+            <span></span><span></span><span></span>
+        </button>
     </nav>
 
     <main class="container" style="padding-top: 100px;">
@@ -1005,41 +465,31 @@
             <p class="hero-sub text-target">Digital Excellence Lab</p>
             <h1 class="text-target">CODE<br>VOGUE</h1>
             <p class="hero-desc text-target">We engineer high-performance, minimalist digital experiences. Stripping away the noise to build powerful software from Sagar, MP.</p>
-
-            <div class="hero-terminal-cta reveal">
-                <button
-                    type="button"
-                    id="open-terminal-hero"
-                    class="terminal-launch-btn terminal-launch-btn--hero hover-target magnetic"
-                >
-                    Launch Admin Terminal
-                </button>
-                <p class="hero-terminal-note text-target">Ask about projects, services, founder story, pricing flow, or how to contact the team.</p>
-            </div>
         </section>
 
         <section class="story-section reveal">
             <p class="section-label text-target">OUR JOURNEY</p>
             <div class="story-bubble">
                 <div class="story-bubble-header">
-                    <span class="story-bubble-tag">FOUNDERS’ ORIGIN</span>
+                    <span class="story-bubble-tag">FOUNDERSâ€™ ORIGIN</span>
                     <span class="story-bubble-date">March 28, 2026</span>
                 </div>
-                <div class="story-bubble-badge">Built by Tanish + Aditya — Sagar to Katni</div>
+                <div class="story-bubble-badge">Built by Tanish + Aditya â€” Sagar to Katni</div>
                 <a href="https://velocity-shop.netlify.app/" target="_blank" rel="noreferrer" class="story-link-card hover-target">
-                    <div class="story-link-icon">🚀</div>
+                    <div class="story-link-icon">ðŸš€</div>
                     <div>
                         <div class="story-link-title">Velocity Shop</div>
-                        <div class="story-link-desc">Aditya’s flagship site — launched by a true partnership of design and code.</div>
+                        <div class="story-link-desc">Adityaâ€™s flagship site â€” launched by a true partnership of design and code.</div>
                     </div>
-                    <div class="story-link-chevron">↗</div>
+                    <div class="story-link-chevron">â†—</div>
                 </a>
                 <div class="story-content">
-                    <p>CodeVogue is the result of a long-running obsession with code and design. I first fell in love with programming in fifth grade, and two years ago I met Aditya at a hackathon. He comes from Katni, I come from Sagar — both from MP — and we discovered a shared taste for clean interfaces and fast, modern execution. Our spark became momentum when a team from Sagar took second place in the national KVS Vidyasetu AI Hackathon first edition hosted by IIT Delhi, beating nearly 950 KV schools. That moment supercharged our mission, and on 28th March 2026 we launched CodeVogue as a lean studio for premium, high-performance web experiences.</p>
+                    <p>CodeVogue is the result of a long-running obsession with code and design. I first fell in love with programming in fifth grade, and two years ago I met Aditya at a hackathon. He comes from Katni, I come from Sagar â€” both from MP â€” and we discovered a shared taste for clean interfaces and fast, modern execution. Our spark became momentum when a team from Sagar took second place in the national KVS Vidyasetu AI Hackathon first edition hosted by IIT Delhi, beating nearly 950 KV schools. That moment supercharged our mission, and on 28th March 2026 we launched CodeVogue as a lean studio for premium, high-performance web experiences.</p>
                 </div>
             </div>
         </section>
 
+        <!-- ðŸŒŸ INTERACTIVE COMMAND CONSOLE -->
         <section class="showcase-section reveal">
             <div class="showcase-panel">
                 <div class="showcase-overlay"></div>
@@ -1052,11 +502,11 @@
                             <div class="terminal-title">code-vogue / staging</div>
                         </div>
                         <div class="terminal-body">
-                            <div class="terminal-line"><span>Initializing</span> project assets…</div>
+                            <div class="terminal-line"><span>Initializing</span> project assetsâ€¦</div>
                             <div class="terminal-line"><span>Loading</span> UI system modules</div>
                             <div class="terminal-line typed">deploy --theme=neon-lab --live-preview</div>
                             <div class="terminal-line"><span>Watching</span> file changes in <em>src/</em></div>
-                            <div class="terminal-line"><span>Build</span> ready — 120ms</div>
+                            <div class="terminal-line"><span>Build</span> ready â€” 120ms</div>
                         </div>
                         <div class="terminal-tags">
                             <span class="terminal-tag">HTML</span>
@@ -1066,7 +516,6 @@
                             <span class="terminal-tag">Netlify</span>
                         </div>
                     </div>
-
                     <div class="console-preview">
                         <div class="preview-header">
                             <div class="preview-title">Live preview</div>
@@ -1088,55 +537,64 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="showcase-caption">
                     <div>
                         <p class="showcase-label">Interactive developer story</p>
                         <p class="showcase-description">See the build process through a command console split view, blending code commands and a blurred live preview of the product experience.</p>
                     </div>
-                    <button type="button" class="showcase-button hover-target" id="open-terminal-showcase">Try the terminal</button>
+                    <a href="html/projects.html" class="showcase-button hover-target">Explore the project</a>
                 </div>
             </div>
         </section>
 
+        <!-- â™¾ï¸ INFINITE MARQUEE -->
         <div class="marquee-container reveal">
             <div class="marquee-content">
-                <span>✦ HTML5</span><span>✦ CSS3</span><span>✦ VANILLA JS</span><span>✦ FIREBASE</span><span>✦ FIGMA</span><span>✦ NETLIFY</span><span>✦ CANVAS API</span><span>✦ UI/UX</span>
-                <span>✦ HTML5</span><span>✦ CSS3</span><span>✦ VANILLA JS</span><span>✦ FIREBASE</span><span>✦ FIGMA</span><span>✦ NETLIFY</span><span>✦ CANVAS API</span><span>✦ UI/UX</span>
+                <span>âœ¦ HTML5</span><span>âœ¦ CSS3</span><span>âœ¦ VANILLA JS</span><span>âœ¦ FIREBASE</span><span>âœ¦ FIGMA</span><span>âœ¦ NETLIFY</span><span>âœ¦ CANVAS API</span><span>âœ¦ UI/UX</span>
+                <span>âœ¦ HTML5</span><span>âœ¦ CSS3</span><span>âœ¦ VANILLA JS</span><span>âœ¦ FIREBASE</span><span>âœ¦ FIGMA</span><span>âœ¦ NETLIFY</span><span>âœ¦ CANVAS API</span><span>âœ¦ UI/UX</span>
             </div>
         </div>
 
+        <!-- ðŸ± EXACT SKETCH BENTO BOX GRID -->
         <section class="reveal">
             <p class="section-label text-target" style="text-align: center;">THE VISION</p>
             <div class="bento-grid">
+                
+                <!-- HUGE LEFT BOX (Pure Performance) -->
                 <div class="bento-box bento-main">
                     <h3 class="bento-title" style="text-align: center;">Pure Performance</h3>
                     <p class="bento-desc" style="font-size: 1.1rem; line-height: 1.7; margin-top: 10px; text-align: center;">Delivering pure, powerful, and aesthetically flawless software for brands that refuse to blend in. We do not just write code; we engineer digital architecture that feels magnetic.</p>
                 </div>
 
+                <!-- RIGHT TOP BOX (Tanish N.) -->
                 <div class="bento-box bento-founder-1">
                     <h3 class="bento-title" style="font-size: 1.2rem; text-transform: none;">Tanish N.</h3>
-                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">(Developer)</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">(Developer)</div>
                 </div>
 
+                <!-- RIGHT MIDDLE BOX (Aditya Kashyap) -->
                 <div class="bento-box bento-founder-2">
                     <h3 class="bento-title" style="font-size: 1.2rem; text-transform: none;">Aditya Kashyap</h3>
                     <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 5px;">(Velocity)</div>
                 </div>
 
+                <!-- BOTTOM LEFT WIDE BOX (Explore Work) -->
                 <div class="bento-box bento-cta hover-target magnetic" style="cursor: pointer;" onclick="window.location.href='html/projects.html'">
                     <h3 class="bento-title" style="margin: 0; font-size: 1.5rem;">Explore Our Work</h3>
                 </div>
 
+                <!-- RIGHT BOTTOM BOX (Clock) -->
                 <div class="bento-box bento-clock">
                     <div>
                         <div id="live-clock" style="font-family: 'Space Grotesk', monospace; font-size: 1.8rem; font-weight: 600; color: var(--text-main);">00:00:00</div>
                         <div class="clock-label" style="font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; margin-top: 5px;">LOCAL TIME (IST)</div>
                     </div>
                 </div>
+
             </div>
         </section>
 
+        <!-- âš¡ CAPABILITIES GRID -->
         <section class="capabilities-section reveal">
             <p class="section-label text-target">OUR EXPERTISE</p>
             <h2 class="text-target" style="font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 2rem;">WHAT WE DO</h2>
@@ -1146,15 +604,13 @@
                     <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Frontend Engineering</h3>
                     <p class="cap-desc" style="color: var(--text-muted); font-size: 0.95rem;">Crafting highly optimized, blazingly fast user interfaces using modern DOM manipulation, semantic HTML, and advanced CSS architectures.</p>
                 </div>
-
                 <div class="cap-card hover-target">
-                    <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">✦</div>
+                    <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">âœ¦</div>
                     <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Interface Design</h3>
                     <p class="cap-desc" style="color: var(--text-muted); font-size: 0.95rem;">Designing minimalist, cyberpunk-inspired visual systems with a focus on typography, layout precision, and magnetic micro-interactions.</p>
                 </div>
-
                 <div class="cap-card hover-target">
-                    <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">⚙</div>
+                    <div class="cap-icon" style="font-size: 2rem; color: var(--accent-glow, #BD52EB); margin-bottom: 1rem;">âš™</div>
                     <h3 class="cap-title" style="font-family: 'Syne', sans-serif; margin-bottom: 0.8rem;">Web Architecture</h3>
                     <p class="cap-desc" style="color: var(--text-muted); font-size: 0.95rem;">Deploying serverless infrastructure, managing state logic, and integrating advanced web APIs for scalable, interactive web applications.</p>
                 </div>
@@ -1167,13 +623,13 @@
         </section>
     </main>
 
+    <!-- FOOTER -->
     <footer class="main-footer">
         <div class="footer-grid reveal">
             <div class="footer-brand">
                 <h2 style="font-family: 'Syne', sans-serif; font-size: 2rem; margin-bottom: 1rem;">CODE<span style="color: var(--accent-glow, #BD52EB);">&gt;</span>OGUE</h2>
                 <p style="color: var(--text-muted); line-height: 1.6; max-width: 400px;">A digital collective dedicated to building high-performance, minimalist web experiences and pushing the boundaries of interface design.</p>
             </div>
-
             <div class="footer-links">
                 <h4 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">EXPLORE</h4>
                 <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
@@ -1182,7 +638,6 @@
                     <li><a href="html/updates.html" class="hover-target" style="color: var(--text-muted); text-decoration: none;">Update Log</a></li>
                 </ul>
             </div>
-
             <div class="footer-links">
                 <h4 style="color: var(--text-main); margin-bottom: 1.5rem; font-size: 0.9rem; letter-spacing: 0.1em;">CONNECT</h4>
                 <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
@@ -1192,7 +647,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="footer-bottom-bar reveal" style="color: var(--text-muted); font-size: 0.9rem;">
             <div class="copyright">&copy; 2026 CodeVogue. All Rights Reserved.</div>
             <div class="location">Sagar, Madhya Pradesh, IN</div>
@@ -1201,46 +655,32 @@
 
     <script src="js/script.js"></script>
     <script>
+        // ðŸš€ Preloader
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            if (preloader) {
-                setTimeout(() => {
-                    preloader.classList.add('preloader-hide');
-                    setTimeout(() => {
-                        preloader.remove();
-                    }, 800);
-                }, 1400);
-            }
+            if (preloader) { setTimeout(() => { preloader.classList.add('preloader-hide'); setTimeout(() => { preloader.remove(); }, 800); }, 1400); }
         });
 
+        // ðŸ“± Hamburger Menu
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const navLinks = document.getElementById('navLinks');
-
-        if (hamburgerBtn && navLinks) {
-            hamburgerBtn.addEventListener('click', () => {
-                hamburgerBtn.classList.toggle('active');
-                navLinks.classList.toggle('active');
-            });
-
-            navLinks.querySelectorAll('a').forEach(link => {
-                link.addEventListener('click', () => {
-                    hamburgerBtn.classList.remove('active');
-                    navLinks.classList.remove('active');
-                });
-            });
+        if(hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => { hamburgerBtn.classList.toggle('active'); navLinks.classList.toggle('active'); });
+            navLinks.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburgerBtn.classList.remove('active'); navLinks.classList.remove('active'); }); });
         }
 
+        // â±ï¸ Live Clock
         function updateClock() {
             const clockEl = document.getElementById('live-clock');
-            if (clockEl) {
+            if(clockEl) {
                 const now = new Date();
                 clockEl.textContent = now.toLocaleTimeString('en-US', { hour12: false });
             }
         }
-
         setInterval(updateClock, 1000);
         updateClock();
 
+        // ðŸ•¸ï¸ DIGITAL NEURAL NETWORK CANVAS
         const cyberCanvas = document.getElementById('cyber-canvas');
         if (cyberCanvas) {
             const ctx = cyberCanvas.getContext('2d');
@@ -1250,8 +690,7 @@
                 width = cyberCanvas.width = window.innerWidth;
                 height = cyberCanvas.height = window.innerHeight;
                 particles = [];
-                const particleCount = window.innerWidth < 768 ? 35 : 70;
-
+                const particleCount = window.innerWidth < 768 ? 35 : 70; 
                 for (let i = 0; i < particleCount; i++) {
                     particles.push({
                         x: Math.random() * width,
@@ -1266,7 +705,7 @@
             function animateNetwork() {
                 requestAnimationFrame(animateNetwork);
                 ctx.clearRect(0, 0, width, height);
-
+                
                 for (let i = 0; i < particles.length; i++) {
                     let p = particles[i];
                     p.x += p.vx;
@@ -1277,16 +716,16 @@
 
                     ctx.beginPath();
                     ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = '#BD52EB';
+                    ctx.fillStyle = '#BD52EB'; 
                     ctx.fill();
 
                     for (let j = i + 1; j < particles.length; j++) {
                         let p2 = particles[j];
                         let dist = Math.sqrt(Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2));
-
+                        
                         if (dist < 120) {
                             ctx.beginPath();
-                            ctx.strokeStyle = `rgba(189, 82, 235, ${1 - dist / 120})`;
+                            ctx.strokeStyle = `rgba(189, 82, 235, ${1 - dist/120})`; 
                             ctx.lineWidth = 1;
                             ctx.moveTo(p.x, p.y);
                             ctx.lineTo(p2.x, p2.y);
@@ -1295,68 +734,142 @@
                     }
                 }
             }
-
             initNetwork();
             animateNetwork();
             window.addEventListener('resize', initNetwork);
         }
 
-        function setupTerminalLaunchers() {
-            const terminal = document.getElementById('dev-terminal');
-            const terminalInput = document.getElementById('terminal-input');
-            const closeBtn = document.getElementById('close-terminal');
-            const backdrop = document.getElementById('terminal-backdrop');
-            const openBtns = [
-                document.getElementById('open-terminal'),
-                document.getElementById('open-terminal-hero'),
-                document.getElementById('open-terminal-showcase')
-            ].filter(Boolean);
+        // ==========================================
+        // ðŸ’» GOATED TERMINAL EASTER EGG LOGIC
+        // ==========================================
+        let keySequence = '';
+        const terminal = document.getElementById('dev-terminal');
+        const termInput = document.getElementById('terminal-input');
+        const termOutput = document.getElementById('terminal-output');
 
-            if (!terminal || !terminalInput) return;
-
-            const openTerminal = () => {
+        document.addEventListener('keydown', (e) => {
+            keySequence += e.key.toLowerCase();
+            if (keySequence.length > 5) keySequence = keySequence.slice(-5);
+            if (keySequence === 'admin') {
                 terminal.classList.add('active');
-                terminal.setAttribute('aria-hidden', 'false');
-                setTimeout(() => terminalInput.focus(), 120);
-            };
+                setTimeout(() => termInput.focus(), 500);
+            }
+        });
 
-            const closeTerminal = () => {
-                terminal.classList.remove('active');
-                terminal.setAttribute('aria-hidden', 'true');
-            };
+        document.getElementById('close-terminal').addEventListener('click', () => {
+            terminal.classList.remove('active');
+            keySequence = ''; 
+        });
 
-            openBtns.forEach(btn => btn.addEventListener('click', openTerminal));
-
-            if (closeBtn) closeBtn.addEventListener('click', closeTerminal);
-            if (backdrop) backdrop.addEventListener('click', closeTerminal);
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && terminal.classList.contains('active')) {
-                    closeTerminal();
-                }
-            });
-
-            let keySequence = '';
-            document.addEventListener('keydown', (e) => {
-                if (document.activeElement === terminalInput) return;
-                keySequence += e.key.toLowerCase();
-                if (keySequence.length > 5) keySequence = keySequence.slice(-5);
-
-                if (keySequence === 'admin') {
-                    openTerminal();
-                    keySequence = '';
-                }
-            });
-
-            document.querySelectorAll('[data-terminal-command]').forEach(button => {
-                button.addEventListener('click', () => {
-                    terminalInput.value = button.dataset.terminalCommand;
-                    terminalInput.focus();
-                });
-            });
+        function printLine(text) {
+            const resLine = document.createElement('div');
+            resLine.innerHTML = text;
+            termOutput.insertBefore(resLine, termInput.parentElement);
+            termOutput.scrollTop = termOutput.scrollHeight;
         }
 
-        setupTerminalLaunchers();
+        function startMatrix() {
+            if(document.getElementById('matrix-canvas')) return;
+            const c = document.createElement('canvas');
+            c.id = 'matrix-canvas';
+            c.style.position = 'fixed'; c.style.top = '0'; c.style.left = '0';
+            c.style.width = '100vw'; c.style.height = '100vh';
+            c.style.zIndex = '9997'; c.style.pointerEvents = 'none';
+            document.body.appendChild(c);
+            
+            const ctx = c.getContext('2d');
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            
+            const letters = '01CODEVOGUE'.split('');
+            const fontSize = 16; const columns = c.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+            
+            setInterval(() => {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, c.width, c.height);
+                ctx.fillStyle = '#0F0'; ctx.font = fontSize + 'px monospace';
+                for(let i = 0; i < drops.length; i++) {
+                    const text = letters[Math.floor(Math.random() * letters.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    if(drops[i] * fontSize > c.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                }
+            }, 33);
+        }
+
+        termInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = termInput.value.trim().toLowerCase();
+                printLine(`> <span style="color:#fff">${cmd}</span>`);
+
+                if (cmd === 'help') {
+                    printLine(`
+                    SYSTEM COMMANDS:<br>
+                    - whoami<br>
+                    - contact<br>
+                    - clear<br>
+                    <br>
+                    <span style="color:#ef4444;">[SUDO] SECRET COMMANDS:</span><br>
+                    - matrix (Injects HTML5 Canvas Overlay)<br>
+                    - party (Injects Hue-Rotate Keyframes)<br>
+                    - hack (Simulates bypass protocol)<br>
+                    - sudo rm -rf / (Dangerous)<br>
+                    - reboot (Clears all injected protocols)
+                    `);
+                } 
+                else if (cmd === 'whoami') { printLine("USER: Tanish Nandanwar. CLEARANCE: SYSTEM ADMIN. ASPIRING MED STUDENT. FULL-STACK GOD."); } 
+                else if (cmd === 'contact') { printLine("REDIRECTING TO SECURE COMMS..."); setTimeout(() => window.location.href = "html/contact.html", 1000); } 
+                else if (cmd === 'hack') {
+                    printLine("Initiating bypass protocol...");
+                    setTimeout(() => printLine("Bypassing mainframe firewall... [OK]"), 1000);
+                    setTimeout(() => printLine("Decrypting AES-256 hash... [OK]"), 2200);
+                    setTimeout(() => printLine("<span style='color:#0ea5e9'>ACCESS GRANTED. Welcome to the backend.</span>"), 3500);
+                }
+                else if (cmd === 'matrix') { printLine("Wake up, Neo..."); startMatrix(); }
+                else if (cmd === 'party') {
+                    printLine("Initiating Rave Protocol ðŸ•ºðŸ’ƒ");
+                    
+                    if(!document.getElementById('party-style')) {
+                        const style = document.createElement('style');
+                        style.id = 'party-style';
+                        style.innerHTML = `
+                            @keyframes partyGlow {
+                                0% { color: #ff00ff; text-shadow: 0 0 20px #ff00ff; border-color: #ff00ff; }
+                                25% { color: #00ffff; text-shadow: 0 0 20px #00ffff; border-color: #00ffff; }
+                                50% { color: #00ff00; text-shadow: 0 0 20px #00ff00; border-color: #00ff00; }
+                                75% { color: #ffff00; text-shadow: 0 0 20px #ffff00; border-color: #ffff00; }
+                                100% { color: #ff00ff; text-shadow: 0 0 20px #ff00ff; border-color: #ff00ff; }
+                            }
+                            h1, h2, h3, a, .logo, .ambient-glow, .bento-box:hover {
+                                animation: partyGlow 1s infinite linear !important;
+                                transition: none !important;
+                            }
+                            #dev-terminal {
+                                border-color: #00ff00 !important;
+                                box-shadow: 0 0 50px rgba(0,255,0,0.5) !important;
+                                animation: partyGlow 1s infinite linear !important;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                }
+                else if (cmd === 'sudo rm -rf /') {
+                    printLine("<span style='color:#ef4444'>CRITICAL WARNING: Deleting root file system...</span>");
+                    setTimeout(() => printLine("Deleting /html..."), 1000);
+                    setTimeout(() => printLine("Deleting /css..."), 1800);
+                    setTimeout(() => printLine("Deleting /js..."), 2600);
+                    setTimeout(() => printLine("...Just kidding. I wouldn't let you delete CodeVogue that easily."), 4000);
+                }
+                else if (cmd === 'reboot') { printLine("Rebooting system..."); setTimeout(() => window.location.reload(), 1000); }
+                else if (cmd === 'clear') {
+                    const lines = termOutput.querySelectorAll('div:not(.terminal-input-line)');
+                    lines.forEach(l => l.remove());
+                } 
+                else if (cmd !== '') { printLine(`Command not found: ${cmd}. Type 'help' for available options.`); }
+
+                termInput.value = '';
+            }
+        });
     </script>
 </body>
 </html>

@@ -202,6 +202,103 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="js/user.js"></script>
 <script>
+  // --- CUSTOM THEMED POPUP WITH SYSTEM FACE (ONLY FOR SAVE TIMEZONE) ---
+  const HunterPopup = {
+    init: function() {
+      if (document.getElementById('hunter-modal-overlay')) return;
+      
+      const overlay = document.createElement('div');
+      overlay.id = 'hunter-modal-overlay';
+      overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; display:none; align-items:center; justify-content:center; backdrop-filter:blur(5px); opacity:0; transition:opacity 0.2s ease;';
+
+      const card = document.createElement('div');
+      card.className = 'card glow'; 
+      card.style.cssText = 'width:90%; max-width:420px; padding:24px; transform:translateY(20px); transition:transform 0.2s ease; display:flex; flex-direction:column;';
+
+      const topSection = document.createElement('div');
+      topSection.style.cssText = 'display:flex; flex-direction:row; align-items:flex-start; margin-bottom:24px;';
+
+      const faceBox = document.createElement('div');
+      faceBox.id = 'hunter-modal-face-box';
+      faceBox.style.cssText = 'display:flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:12px; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); margin-right:20px; flex-shrink:0; font-family:"JetBrains Mono", monospace; font-size:18px; font-weight:bold; box-shadow:inset 0 0 10px rgba(0,0,0,0.5); transition:all 0.3s ease;';
+      
+      const faceText = document.createElement('span');
+      faceText.id = 'hunter-modal-face';
+      faceText.textContent = '◈_◈';
+      faceBox.appendChild(faceText);
+
+      const textCol = document.createElement('div');
+      textCol.style.cssText = 'display:flex; flex-direction:column; justify-content:center; flex:1;';
+
+      const title = document.createElement('h3');
+      title.id = 'hunter-modal-title';
+      title.style.marginBottom = '8px';
+      title.style.lineHeight = '1.2';
+
+      const msg = document.createElement('p');
+      msg.id = 'hunter-modal-msg';
+      msg.style.cssText = 'font-size:14px; color:var(--text); opacity:0.8; line-height:1.5; margin:0;';
+
+      textCol.appendChild(title);
+      textCol.appendChild(msg);
+      topSection.appendChild(faceBox);
+      topSection.appendChild(textCol);
+
+      const btnRow = document.createElement('div');
+      btnRow.className = 'row';
+      btnRow.style.cssText = 'justify-content:flex-end; gap:12px;';
+
+      const actionBtn = document.createElement('button');
+      actionBtn.id = 'hunter-modal-action';
+      actionBtn.className = 'btn primary';
+      actionBtn.textContent = 'Acknowledge';
+
+      btnRow.appendChild(actionBtn);
+      card.appendChild(topSection);
+      card.appendChild(btnRow);
+      overlay.appendChild(card);
+      document.body.appendChild(overlay);
+
+      actionBtn.addEventListener('click', () => this.hide());
+    },
+
+    show: function(titleText, msgText) {
+      this.init();
+      const overlay = document.getElementById('hunter-modal-overlay');
+      const card = overlay.querySelector('.card');
+      const title = document.getElementById('hunter-modal-title');
+      const msg = document.getElementById('hunter-modal-msg');
+      const actionBtn = document.getElementById('hunter-modal-action');
+      const faceText = document.getElementById('hunter-modal-face');
+      const faceBox = document.getElementById('hunter-modal-face-box');
+
+      title.textContent = titleText;
+      msg.textContent = msgText;
+      faceText.textContent = '◈_◈';
+      faceText.style.color = '#38bdf8';
+      faceBox.style.borderColor = 'rgba(56,189,248,0.2)';
+      faceBox.style.background = 'rgba(0,0,0,0.2)';
+      actionBtn.textContent = 'Confirmed';
+      actionBtn.style = '';
+
+      overlay.style.display = 'flex';
+      setTimeout(() => {
+        overlay.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
+      }, 10);
+    },
+
+    hide: function() {
+      const overlay = document.getElementById('hunter-modal-overlay');
+      if (!overlay) return;
+      const card = overlay.querySelector('.card');
+      overlay.style.opacity = '0';
+      card.style.transform = 'translateY(20px)';
+      setTimeout(() => { overlay.style.display = 'none'; }, 200);
+    }
+  };
+
+  // --- CORE SETTINGS LOGIC ---
   document.addEventListener('DOMContentLoaded', function() {
     if (typeof AuthSystem === 'undefined' || !AuthSystem.getCurrentUser) return;
 
@@ -261,19 +358,24 @@
       });
     });
 
+    // ONLY CHANGE: Save Timezone now uses themed popup with system face
     if (saveButton) {
       saveButton.addEventListener('click', function () {
         const timezone = timezoneSelect.value;
         const result = AuthSystem.saveTimezone ? AuthSystem.saveTimezone(timezone) : { success: false };
 
         if (result.success) {
-          alert('Association timezone saved. It will now appear across your Hunter record.');
+          HunterPopup.show(
+            'System Update', 
+            'Association timezone saved. It will now appear across your Hunter record.'
+          );
         } else {
           alert(result.message || 'Unable to save timezone.');
         }
       });
     }
 
+    // NO CHANGE: Wipe Hunter Record stays exactly as it was
     if (wipeButton) {
       wipeButton.addEventListener('click', function () {
         if (AuthSystem.wipeProfileFlow) {

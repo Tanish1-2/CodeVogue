@@ -462,7 +462,6 @@
         <p class="intro-copy">
           Enter through a provider-linked or local hunter record. Provider-verified identities remain trusted, while local users stay blocked from access until their verification mail has been confirmed.
         </p>
-
         <div class="intro-grid">
           <div class="intro-card">
             <div class="intro-card-label">Provider Login</div>
@@ -480,7 +479,7 @@
       </div>
 
       <p class="footer-note">
-        Local verification should be refreshed from Firebase before granting local-account access, while provider identities can rely on provider-reported verified email state. [web:245][web:325]
+        Local verification should be refreshed from Firebase before granting local-account access, while provider identities can rely on provider-reported verified email state.
       </p>
     </section>
 
@@ -655,7 +654,7 @@
         setMessage('Sign in to your local account first, then resend verification.', 'warn');
         return;
       }
-
+      
       try {
         setBusy(true);
         await sendEmailVerification(user);
@@ -721,7 +720,9 @@
 
         const verified = !!auth.currentUser?.emailVerified;
 
-        const result = AuthSystem.verifyLogin(normalizedEmail, normalizedPassword);
+        // ** THIS IS THE FIX ** Pass auth.currentUser so auth.js creates missing local storage
+        const result = AuthSystem.verifyLogin(normalizedEmail, normalizedPassword, auth.currentUser);
+        
         if (!result.success) {
           setMessage(result.message || 'Local login failed.', 'error');
           return;

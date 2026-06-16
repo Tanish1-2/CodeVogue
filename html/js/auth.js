@@ -289,52 +289,52 @@ const AuthSystem = {
     return { success: true, user };
   },
 
-createUnverifiedLocalAccount(email, password, displayName) {
-  const normalizedEmail = this.normalizeEmail(email);
-  if (!normalizedEmail || !password) {
-    return { success: false, message: 'Email and password are required.' };
-  }
-  if (password.length < 6) {
-    return { success: false, message: 'Password must be at least 6 characters.' };
-  }
+  createUnverifiedLocalAccount(email, password, displayName) {
+    const normalizedEmail = this.normalizeEmail(email);
+    if (!normalizedEmail || !password) {
+      return { success: false, message: 'Email and password are required.' };
+    }
+    if (password.length < 6) {
+      return { success: false, message: 'Password must be at least 6 characters.' };
+    }
 
-  const accountKey = this.getAccountKey(normalizedEmail);
-  const existing = this.safeParse(localStorage.getItem(accountKey), null);
+    const accountKey = this.getAccountKey(normalizedEmail);
+    const existing = this.safeParse(localStorage.getItem(accountKey), null);
 
-  if (existing && existing.user && existing.user.authProvider === 'google') {
-    return { success: false, message: 'This email is already linked to Google sign-in. Use Login with Google.' };
-  }
+    if (existing && existing.user && existing.user.authProvider === 'google') {
+      return { success: false, message: 'This email is already linked to Google sign-in. Use Login with Google.' };
+    }
 
-  const user = this.normalizeUser({
-    email: normalizedEmail,
-    displayName: displayName && displayName.trim()
-      ? displayName.trim()
-      : this.getDisplayNameFromEmail(normalizedEmail),
-    token: this.generateToken(),
-    createdAt: existing?.user?.createdAt || new Date().toISOString(),
-    loginTime: new Date().toISOString(),
-    sessionExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-    xp: existing?.user?.xp || 0,
-    level: existing?.user?.level || 1,
-    rank: existing?.user?.rank || 'Examinee',
-    verificationCode: existing?.user?.verificationCode || this.generateVerificationCode(),
-    timezone: existing?.user?.timezone || 'UTC',
-    theme: existing?.user?.theme || 'hunter',
-    tagline: existing?.user?.tagline || 'A Hunter grows sharper when discipline holds longer than mood.',
-    googleId: '',
-    avatar: '',
-    authProvider: 'local',
-    emailVerified: false,
-    onboardingCompleted: false,
-    tutorialCompleted: false
-  });
+    const user = this.normalizeUser({
+      email: normalizedEmail,
+      displayName: displayName && displayName.trim()
+        ? displayName.trim()
+        : this.getDisplayNameFromEmail(normalizedEmail),
+      token: this.generateToken(),
+      createdAt: existing?.user?.createdAt || new Date().toISOString(),
+      loginTime: new Date().toISOString(),
+      sessionExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      xp: existing?.user?.xp || 0,
+      level: existing?.user?.level || 1,
+      rank: existing?.user?.rank || 'Examinee',
+      verificationCode: existing?.user?.verificationCode || this.generateVerificationCode(),
+      timezone: existing?.user?.timezone || 'UTC',
+      theme: existing?.user?.theme || 'hunter',
+      tagline: existing?.user?.tagline || 'A Hunter grows sharper when discipline holds longer than mood.',
+      googleId: '',
+      avatar: '',
+      authProvider: 'local',
+      emailVerified: false,
+      onboardingCompleted: false,
+      tutorialCompleted: false
+    });
 
-  this.persistUser(user, password);
-  this.initUserStorage(normalizedEmail);
+    this.persistUser(user, password);
+    this.initUserStorage(normalizedEmail);
 
-  localStorage.removeItem(this.storageKey);
+    localStorage.removeItem(this.storageKey);
 
-  return { success: true, user };
+    return { success: true, user };
   },
 
   markLocalUserVerified(email) {
@@ -425,12 +425,44 @@ createUnverifiedLocalAccount(email, password, displayName) {
     } catch {}
   },
 
-  verifyLogin(email, password) {
+  verifyLogin(email, password, firebaseUser = null) {
     const normalizedEmail = this.normalizeEmail(email);
     const stored = localStorage.getItem(this.getAccountKey(normalizedEmail));
 
+    if (firebaseUser) {
+       let user;
+       if (stored) {
+           const account = JSON.parse(stored);
+           user = this.normalizeUser(account.user);
+       } else {
+           user = this.normalizeUser({
+               email: normalizedEmail,
+               displayName: firebaseUser.displayName || this.getDisplayNameFromEmail(normalizedEmail),
+               token: this.generateToken(),
+               createdAt: firebaseUser.metadata?.creationTime || new Date().toISOString(),
+               loginTime: new Date().toISOString(),
+               sessionExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+               xp: 0,
+               level: 1,
+               rank: 'Examinee',
+               verificationCode: this.generateVerificationCode(),
+               timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+               theme: localStorage.getItem('siteTheme') || 'hunter',
+               authProvider: 'local',
+               emailVerified: firebaseUser.emailVerified
+           });
+       }
+       
+       user.loginTime = new Date().toISOString();
+       user.sessionExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+       this.persistUser(user, password);
+       this.initUserStorage(normalizedEmail);
+       localStorage.setItem(this.storageKey, JSON.stringify(user));
+       return { success: true, user };
+    }
+
     if (!stored) {
-      return { success: false, message: 'Email not found. Please sign up first.' };
+      return { success: false, message: 'Email not found on this device. Please sign in via Firebase.' };
     }
 
     try {
@@ -585,7 +617,7 @@ createUnverifiedLocalAccount(email, password, displayName) {
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
-      .replace(/\"/g, '&quot;')
+      .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   },
 
@@ -922,47 +954,46 @@ createUnverifiedLocalAccount(email, password, displayName) {
     ].join('');
 
     return `
-      <div id="ascendos-pdf-root">
+      <div id="ascendos-pdf-root" style="--ascendos-pdf-root:width:794px;margin:0 auto;background:#eaf4f7;color:#07111f;font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.55;">
         <style>
-          #ascendos-pdf-root{width:794px;margin:0 auto;background:#eaf4f7;color:#07111f;font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.55}
-          #ascendos-pdf-root *{box-sizing:border-box}
-          #ascendos-pdf-root .document{background:#f8fcfd;border-radius:30px;overflow:hidden;border:1px solid rgba(8,145,178,0.14);box-shadow:0 24px 60px rgba(8,15,27,0.08)}
-          #ascendos-pdf-root .header{position:relative;padding:34px 34px 28px;color:#ecfeff;background:radial-gradient(circle at top right,rgba(125,211,252,0.26),transparent 28%),radial-gradient(circle at bottom left,rgba(45,212,191,0.18),transparent 24%),linear-gradient(135deg,#06131f 0%,#0b2236 38%,#0f4c5c 100%)}
-          #ascendos-pdf-root .gridline{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px, transparent 1px);background-size:32px 32px;pointer-events:none}
-          #ascendos-pdf-root .eyebrow{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.26em;color:#67e8f9;margin-bottom:12px}
-          #ascendos-pdf-root .hero{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
-          #ascendos-pdf-root .title{font-size:42px;font-weight:900;letter-spacing:.06em;line-height:1;margin-bottom:10px}
-          #ascendos-pdf-root .tagline{font-size:17px;color:#d9f7fb;max-width:38ch;margin-bottom:16px}
-          #ascendos-pdf-root .meta-row{display:flex;flex-wrap:wrap;gap:10px}
-          #ascendos-pdf-root .meta-pill{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#e6fbff}
-          #ascendos-pdf-root .avatar-shell{width:92px;height:92px;border-radius:26px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#22d3ee,#fde68a 52%,#818cf8);box-shadow:0 22px 40px rgba(34,211,238,0.18)}
-          #ascendos-pdf-root .avatar-core{width:82px;height:82px;border-radius:22px;background:rgba(255,255,255,0.72);display:flex;align-items:center;justify-content:center;color:#07111f;font-size:34px;font-weight:900}
-          #ascendos-pdf-root .content{padding:26px}
-          #ascendos-pdf-root .quote-box,#ascendos-pdf-root .section-card,#ascendos-pdf-root .code-box,#ascendos-pdf-root .footer-box{break-inside:avoid;page-break-inside:avoid}
-          #ascendos-pdf-root .quote-box{margin-bottom:20px;padding:20px 22px;border-radius:22px;background:linear-gradient(135deg,rgba(34,211,238,0.10),rgba(255,255,255,0.95));border:1px solid rgba(8,145,178,0.12)}
-          #ascendos-pdf-root .quote-mark{font-size:28px;color:#0891b2;margin-bottom:6px}
-          #ascendos-pdf-root .quote-text{font-size:16px;color:#12344a;font-style:italic}
-          #ascendos-pdf-root .section-card{margin-bottom:20px;background:#fdfefe;border:1px solid rgba(8,15,27,0.06);border-radius:22px;padding:22px}
-          #ascendos-pdf-root .section-header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-          #ascendos-pdf-root .section-icon{width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#cffafe,#bae6fd);color:#0f4c5c;font-size:18px;font-weight:800}
-          #ascendos-pdf-root .section-title{font-size:17px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#0f3a4f}
-          #ascendos-pdf-root .info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-          #ascendos-pdf-root .info-card{border-radius:16px;padding:15px;min-height:88px}
-          #ascendos-pdf-root .info-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:#527083;margin-bottom:8px}
-          #ascendos-pdf-root .info-value{font-size:17px;font-weight:800;color:#07111f;word-break:break-word;overflow-wrap:anywhere}
-          #ascendos-pdf-root .ledger{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-bottom:20px}
-          #ascendos-pdf-root .panel{border-radius:20px;padding:18px;background:linear-gradient(180deg,#ffffff,#f5fbfd);border:1px solid rgba(15,23,42,0.06)}
-          #ascendos-pdf-root .panel-kicker{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.16em;color:#0891b2;margin-bottom:8px}
-          #ascendos-pdf-root .panel-title{font-size:24px;font-weight:900;color:#07111f;margin-bottom:6px}
-          #ascendos-pdf-root .panel-copy{font-size:14px;color:#456172;line-height:1.7}
-          #ascendos-pdf-root .code-box{text-align:center;border-radius:24px;padding:24px 20px;background:linear-gradient(135deg,#fff7cc,#ffe08a 60%,#ffd166);border:2px solid rgba(217,119,6,0.28);margin-bottom:20px}
-          #ascendos-pdf-root .code-label{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.16em;color:#7c4a03;margin-bottom:10px}
-          #ascendos-pdf-root .code-value{font-family:'Courier New',Consolas,monospace;font-size:46px;line-height:1.1;font-weight:900;letter-spacing:.18em;color:#8a3d00;margin-bottom:10px}
-          #ascendos-pdf-root .code-warning{font-size:13px;font-weight:800;color:#9a3412;margin-bottom:8px}
-          #ascendos-pdf-root .code-note{font-size:13px;color:#7c4a03;max-width:560px;margin:0 auto}
-          #ascendos-pdf-root .footer-box{border-top:1px solid rgba(8,145,178,0.12);padding-top:16px}
-          #ascendos-pdf-root .footer-text{font-size:12px;color:#537082;margin-top:6px}
-          #ascendos-pdf-root .footer-strong{color:#0f4c5c;font-weight:900}
+          #ascendos-pdf-root * { box-sizing:border-box; }
+          #ascendos-pdf-root .document { background:#f8fcfd; border-radius:30px; overflow:hidden; border:1px solid rgba(8,145,178,0.14); box-shadow:0 24px 60px rgba(8,15,27,0.08); }
+          #ascendos-pdf-root .header { position:relative; padding:34px 34px 28px; color:#ecfeff; background:radial-gradient(circle at top right, rgba(125,211,252,0.26), transparent 28%), radial-gradient(circle at bottom left, rgba(45,212,191,0.18), transparent 24%), linear-gradient(135deg, #06131f 0%, #0b2236 38%, #0f4c5c 100%); }
+          #ascendos-pdf-root .gridline { position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px); background-size:32px 32px; pointer-events:none; }
+          #ascendos-pdf-root .eyebrow { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.26em; color:#67e8f9; margin-bottom:12px; }
+          #ascendos-pdf-root .hero { display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+          #ascendos-pdf-root .title { font-size:42px; font-weight:900; letter-spacing:.06em; line-height:1; margin-bottom:10px; }
+          #ascendos-pdf-root .tagline { font-size:17px; color:#d9f7fb; max-width:38ch; margin-bottom:16px; }
+          #ascendos-pdf-root .meta-row { display:flex; flex-wrap:wrap; gap:10px; }
+          #ascendos-pdf-root .meta-pill { display:inline-flex; align-items:center; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12); font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:#e6fbff; }
+          #ascendos-pdf-root .avatar-shell { width:92px; height:92px; border-radius:26px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#22d3ee,#fde68a 52%,#818cf8); box-shadow:0 22px 40px rgba(34,211,238,0.18); }
+          #ascendos-pdf-root .avatar-core { width:82px; height:82px; border-radius:22px; background:rgba(255,255,255,0.72); display:flex; align-items:center; justify-content:center; color:#07111f; font-size:34px; font-weight:900; }
+          #ascendos-pdf-root .content { padding:26px; }
+          #ascendos-pdf-root .quote-box, #ascendos-pdf-root .section-card, #ascendos-pdf-root .code-box, #ascendos-pdf-root .footer-box { break-inside:avoid; page-break-inside:avoid; }
+          #ascendos-pdf-root .quote-box { margin-bottom:20px; padding:20px 22px; border-radius:22px; background:linear-gradient(135deg, rgba(34,211,238,0.10), rgba(255,255,255,0.95)); border:1px solid rgba(8,145,178,0.12); }
+          #ascendos-pdf-root .quote-mark { font-size:28px; color:#0891b2; margin-bottom:6px; }
+          #ascendos-pdf-root .quote-text { font-size:16px; color:#12344a; font-style:italic; }
+          #ascendos-pdf-root .section-card { margin-bottom:20px; background:#fdfefe; border:1px solid rgba(8,15,27,0.06); border-radius:22px; padding:22px; }
+          #ascendos-pdf-root .section-header { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+          #ascendos-pdf-root .section-icon { width:42px; height:42px; border-radius:14px; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg, #cffafe, #bae6fd); color:#0f4c5c; font-size:18px; font-weight:800; }
+          #ascendos-pdf-root .section-title { font-size:17px; font-weight:900; letter-spacing:.12em; text-transform:uppercase; color:#0f3a4f; }
+          #ascendos-pdf-root .info-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; }
+          #ascendos-pdf-root .info-card { border-radius:16px; padding:15px; min-height:88px; }
+          #ascendos-pdf-root .info-label { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; color:#527083; margin-bottom:8px; }
+          #ascendos-pdf-root .info-value { font-size:17px; font-weight:800; color:#07111f; word-break:break-word; overflow-wrap:anywhere; }
+          #ascendos-pdf-root .ledger { display:grid; grid-template-columns:1.2fr .8fr; gap:14px; margin-bottom:20px; }
+          #ascendos-pdf-root .panel { border-radius:20px; padding:18px; background:linear-gradient(180deg, #ffffff, #f5fbfd); border:1px solid rgba(15,23,42,0.06); }
+          #ascendos-pdf-root .panel-kicker { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.16em; color:#0891b2; margin-bottom:8px; }
+          #ascendos-pdf-root .panel-title { font-size:24px; font-weight:900; color:#07111f; margin-bottom:6px; }
+          #ascendos-pdf-root .panel-copy { font-size:14px; color:#456172; line-height:1.7; }
+          #ascendos-pdf-root .code-box { text-align:center; border-radius:24px; padding:24px 20px; background:linear-gradient(135deg, #fff7cc, #ffe08a 60%, #ffd166); border:2px solid rgba(217,119,6,0.28); margin-bottom:20px; }
+          #ascendos-pdf-root .code-label { font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.16em; color:#7c4a03; margin-bottom:10px; }
+          #ascendos-pdf-root .code-value { font-family:"Courier New", Consolas, monospace; font-size:46px; line-height:1.1; font-weight:900; letter-spacing:.18em; color:#8a3d00; margin-bottom:10px; }
+          #ascendos-pdf-root .code-warning { font-size:13px; font-weight:800; color:#9a3412; margin-bottom:8px; }
+          #ascendos-pdf-root .code-note { font-size:13px; color:#7c4a03; max-width:560px; margin:0 auto; }
+          #ascendos-pdf-root .footer-box { border-top:1px solid rgba(8,145,178,0.12); padding-top:16px; }
+          #ascendos-pdf-root .footer-text { font-size:12px; color:#537082; margin-top:6px; }
+          #ascendos-pdf-root .footer-strong { color:#0f4c5c; font-weight:900; }
         </style>
 
         <div class="document">
